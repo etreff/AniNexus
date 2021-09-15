@@ -1,4 +1,4 @@
-﻿using System;
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AniNexus.Domain.Migrations
