@@ -67,6 +67,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AniNexus.Core\AniNexus.Core.csproj" />
     <ProjectReference Include="..\AniNexus.Domain\AniNexus.Domain.csproj" />
+    <ProjectReference Include="..\AniNexus.Infrastructure\AniNexus.Infrastructure.csproj" />
     <ProjectReference Include="..\AniNexus.Models\AniNexus.Models.csproj" />
   </ItemGroup>
 

@@ -41,11 +41,6 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
     public string? WebsiteUrl { get; set; }
 
     /// <summary>
-    /// A synopsis or description of the anime.
-    /// </summary>
-    public string? Synopsis { get; set; }
-
-    /// <summary>
     /// The average user rating for this anime, between 0 and 100.
     /// The rating only takes into account ratings from users who have
     /// given the anime a rating and have completed the anime.
@@ -192,6 +187,11 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
     public AnimeReleaseModel.NameModel Name => GetPrimaryRelease().Name;
 
     /// <summary>
+    /// A synopsis or description of the anime.
+    /// </summary>
+    public string? Synopsis => GetPrimaryRelease().Synopsis;
+
+    /// <summary>
     /// The producers of the anime.
     /// </summary>
     public IEnumerable<MediaCompanyAnimeMapModel> Producers
@@ -222,7 +222,6 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
         builder.HasOne(m => m.Season).WithMany().HasForeignKey(m => m.SeasonId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
 
         builder.Property(m => m.WebsiteUrl).HasComment("The URL to the anime's official website.");
-        builder.Property(m => m.Synopsis).HasComment("A synopsis or description of the anime.");
         builder.Property(m => m.Rating).HasComment("The user rating of the anime (Completed Only), from 0 to 100. Calculated by the system periodically.");
         builder.Property(m => m.ActiveRating).HasComment("The user rating of the anime (Watching Only), from 0 to 100. Calculated by the system periodically.");
         builder.Property(m => m.Votes).HasComment("The number of votes that contributed to the rating. Calculated by the system periodically.").HasDefaultValue(0);
@@ -288,47 +287,5 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
         }
 
         return Companies.Where(r => r.Role.Id == (int)role);
-    }
-
-    public static IQueryable<AnimeModel> IncludeAll(DbSet<AnimeModel> dbSet, bool splitQuery = true)
-    {
-        IQueryable<AnimeModel> result = dbSet
-            .Include(m => m.Category)
-            .Include(m => m.Season)
-            .Include(m => m.Releases).ThenInclude(m => m.Names)
-            .Include(m => m.Releases).ThenInclude(m => m.Locale)
-            .Include(m => m.Releases).ThenInclude(m => m.AgeRating)
-            .Include(m => m.Releases).ThenInclude(m => m.Status)
-#if SONGMODEL
-            .Include(m => m.Releases).ThenInclude(m => m.Episodes).ThenInclude(m => m.OpeningSong)
-            .Include(m => m.Releases).ThenInclude(m => m.Episodes).ThenInclude(m => m.EndingSong)
-#endif
-            .Include(m => m.Releases).ThenInclude(m => m.Trailers)
-            .Include(m => m.Releases).ThenInclude(m => m.LiveActors)
-            .Include(m => m.Releases).ThenInclude(m => m.VoiceActors)
-            .Include(m => m.Reviews).ThenInclude(m => m.User)
-            .Include(m => m.Reviews).ThenInclude(m => m.Votes)
-            .Include(m => m.ExternalIds)
-            .Include(m => m.TwitterHashtags)
-            .Include(m => m.Genres).ThenInclude(m => m.Genre)
-            .Include(m => m.Tags).ThenInclude(m => m.Tag)
-            .Include(m => m.Related)
-            // Only include the parent series names in the include results.
-            .Include(m => m.Series).ThenInclude(m => m.Series).ThenInclude(m => m.Names)
-            // Don't care about company aliases.
-            .Include(m => m.Companies).ThenInclude(m => m.Company).ThenInclude(m => m.Name)
-            .Include(m => m.Companies).ThenInclude(m => m.Role)
-            .Include(m => m.People).ThenInclude(m => m.Person)
-            .Include(m => m.Characters).ThenInclude(m => m.Character)
-            // Favorites is *not* included for performance reasons. The count is inline in the record.
-            //.Include(m => m.Favorites)
-            ;
-
-        if (splitQuery)
-        {
-            result = result.AsSplitQuery();
-        }
-
-        return result;
     }
 }

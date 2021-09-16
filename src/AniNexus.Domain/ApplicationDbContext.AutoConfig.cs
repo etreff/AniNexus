@@ -2,6 +2,7 @@
 using AniNexus.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -24,6 +25,14 @@ namespace AniNexus.Domain
                 }
 
                 // Configure interface types.
+                if (entityType.ClrType.IsTypeOf<IHasGuidPK>())
+                {
+                    var idProperty = entityType.FindProperty(nameof(IHasGuidPK.Id))!;
+                    idProperty.ValueGenerated = ValueGenerated.Never;
+                    idProperty.SetValueGeneratorFactory(static (_, _) => new GuidValueGenerator());
+                    entityType.SetPrimaryKey(idProperty)!.SetIsClustered(false);
+                }
+
                 if (entityType.ClrType.IsTypeOf<IHasAudit>())
                 {
                     var dateAddedProperty = entityType.FindProperty(nameof(IHasAudit.DateAdded))!;

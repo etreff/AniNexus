@@ -34,5 +34,11 @@ public enum EMediaStatus : byte
     /// The media has been officially announced, production has at one point started, the media is not complete,
     /// the producers/studios plan on completing the media, and the media is not in active production.
     /// </summary>
-    OnHaitus = 6
+    OnHaitus = 6,
+
+    /// <summary>
+    /// The status of the media is unkown, either because the media has not been announced or because the data
+    /// has not been entered into the database.
+    /// </summary>
+    Unknown = 7
 }

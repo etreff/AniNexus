@@ -27,11 +27,23 @@ public partial class ApplicationDbContext : ApiAuthorizationDbContext<Applicatio
         // YYYY.MM.DD
         builder.Properties<Date>()
             .HaveConversion<DateConverter, DateComparer>()
-            .HaveColumnType("char(10)");
+            .HaveColumnType("char(10)")
+            .AreFixedLength(true);
 
         builder.Properties<Date?>()
             .HaveConversion<NullableDateConverter, NullableDateComparer>()
-            .HaveColumnType("char(10)");
+            .HaveColumnType("char(10)")
+            .AreFixedLength(true);
+
+        builder.Properties<Guid>()
+            .HaveConversion<GuidConverter, GuidComparer>()
+            .HaveColumnType("char(36)")
+            .AreFixedLength(true);
+
+        builder.Properties<Guid?>()
+            .HaveConversion<NullableGuidConverter, NullableGuidComparer>()
+            .HaveColumnType("char(36)")
+            .AreFixedLength(true);
 
         base.ConfigureConventions(builder);
     }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AniNexus.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddGraphQLServer()
     .AddAniNexusGraphQLTypes()
     .ModifyOptions(options => options.DefaultBindingBehavior = HotChocolate.Types.BindingBehavior.Explicit);
+
+builder.Services.AddAniNexusProviders();
 
 builder.Services
     .AddScoped<IAnimeCoverArtService, AnimeCoverArtService>()

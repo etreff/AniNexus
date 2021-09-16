@@ -84,6 +84,11 @@ public class AnimeReleaseModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEnt
     public TimeSpan? AirTime { get; set; }
 
     /// <summary>
+    /// A synopsis or description of the anime.
+    /// </summary>
+    public string? Synopsis { get; set; }
+
+    /// <summary>
     /// The URL to the release-specific website.
     /// </summary>
     /// <remarks>
@@ -279,6 +284,7 @@ public class AnimeReleaseModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEnt
         builder.Property(m => m.LatestEpisodeCount).HasComment("The actual number of entries in this release.").HasDefaultValue(0);
         builder.Property(m => m.AirsOnDay).HasComment("The day of the week this entry airs on. Only relevant for anime with a regular release.");
         builder.Property(m => m.AirTime).HasComment("The UTC time this anime normally airs at.");
+        builder.Property(m => m.Synopsis).HasComment("A synopsis or description of the anime.");
         builder.Property(m => m.WebsiteUrl).HasComment("The URL to a place where the release can be purchased.");
     }
 
