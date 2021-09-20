@@ -32,7 +32,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the AnimeAgeRating enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -82,7 +82,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the AnimeCategory enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -336,7 +336,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the AnimeListStatus enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -703,7 +703,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the AnimeSeason enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1013,7 +1013,7 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id").IsClustered(false);
 
                     b.HasIndex("Action");
 
@@ -1039,7 +1039,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the CharacterRole enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1069,7 +1069,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the CompanyRole enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1104,7 +1104,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the GameCategory enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1241,7 +1241,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the GameListStatus enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1692,7 +1692,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the MangaAgeRating enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1737,7 +1737,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the MangaCategory enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -1973,7 +1973,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the MangaListStatus enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -3042,7 +3042,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the MediaRelationType enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -3201,7 +3201,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the MediaStatus enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -3320,7 +3320,7 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasComment("The name of the PersonRole enum value.");
 
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+                    b.HasKey("Id").IsClustered();
 
                     b.HasIndex("Name")
                         .IsUnique();

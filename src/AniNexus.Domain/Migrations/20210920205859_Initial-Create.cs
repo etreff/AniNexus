@@ -596,7 +596,8 @@ namespace AniNexus.Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Audit", x => x.Id);
+                    table.PrimaryKey("PK_Audit", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_Audit_AspNetUsers_UserId",
                         column: x => x.UserId,

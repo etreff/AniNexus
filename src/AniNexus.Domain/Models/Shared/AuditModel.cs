@@ -46,7 +46,7 @@ public class AuditModel : IEntityTypeConfiguration<AuditModel>
     {
         builder.ToTable("Audit");
 
-        builder.HasAlternateKey(m => m.Id);
+        builder.HasAlternateKey(m => m.Id).IsClustered(false);
 
         builder.HasIndex(m => m.Action);
         builder.HasIndex(m => m.Date).IsClustered();
