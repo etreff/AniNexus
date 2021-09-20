@@ -71,14 +71,15 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapGraphQL("/api/graphql");
-//});
 
 app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
+
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapGraphQL("/api/graphql");
+//});
 
 
 app.MapRazorPages();
