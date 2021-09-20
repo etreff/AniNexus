@@ -1,4 +1,4 @@
-namespace AniNexus.Web.Shared
+namespace AniNexus.Web.Models
 {
     public class WeatherForecast
     {

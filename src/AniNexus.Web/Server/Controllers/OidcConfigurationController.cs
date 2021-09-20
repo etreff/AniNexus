@@ -5,15 +5,15 @@ namespace AniNexus.Web.Server.Controllers
 {
     public class OidcConfigurationController : Controller
     {
-        private readonly ILogger<OidcConfigurationController> _logger;
+        public IClientRequestParametersProvider ClientRequestParametersProvider { get; }
+
+        private readonly ILogger<OidcConfigurationController> Logger;
 
         public OidcConfigurationController(IClientRequestParametersProvider clientRequestParametersProvider, ILogger<OidcConfigurationController> logger)
         {
             ClientRequestParametersProvider = clientRequestParametersProvider;
-            _logger = logger;
+            Logger = logger;
         }
-
-        public IClientRequestParametersProvider ClientRequestParametersProvider { get; }
 
         [HttpGet("_configuration/{clientId}")]
         public IActionResult GetClientRequestParameters([FromRoute] string clientId)

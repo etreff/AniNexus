@@ -1,4 +1,4 @@
-using AniNexus.Web.Shared;
+using AniNexus.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

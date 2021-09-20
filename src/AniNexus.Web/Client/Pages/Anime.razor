@@ -1,0 +1,28 @@
+﻿@page "/anime/{Id:int}"
+@using AniNexus.Web.Models
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject IHttpClientFactory HttpFactory
+
+@if (AnimeData is null)
+{
+	<PageTitle>Anime #@Id</PageTitle>
+}
+else
+{
+	<PageTitle>@AnimeData?.Name</PageTitle>
+
+	<h3>@AnimeData.Name</h3>
+}
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+
+	private AnimeDTO? AnimeData;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var http = HttpFactory.GetAnonClient();
+		AnimeData = await http.GetFromJsonAsync<AnimeDTO>($"/api/anime/{Id}");
+	}
+}

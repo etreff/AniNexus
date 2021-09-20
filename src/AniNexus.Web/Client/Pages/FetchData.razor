@@ -1,9 +1,9 @@
 ﻿@page "/fetchdata"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using AniNexus.Web.Shared
+@using AniNexus.Web.Models
 @attribute [Authorize]
-@inject HttpClient Http
+@inject IHttpClientFactory HttpFactory
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -47,7 +47,8 @@ else
     {
         try
         {
-            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+            var http = HttpFactory.GetAuthClient();
+            forecasts = await http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
         }
         catch (AccessTokenNotAvailableException exception)
         {
