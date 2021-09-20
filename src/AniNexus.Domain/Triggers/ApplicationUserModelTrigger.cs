@@ -1,35 +1,38 @@
 ﻿using AniNexus.Domain.Models;
 using EntityFrameworkCore.Triggered;
+using Microsoft.EntityFrameworkCore;
 
 namespace AniNexus.Domain.Triggers;
 
 public class ApplicationUserModelTrigger : IBeforeSaveTrigger<ApplicationUserModel>
 {
-    private readonly ApplicationDbContext DbContext;
+    private readonly IDbContextFactory<ApplicationDbContext> DbContextFactory;
 
-    public ApplicationUserModelTrigger(ApplicationDbContext dbContext)
+    public ApplicationUserModelTrigger(IDbContextFactory<ApplicationDbContext> dbContextFactory)
     {
-        DbContext = dbContext;
+        DbContextFactory = dbContextFactory;
     }
 
-    public Task BeforeSave(ITriggerContext<ApplicationUserModel> context, CancellationToken cancellationToken)
+    public async Task BeforeSave(ITriggerContext<ApplicationUserModel> context, CancellationToken cancellationToken)
     {
         if (context.ChangeType == ChangeType.Deleted)
         {
-            DeleteUserRecommendationVotes(context);
+            await DeleteUserRecommendationVotes(context, cancellationToken);
         }
-
-        return Task.CompletedTask;
     }
 
-    private void DeleteUserRecommendationVotes(ITriggerContext<ApplicationUserModel> context)
+    private async Task DeleteUserRecommendationVotes(ITriggerContext<ApplicationUserModel> context, CancellationToken cancellationToken)
     {
-        DbContext.AnimeUserRecommendationVotes.RemoveRange(r => r.UserId == context.Entity.Id);
-        DbContext.GameUserRecommendationVotes.RemoveRange(r => r.UserId == context.Entity.Id);
-        DbContext.MangaUserRecommendationVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
-        DbContext.AnimeReviewVotes.RemoveRange(r => r.UserId == context.Entity.Id);
-        DbContext.GameReviewVotes.RemoveRange(r => r.UserId == context.Entity.Id);
-        DbContext.MangaReviewVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+        dbContext.AnimeUserRecommendationVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+        dbContext.GameUserRecommendationVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+        dbContext.MangaUserRecommendationVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+
+        dbContext.AnimeReviewVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+        dbContext.GameReviewVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+        dbContext.MangaReviewVotes.RemoveRange(r => r.UserId == context.Entity.Id);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
