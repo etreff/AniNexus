@@ -81,7 +81,7 @@ namespace AniNexus.Infrastructure.Internal
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(a => a.Id == animeId, cancellationToken);
 
-            //return new ValueTask<AnimeDTO?>(new AnimeDTO());
+            return new ValueTask<AnimeDTO?>(new AnimeDTO());
         }
 
         public async ValueTask<AnimeDTO?> GetAnimeAsync(string animeName, CancellationToken cancellationToken)

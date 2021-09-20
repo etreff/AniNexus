@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Web", "AniNexus.Web\AniNexus.Web.csproj", "{ED2B07D9-DA45-43B4-B3AD-94A08D3BD335}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Domain", "AniNexus.Domain\AniNexus.Domain.csproj", "{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Core", "AniNexus.Core\AniNexus.Core.csproj", "{86CBD996-F731-4034-A09F-FBFBD639BB2E}"
@@ -16,7 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniNexus.Infrastructure", "AniNexus.Infrastructure\AniNexus.Infrastructure.csproj", "{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Infrastructure", "AniNexus.Infrastructure\AniNexus.Infrastructure.csproj", "{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniNexus.Web.Server", "AniNexus.Web\Server\AniNexus.Web.Server.csproj", "{C57A4C87-1051-4B04-8A89-7FD9D89B76E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniNexus.Web.Client", "AniNexus.Web\Client\AniNexus.Web.Client.csproj", "{0F008DEB-C634-432C-B706-EFD4FB00CE33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniNexus.Web.Shared", "AniNexus.Web\Shared\AniNexus.Web.Shared.csproj", "{E247EFBC-D7D4-4773-BD6E-947D93332568}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +28,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED2B07D9-DA45-43B4-B3AD-94A08D3BD335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED2B07D9-DA45-43B4-B3AD-94A08D3BD335}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED2B07D9-DA45-43B4-B3AD-94A08D3BD335}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED2B07D9-DA45-43B4-B3AD-94A08D3BD335}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,6 +44,18 @@ Global
 		{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C57A4C87-1051-4B04-8A89-7FD9D89B76E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C57A4C87-1051-4B04-8A89-7FD9D89B76E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C57A4C87-1051-4B04-8A89-7FD9D89B76E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C57A4C87-1051-4B04-8A89-7FD9D89B76E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F008DEB-C634-432C-B706-EFD4FB00CE33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F008DEB-C634-432C-B706-EFD4FB00CE33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F008DEB-C634-432C-B706-EFD4FB00CE33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F008DEB-C634-432C-B706-EFD4FB00CE33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E247EFBC-D7D4-4773-BD6E-947D93332568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E247EFBC-D7D4-4773-BD6E-947D93332568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E247EFBC-D7D4-4773-BD6E-947D93332568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E247EFBC-D7D4-4773-BD6E-947D93332568}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

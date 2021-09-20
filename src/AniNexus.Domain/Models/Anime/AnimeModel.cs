@@ -41,6 +41,11 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
     public string? WebsiteUrl { get; set; }
 
     /// <summary>
+    /// A synopsis or description of the anime.
+    /// </summary>
+    public string? Synopsis { get; set; }
+
+    /// <summary>
     /// The average user rating for this anime, between 0 and 100.
     /// The rating only takes into account ratings from users who have
     /// given the anime a rating and have completed the anime.
@@ -187,11 +192,6 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
     public AnimeReleaseModel.NameModel Name => GetPrimaryRelease().Name;
 
     /// <summary>
-    /// A synopsis or description of the anime.
-    /// </summary>
-    public string? Synopsis => GetPrimaryRelease().Synopsis;
-
-    /// <summary>
     /// The producers of the anime.
     /// </summary>
     public IEnumerable<MediaCompanyAnimeMapModel> Producers
@@ -224,6 +224,7 @@ public class AnimeModel : IHasAudit, IHasRowVersion, IHasSoftDelete, IEntityType
         builder.Property(m => m.WebsiteUrl).HasComment("The URL to the anime's official website.");
         builder.Property(m => m.Rating).HasComment("The user rating of the anime (Completed Only), from 0 to 100. Calculated by the system periodically.");
         builder.Property(m => m.ActiveRating).HasComment("The user rating of the anime (Watching Only), from 0 to 100. Calculated by the system periodically.");
+        builder.Property(m => m.Synopsis).HasComment("A synopsis or description of the anime.");
         builder.Property(m => m.Votes).HasComment("The number of votes that contributed to the rating. Calculated by the system periodically.").HasDefaultValue(0);
 
         //builder.Ignore(m => m.Producers);
