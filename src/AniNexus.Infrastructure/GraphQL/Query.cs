@@ -1,11 +1,8 @@
 ﻿using AniNexus.Domain;
 using AniNexus.Domain.Models;
-using AniNexus.Infrastructure;
 using AniNexus.Models;
-using GreenDonut;
 using HotChocolate;
 using HotChocolate.Data;
-using HotChocolate.DataLoader;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,8 +16,8 @@ public class Query
         return context.Anime.AsNoTracking();
     }
 
-    public Task<AnimeModel?> GetAnime(int id, AnimeBatchDataLoader dataLoader)
-        => dataLoader.LoadAsync(id);
+    //public Task<AnimeModel?> GetAnime(int id, AnimeBatchDataLoader dataLoader)
+    //    => dataLoader.LoadAsync(id);
 }
 
 public class QueryType : ObjectType<Query>
@@ -66,27 +63,29 @@ public class AnimeType : ObjectType<AnimeModel>
         descriptor.Field(f => f.WebsiteUrl).Type<StringType>().Description("A URL to the anime's official website.");    }
 }
 
-public class AnimeBatchDataLoader : BatchDataLoader<int, AnimeModel?>
-{
-    private readonly IRepositoryProvider RepositoryProvider;
+//public class AnimeBatchDataLoader : BatchDataLoader<int, AnimeModel?>
+//{
+//    private readonly IRepositoryProvider RepositoryProvider;
 
-    public AnimeBatchDataLoader(IRepositoryProvider repositoryProvider, IBatchScheduler batchScheduler, DataLoaderOptions<int>? options = null)
-        : base(batchScheduler, options)
-    {
-        RepositoryProvider = repositoryProvider;
-    }
+//    public AnimeBatchDataLoader(IRepositoryProvider repositoryProvider, IBatchScheduler batchScheduler, DataLoaderOptions<int>? options = null)
+//        : base(batchScheduler, options)
+//    {
+//        RepositoryProvider = repositoryProvider;
+//    }
 
-    protected override async Task<IReadOnlyDictionary<int, AnimeModel?>> LoadBatchAsync(IReadOnlyList<int> keys, CancellationToken cancellationToken)
-    {
-        var animeRepository = RepositoryProvider.GetAnimeRepository();
-        var anime = await animeRepository.GetAnimeAsync(keys, cancellationToken);
+//    protected override async Task<IReadOnlyDictionary<int, AnimeModel?>> LoadBatchAsync(IReadOnlyList<int> keys, CancellationToken cancellationToken)
+//    {
+//        //var animeRepository = RepositoryProvider.GetAnimeRepository();
+//        //var anime = await animeRepository.GetAnimeAsync(keys, cancellationToken);
 
-        var dictionary = new Dictionary<int, AnimeModel?>(keys.Count);
-        foreach (int key in keys)
-        {
-            dictionary.Add(key, anime.FirstOrDefault(a => a.Id == key));
-        }
+//        //var dictionary = new Dictionary<int, AnimeModel?>(keys.Count);
+//        //foreach (int key in keys)
+//        //{
+//        //    dictionary.Add(key, anime.FirstOrDefault(a => a.Id == key));
+//        //}
 
-        return dictionary;
-    }
-}
+//        //return dictionary;
+
+//        return new Dictionary<int, AnimeModel?>();
+//    }
+//}

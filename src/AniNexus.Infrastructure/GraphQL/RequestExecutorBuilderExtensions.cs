@@ -1,5 +1,4 @@
-﻿using AniNexus.GraphQL.Queries;
-using AniNexus.GraphQL.Types;
+﻿using AniNexus.GraphQL.Types;
 using AniNexus.GraphQL.Types.Primitives;
 using HotChocolate.Execution.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,8 +28,8 @@ internal static class RequestExecutorBuilderExtensions
     private static IRequestExecutorBuilder AddObjectTypes(this IRequestExecutorBuilder builder)
     {
         // Nested Queries
-        builder
-            .AddType<AnimeQuery>();
+        //builder
+        //    .AddType<AnimeQuery>();
 
         // Complex Types
         builder

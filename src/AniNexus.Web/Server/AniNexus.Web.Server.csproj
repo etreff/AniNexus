@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
-    <UserSecretsId>AniNexus.Web.Server-27B6536D-081D-427B-A683-EA756975975C</UserSecretsId>
+    <UserSecretsId>AniNexus.Web.Server-50940CD7-235F-48D7-984B-D18C2F2CABE8</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,20 +16,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AniNexus.Domain\AniNexus.Domain.csproj" />
     <ProjectReference Include="..\Client\AniNexus.Web.Client.csproj" />
     <ProjectReference Include="..\Shared\AniNexus.Web.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFrameworkCore.Triggered" Version="2.3.2" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.3.7" />
-    <PackageReference Include="HotChocolate.Data" Version="11.3.7" />
-    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="11.3.7" />
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.0-rc.1.21452.15" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0-rc.1.21452.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-rc.1.21452.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0-preview.7.21378.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0-rc.1.21452.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0-rc.1.21452.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-rc.1.21452.10" />
   </ItemGroup>

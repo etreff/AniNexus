@@ -1,25 +1,51 @@
-using AniNexus.Web.Server.Data;
-using AniNexus.Web.Server.Models;
+using AniNexus.Domain;
+using AniNexus.Domain.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddTriggeredPooledDbContextFactoryExtended<ApplicationDbContext>((provider, options) =>
+{
+    options.UseSqlServer(connectionString, b =>
+    {
+        b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
+    });
+    options.UseAniNexusTriggers();
+    if (provider.GetRequiredService<IHostEnvironment>().IsDevelopment())
+    {
+        options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+    }
+});
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddDefaultIdentity<ApplicationUserModel>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddIdentityServer()
-    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+    .AddApiAuthorization<ApplicationUserModel, ApplicationDbContext>();
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
+
+//builder.Services.AddGraphQLServer()
+//    .AddAniNexusGraphQLTypes()
+//    .ModifyOptions(options => options.DefaultBindingBehavior = HotChocolate.Types.BindingBehavior.Explicit);
+
+//builder.Services.AddAniNexusProviders();
+
+//builder.Services
+//    .AddScoped<IAnimeCoverArtService, AnimeCoverArtService>()
+//    .AddScoped<IContentPathProvider, ContentPathProvider>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -45,6 +71,10 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapGraphQL("/api/graphql");
+//});
 
 app.UseIdentityServer();
 app.UseAuthentication();

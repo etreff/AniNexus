@@ -10,6 +10,11 @@ namespace AniNexus.Domain.Models;
 public class AuditModel : IEntityTypeConfiguration<AuditModel>
 {
     /// <summary>
+    /// The Id of this entry.
+    /// </summary>
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    /// <summary>
     /// The table that was updated.
     /// </summary>
     public string Table { get; set; } = default!;
@@ -41,7 +46,7 @@ public class AuditModel : IEntityTypeConfiguration<AuditModel>
     {
         builder.ToTable("Audit");
 
-        builder.HasNoKey();
+        builder.HasAlternateKey(m => m.Id);
 
         builder.HasIndex(m => m.Action);
         builder.HasIndex(m => m.Date).IsClustered();

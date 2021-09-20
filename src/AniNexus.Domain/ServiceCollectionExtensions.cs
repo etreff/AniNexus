@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
+using Duende.IdentityServer.EntityFramework.Options;
 using EntityFrameworkCore.Triggered.Internal;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -126,7 +126,6 @@ public static class ServiceCollectionExtensions
                                                 $"that accepts a single argument of type {typeof(DbContextOptions).ShortDisplayName()} or {typeof(TContext).ShortDisplayName()} and a single argument " +
                                                 $"of type {typeof(IOptions<OperationalStoreOptions>).ShortDisplayName()}.");
         }
-
 
         public void Dispose()
         {
