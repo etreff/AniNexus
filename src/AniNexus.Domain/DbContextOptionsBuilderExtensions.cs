@@ -7,8 +7,7 @@ namespace AniNexus.Domain;
 
 public static class DbContextOptionsBuilderExtensions
 {
-    public static DbContextOptionsBuilder<TContext> UseAniNexusTriggers<TContext>(this DbContextOptionsBuilder<TContext> builder)
-        where TContext : DbContext
+    public static DbContextOptionsBuilder UseAniNexusTriggers(this DbContextOptionsBuilder builder)
     {
         return builder.UseTriggers(static triggerOptions =>
         {
