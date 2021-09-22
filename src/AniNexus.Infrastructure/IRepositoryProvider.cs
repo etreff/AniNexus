@@ -1,4 +1,6 @@
-﻿namespace AniNexus.Infrastructure
+﻿using AniNexus.Models.User;
+
+namespace AniNexus.Infrastructure
 {
     /// <summary>
     /// Defines a repository providers and a unit of work.
@@ -9,5 +11,10 @@
         /// Gets an anime repository.
         /// </summary>
         IAnimeRepository GetAnimeRepository();
+
+        /// <summary>
+        /// Gets a user repository
+        /// </summary>
+        IUserRepository GetUserRepository();
     }
 }

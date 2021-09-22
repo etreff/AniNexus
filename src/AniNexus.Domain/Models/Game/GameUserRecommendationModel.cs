@@ -22,8 +22,8 @@ public class GameUserRecommendationModel : IHasSoftDelete, IEntityTypeConfigurat
     /// <summary>
     /// The Id of the user who made the recommendation.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the game being recommended.
@@ -49,7 +49,7 @@ public class GameUserRecommendationModel : IHasSoftDelete, IEntityTypeConfigurat
     /// <summary>
     /// The user who recommended the game.
     /// </summary>
-    public ApplicationUserModel User { get; set; } = default!;
+    public UserModel User { get; set; } = default!;
 
     /// <summary>
     /// The game the recommendation is based on.

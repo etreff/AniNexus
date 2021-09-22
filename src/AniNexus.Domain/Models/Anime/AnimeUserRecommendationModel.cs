@@ -22,8 +22,8 @@ public class AnimeUserRecommendationModel : IHasSoftDelete, IEntityTypeConfigura
     /// <summary>
     /// The Id of the user who made the recommendation.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the anime being recommended.
@@ -49,7 +49,7 @@ public class AnimeUserRecommendationModel : IHasSoftDelete, IEntityTypeConfigura
     /// <summary>
     /// The user who recommended the anime.
     /// </summary>
-    public ApplicationUserModel User { get; set; } = default!;
+    public UserModel User { get; set; } = default!;
 
     /// <summary>
     /// The anime the recommendation is based on.

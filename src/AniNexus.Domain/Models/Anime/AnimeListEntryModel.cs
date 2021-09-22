@@ -13,8 +13,8 @@ public class AnimeListEntryModel : IEntityTypeConfiguration<AnimeListEntryModel>
     /// <summary>
     /// The user that owns this list entry.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the anime this entry refers to.
@@ -93,7 +93,7 @@ public class AnimeListEntryModel : IEntityTypeConfiguration<AnimeListEntryModel>
         builder.HasIndex(m => m.StatusId);
 
         builder.HasOne(m => m.Anime).WithMany().HasForeignKey(m => m.AnimeId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-        builder.HasOne<ApplicationUserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne<UserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(m => m.Status).WithMany().HasForeignKey(m => m.StatusId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         // Justification - when polling for an anime list entry, the name of the anime and the status name

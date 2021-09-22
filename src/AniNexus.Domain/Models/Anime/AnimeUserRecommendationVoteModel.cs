@@ -11,8 +11,8 @@ public class AnimeUserRecommendationVoteModel : IEntityTypeConfiguration<AnimeUs
     /// <summary>
     /// The Id of the user.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the recommendation this vote is associated with.
@@ -29,7 +29,7 @@ public class AnimeUserRecommendationVoteModel : IEntityTypeConfiguration<AnimeUs
     /// <summary>
     /// The user.
     /// </summary>
-    public ApplicationUserModel User { get; set; } = default!;
+    public UserModel User { get; set; } = default!;
 
     /// <summary>
     /// The recommendation this vote is associated with.

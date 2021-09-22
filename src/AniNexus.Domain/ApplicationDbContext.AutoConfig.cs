@@ -86,12 +86,10 @@ namespace AniNexus.Domain
                     // Configure unicode and collation for string types.
                     if (entityProperty.ClrType == typeof(string))
                     {
-                        if (entityProperty.Name.EndsWith("Url", StringComparison.Ordinal) ||
-                            entityProperty.Name.StartsWith("Romaji"))
-                        {
-                            entityProperty.SetIsUnicode(false);
-                        }
+                        // Default to English ASCII characters.
+                        entityProperty.SetIsUnicode(false);
 
+                        // Descriptors should be unicode since they can contain foreign characters.
                         if (entityProperty.Name.StartsWith("Native") ||
                             entityProperty.Name.Equals("Synopsis") ||
                             entityProperty.Name.Equals("Description") ||
@@ -109,8 +107,8 @@ namespace AniNexus.Domain
                 var method = typeof(ApplicationDbContext)
                     .GetMethod(nameof(SoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)!
                     .MakeGenericMethod(entityType.ClrType);
-                var filter = method.Invoke(null, null);
-                entityType.SetQueryFilter((LambdaExpression)filter!);
+                var filter = method.Invoke(null, null) as LambdaExpression;
+                entityType.SetQueryFilter(filter!);
                 entityType.AddIndex(entityType.FindProperty(nameof(IHasSoftDelete.IsSoftDeleted))!);
             }
         }
@@ -119,12 +117,12 @@ namespace AniNexus.Domain
         {
             /**
              * This code attempts to fix the following error:
-             * 
+             *
              * Entity '{PrincipalModelName}' has a global query filter defined and is the required end of a relationship
              * with the entity '{DependentModelName}'. This may lead to unexpected results when the required entity is
              * filtered out. Either configure the navigation as optional, or define matching query filters for both entities
              * in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
-             * 
+             *
              * This logic does so by adding a query filter automagically to models that contain navigation properties
              * that implement <see cref="IHasSoftDelete"/>.
              */

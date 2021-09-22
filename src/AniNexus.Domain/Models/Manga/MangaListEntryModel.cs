@@ -16,8 +16,8 @@ public class MangaListEntryModel : IEntityTypeConfiguration<MangaListEntryModel>
     /// <summary>
     /// The user that owns this list entry.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the manga this entry refers to.
@@ -96,7 +96,7 @@ public class MangaListEntryModel : IEntityTypeConfiguration<MangaListEntryModel>
         builder.HasIndex(m => m.StatusId);
 
         builder.HasOne(m => m.Manga).WithMany().HasForeignKey(m => m.MangaId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-        builder.HasOne<ApplicationUserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne<UserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(m => m.Status).WithMany().HasForeignKey(m => m.StatusId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         // Justification - when polling for a manga list entry, the name of the manga and the status name

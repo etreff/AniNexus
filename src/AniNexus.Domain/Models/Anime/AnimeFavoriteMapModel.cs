@@ -17,8 +17,8 @@ public class AnimeFavoriteMapModel : IEntityTypeConfiguration<AnimeFavoriteMapMo
     /// <summary>
     /// The Id of the user who favorited the anime.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     #region Navigation Properties
     /// <summary>
@@ -33,7 +33,7 @@ public class AnimeFavoriteMapModel : IEntityTypeConfiguration<AnimeFavoriteMapMo
 
         builder.HasKey(m => new { m.AnimeId, m.UserId });
         builder.HasIndex(m => m.UserId);
-            
+
         builder.HasOne(m => m.Anime).WithMany(m => m.Favorites).HasForeignKey(m => m.AnimeId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         // Justification - maps always auto include navigation properties.

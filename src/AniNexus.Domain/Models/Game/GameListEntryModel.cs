@@ -13,8 +13,8 @@ public class GameListEntryModel : IEntityTypeConfiguration<GameListEntryModel>, 
     /// <summary>
     /// The user that owns this list entry.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the game this entry refers to.
@@ -75,7 +75,7 @@ public class GameListEntryModel : IEntityTypeConfiguration<GameListEntryModel>, 
         builder.HasIndex(m => m.GameId);
 
         builder.HasOne(m => m.Game).WithMany().HasForeignKey(m => m.GameId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-        builder.HasOne<ApplicationUserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne<UserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(m => m.Status).WithMany().HasForeignKey(m => m.StatusId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         // Justification - when polling for a game list entry, the name of the game and the status name

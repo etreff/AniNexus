@@ -1,15 +1,12 @@
 ﻿using AniNexus.Domain.Converters;
 using AniNexus.Domain.Models;
-using Duende.IdentityServer.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace AniNexus.Domain;
-public partial class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUserModel>
+public partial class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IOptions<OperationalStoreOptions> operationalStoreOptions)
-        : base(options, operationalStoreOptions)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
 
     }

@@ -14,7 +14,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the AnimeAgeRating enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the AnimeAgeRating enum value.")
                 },
                 constraints: table =>
                 {
@@ -27,7 +27,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the AnimeCategory enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the AnimeCategory enum value.")
                 },
                 constraints: table =>
                 {
@@ -40,7 +40,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the AnimeListStatus enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the AnimeListStatus enum value.")
                 },
                 constraints: table =>
                 {
@@ -53,7 +53,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the AnimeSeason enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the AnimeSeason enum value.")
                 },
                 constraints: table =>
                 {
@@ -65,51 +65,12 @@ namespace AniNexus.Domain.Migrations
                 name: "AppResource",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The key of the dictionary."),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The value of the dictionary.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The key of the dictionary."),
+                    Value = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The value of the dictionary.")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppResource", x => x.Name);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoles",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,7 +98,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the CharacterRole enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the CharacterRole enum value.")
                 },
                 constraints: table =>
                 {
@@ -152,7 +113,7 @@ namespace AniNexus.Domain.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DOB = table.Column<DateTime>(type: "date", nullable: true, comment: "The date this company was established or founded."),
-                    CreationLocation = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The location the company was established or founded."),
+                    CreationLocation = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The location the company was established or founded."),
                     Description = table.Column<string>(type: "nvarchar(1250)", maxLength: 1250, nullable: true, comment: "A description of the entity.", collation: "Japanese_CI_AS_KS_WS"),
                     IsCircle = table.Column<bool>(type: "bit", nullable: false, defaultValue: false, comment: "Whether the entity represents a circle."),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
@@ -170,7 +131,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the CompanyRole enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the CompanyRole enum value.")
                 },
                 constraints: table =>
                 {
@@ -179,30 +140,11 @@ namespace AniNexus.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DeviceCodes",
-                columns: table => new
-                {
-                    UserCode = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    DeviceCode = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    SubjectId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    SessionId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ClientId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false, collation: "Japanese_CI_AS_KS_WS"),
-                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DeviceCodes", x => x.UserCode);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GameCategory",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the GameCategory enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the GameCategory enum value.")
                 },
                 constraints: table =>
                 {
@@ -215,7 +157,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the GameListStatus enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the GameListStatus enum value.")
                 },
                 constraints: table =>
                 {
@@ -224,31 +166,13 @@ namespace AniNexus.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Keys",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Use = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Algorithm = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsX509Certificate = table.Column<bool>(type: "bit", nullable: false),
-                    DataProtected = table.Column<bool>(type: "bit", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Keys", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Locale",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false, comment: "The name of the locale."),
-                    LanguageCode = table.Column<string>(type: "nchar(17)", fixedLength: true, maxLength: 17, nullable: false, comment: "The i18n language code of the locale."),
+                    Name = table.Column<string>(type: "varchar(64)", unicode: false, maxLength: 64, nullable: false, comment: "The name of the locale."),
+                    LanguageCode = table.Column<string>(type: "char(17)", unicode: false, fixedLength: true, maxLength: 17, nullable: false, comment: "The i18n language code of the locale."),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
@@ -263,7 +187,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the MangaAgeRating enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the MangaAgeRating enum value.")
                 },
                 constraints: table =>
                 {
@@ -276,7 +200,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the MangaCategory enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the MangaCategory enum value.")
                 },
                 constraints: table =>
                 {
@@ -289,7 +213,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the MangaListStatus enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the MangaListStatus enum value.")
                 },
                 constraints: table =>
                 {
@@ -303,7 +227,7 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false, comment: "The name of the genre, for example \"Action\" or \"Fantasy\"."),
+                    Name = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false, comment: "The name of the genre, for example \"Action\" or \"Fantasy\"."),
                     IsNSFW = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag marks an entity as NSFW."),
                     IsGore = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag marks an entity as containing gore."),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
@@ -320,7 +244,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the MediaRelationType enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the MediaRelationType enum value.")
                 },
                 constraints: table =>
                 {
@@ -350,32 +274,12 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the MediaStatus enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the MediaStatus enum value.")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MediaStatus", x => x.Id)
                         .Annotation("SqlServer:Clustered", true);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PersistedGrants",
-                columns: table => new
-                {
-                    Key = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    SubjectId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    SessionId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ClientId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false, collation: "Japanese_CI_AS_KS_WS"),
-                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ConsumedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PersistedGrants", x => x.Key);
                 });
 
             migrationBuilder.CreateTable(
@@ -386,7 +290,7 @@ namespace AniNexus.Domain.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DOB = table.Column<DateTime>(type: "date", nullable: true, comment: "The person's date of birth."),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true, comment: "A description of the person", collation: "Japanese_CI_AS_KS_WS"),
-                    BirthPlace = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true, comment: "The place this person was born."),
+                    BirthPlace = table.Column<string>(type: "varchar(128)", unicode: false, maxLength: 128, nullable: true, comment: "The place this person was born."),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
@@ -402,7 +306,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The name of the PersonRole enum value.")
+                    Name = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The name of the PersonRole enum value.")
                 },
                 constraints: table =>
                 {
@@ -416,8 +320,8 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false, comment: "The name of the third party tracker.", collation: "Japanese_CI_AS_KS_WS"),
-                    ShortName = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: true, comment: "The short name or alias of the third party tracker.", collation: "Japanese_CI_AS_KS_WS"),
+                    Name = table.Column<string>(type: "varchar(64)", unicode: false, maxLength: 64, nullable: false, comment: "The name of the third party tracker.", collation: "Japanese_CI_AS_KS_WS"),
+                    ShortName = table.Column<string>(type: "varchar(16)", unicode: false, maxLength: 16, nullable: true, comment: "The short name or alias of the third party tracker.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true, comment: "The romanized name of the third party tracker."),
                     Url = table.Column<string>(type: "varchar(128)", unicode: false, maxLength: 128, nullable: true, comment: "The URL of the third party tracker's website homepage."),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
@@ -435,11 +339,47 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Hashtag = table.Column<string>(type: "nvarchar(240)", maxLength: 240, nullable: false, comment: "The Twitter hashtag.", collation: "Japanese_CI_AS_KS_WS")
+                    Hashtag = table.Column<string>(type: "varchar(240)", unicode: false, maxLength: 240, nullable: false, comment: "The Twitter hashtag.", collation: "Japanese_CI_AS_KS_WS")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TwitterHashTag", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
+                    Username = table.Column<string>(type: "varchar(16)", unicode: false, maxLength: 16, nullable: false, comment: "The user's username."),
+                    Email = table.Column<string>(type: "varchar(250)", unicode: false, maxLength: 250, nullable: false, comment: "The user's email address."),
+                    EmailValidated = table.Column<bool>(type: "bit", nullable: false, comment: "Whether the user has validated their email address."),
+                    PasswordHash = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false, comment: "The user's hashed password."),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false, comment: "Whether MFA is enabled for this user."),
+                    TwoFactorKey = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The MFA secret key for this user."),
+                    LockoutEnd = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "The UTC time until which the user is locked out of their account."),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false, comment: "The number of times the user entered incorrect credentials since their last login."),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
+                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserClaim",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClaimType = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false, comment: "The claim type."),
+                    ClaimValue = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false, comment: "The claim value.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserClaim", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -473,162 +413,6 @@ namespace AniNexus.Domain.Migrations
                         name: "FK_Anime_AnimeSeason_SeasonId",
                         column: x => x.SeasonId,
                         principalTable: "AnimeSeason",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Audit",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
-                    Table = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The table that was affected."),
-                    Action = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "The action that was performed on the table."),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AffectedKeys = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The values of the primary keys that were affected."),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date that this entry was added.")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Audit", x => x.Id)
-                        .Annotation("SqlServer:Clustered", false);
-                    table.ForeignKey(
-                        name: "FK_Audit_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MediaTag",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false, comment: "The name of the tag."),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true, comment: "A short description of the tag.", collation: "Japanese_CI_AS_KS_WS"),
-                    IsSpoiler = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag is a spoiler for an event in the media."),
-                    IsNSFW = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag marks an entity as NSFW."),
-                    IsGore = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag marks an entity as containing gore."),
-                    DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
-                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MediaTag", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MediaTag_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -740,7 +524,7 @@ namespace AniNexus.Domain.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NativeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The native name.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name."),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name in English."),
+                    EnglishName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name in English."),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this name is the primary name of the series.")
                 },
                 constraints: table =>
@@ -815,6 +599,99 @@ namespace AniNexus.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
+                    Table = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The table that was affected."),
+                    Action = table.Column<string>(type: "varchar(900)", unicode: false, nullable: false, comment: "The action that was performed on the table."),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: true),
+                    AffectedKeys = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The values of the primary keys that were affected."),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date that this entry was added.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Audit", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
+                    table.ForeignKey(
+                        name: "FK_Audit_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MediaTag",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false, comment: "The name of the tag."),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true, comment: "A short description of the tag.", collation: "Japanese_CI_AS_KS_WS"),
+                    IsSpoiler = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag is a spoiler for an event in the media."),
+                    IsNSFW = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag marks an entity as NSFW."),
+                    IsGore = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this tag marks an entity as containing gore."),
+                    DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
+                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MediaTag", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MediaTag_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserEmailCode",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The code to validate the email address."),
+                    ValidUntil = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The UTC time until which the code is valid.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserEmailCode", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserEmailCode_User_Id",
+                        column: x => x.Id,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserClaimMap",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
+                    ClaimId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserClaimMap", x => new { x.UserId, x.ClaimId });
+                    table.ForeignKey(
+                        name: "FK_UserClaimMap_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserClaimMap_UserClaim_ClaimId",
+                        column: x => x.ClaimId,
+                        principalTable: "UserClaim",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AnimeCharacterMap",
                 columns: table => new
                 {
@@ -850,7 +727,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     AnimeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -891,7 +768,7 @@ namespace AniNexus.Domain.Migrations
                 name: "AnimeListEntry",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     AnimeId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     EpisodeCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0, comment: "The number of episodes the user has seen."),
@@ -917,9 +794,9 @@ namespace AniNexus.Domain.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnimeListEntry_AspNetUsers_UserId",
+                        name: "FK_AnimeListEntry_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1043,10 +920,10 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     AnimeId = table.Column<int>(type: "int", nullable: false),
                     Recommend = table.Column<bool>(type: "bit", nullable: false, comment: "Whether the user recommends the anime."),
-                    Review = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false, comment: "The review content.", collation: "Japanese_CI_AS_KS_WS"),
+                    Review = table.Column<string>(type: "varchar(2500)", unicode: false, maxLength: 2500, nullable: false, comment: "The review content.", collation: "Japanese_CI_AS_KS_WS"),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
@@ -1061,9 +938,9 @@ namespace AniNexus.Domain.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnimeReview_AspNetUsers_UserId",
+                        name: "FK_AnimeReview_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1097,7 +974,7 @@ namespace AniNexus.Domain.Migrations
                 {
                     AnimeId = table.Column<int>(type: "int", nullable: false),
                     ThirdPartyId = table.Column<int>(type: "int", nullable: false),
-                    ExternalMediaId = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The Id that the third party tracker has assigned to the anime entry.")
+                    ExternalMediaId = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false, comment: "The Id that the third party tracker has assigned to the anime entry.")
                 },
                 constraints: table =>
                 {
@@ -1147,9 +1024,9 @@ namespace AniNexus.Domain.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AnimeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     AnimeRecommendationId = table.Column<int>(type: "int", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "The reason why this user recommends the anime.", collation: "Japanese_CI_AS_KS_WS"),
+                    Reason = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: false, comment: "The reason why this user recommends the anime.", collation: "Japanese_CI_AS_KS_WS"),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
                 },
                 constraints: table =>
@@ -1166,9 +1043,9 @@ namespace AniNexus.Domain.Migrations
                         principalTable: "Anime",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AnimeUserRec_AspNetUsers_UserId",
+                        name: "FK_AnimeUserRec_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1193,30 +1070,6 @@ namespace AniNexus.Domain.Migrations
                         name: "FK_MediaSeriesAnimeMap_MediaSeries_SeriesId",
                         column: x => x.SeriesId,
                         principalTable: "MediaSeries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AnimeTagMap",
-                columns: table => new
-                {
-                    AnimeId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnimeTagMap", x => new { x.AnimeId, x.TagId });
-                    table.ForeignKey(
-                        name: "FK_AnimeTagMap_Anime_AnimeId",
-                        column: x => x.AnimeId,
-                        principalTable: "Anime",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AnimeTagMap_MediaTag_TagId",
-                        column: x => x.TagId,
-                        principalTable: "MediaTag",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1257,7 +1110,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     MangaId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1298,7 +1151,7 @@ namespace AniNexus.Domain.Migrations
                 name: "MangaListEntry",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     MangaId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     VolumeCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0, comment: "The number of volumes the user has read."),
@@ -1313,12 +1166,6 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_MangaListEntry", x => new { x.UserId, x.MangaId });
                     table.ForeignKey(
-                        name: "FK_MangaListEntry_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_MangaListEntry_Manga_MangaId",
                         column: x => x.MangaId,
                         principalTable: "Manga",
@@ -1328,6 +1175,12 @@ namespace AniNexus.Domain.Migrations
                         name: "FK_MangaListEntry_MangaListStatus_StatusId",
                         column: x => x.StatusId,
                         principalTable: "MangaListStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MangaListEntry_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1450,10 +1303,10 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     MangaId = table.Column<int>(type: "int", nullable: false),
                     Recommend = table.Column<bool>(type: "bit", nullable: false, comment: "Whether the user recommends the manga."),
-                    Review = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false, comment: "The review content.", collation: "Japanese_CI_AS_KS_WS"),
+                    Review = table.Column<string>(type: "varchar(2500)", unicode: false, maxLength: 2500, nullable: false, comment: "The review content.", collation: "Japanese_CI_AS_KS_WS"),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
@@ -1462,15 +1315,15 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_MangaReview", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MangaReview_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_MangaReview_Manga_MangaId",
                         column: x => x.MangaId,
                         principalTable: "Manga",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MangaReview_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1499,36 +1352,12 @@ namespace AniNexus.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MangaTagMap",
-                columns: table => new
-                {
-                    MangaId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MangaTagMap", x => new { x.MangaId, x.TagId });
-                    table.ForeignKey(
-                        name: "FK_MangaTagMap_Manga_MangaId",
-                        column: x => x.MangaId,
-                        principalTable: "Manga",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MangaTagMap_MediaTag_TagId",
-                        column: x => x.TagId,
-                        principalTable: "MediaTag",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MangaThirdPartyMap",
                 columns: table => new
                 {
                     MangaId = table.Column<int>(type: "int", nullable: false),
                     ThirdPartyId = table.Column<int>(type: "int", nullable: false),
-                    ExternalMediaId = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The Id that the third party tracker has assigned to the manga entry.")
+                    ExternalMediaId = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false, comment: "The Id that the third party tracker has assigned to the manga entry.")
                 },
                 constraints: table =>
                 {
@@ -1578,20 +1407,14 @@ namespace AniNexus.Domain.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MangaId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     MangaRecommendationId = table.Column<int>(type: "int", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "The reason why this user recommends the manga.", collation: "Japanese_CI_AS_KS_WS"),
+                    Reason = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: false, comment: "The reason why this user recommends the manga.", collation: "Japanese_CI_AS_KS_WS"),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MangaUserRec", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MangaUserRec_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MangaUserRec_Manga_MangaId",
                         column: x => x.MangaId,
@@ -1602,6 +1425,12 @@ namespace AniNexus.Domain.Migrations
                         column: x => x.MangaRecommendationId,
                         principalTable: "Manga",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MangaUserRec_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1695,7 +1524,7 @@ namespace AniNexus.Domain.Migrations
                 columns: table => new
                 {
                     GameId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1736,7 +1565,7 @@ namespace AniNexus.Domain.Migrations
                 name: "GameListEntry",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<byte>(type: "tinyint", nullable: true, comment: "The rating this user gives the game, from 0 to 100."),
@@ -1749,12 +1578,6 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_GameListEntry", x => new { x.UserId, x.GameId });
                     table.ForeignKey(
-                        name: "FK_GameListEntry_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_GameListEntry_Game_GameId",
                         column: x => x.GameId,
                         principalTable: "Game",
@@ -1764,6 +1587,12 @@ namespace AniNexus.Domain.Migrations
                         name: "FK_GameListEntry_GameListStatus_StatusId",
                         column: x => x.StatusId,
                         principalTable: "GameListStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameListEntry_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1778,7 +1607,7 @@ namespace AniNexus.Domain.Migrations
                     LocaleId = table.Column<int>(type: "int", nullable: false),
                     NativeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The native name.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name."),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name in English."),
+                    EnglishName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name in English."),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this name is the primary name of the release.")
                 },
                 constraints: table =>
@@ -1864,10 +1693,10 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false),
                     Recommend = table.Column<bool>(type: "bit", nullable: false, comment: "Whether the user recommends the game."),
-                    Review = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false, comment: "The review content.", collation: "Japanese_CI_AS_KS_WS"),
+                    Review = table.Column<string>(type: "varchar(2500)", unicode: false, maxLength: 2500, nullable: false, comment: "The review content.", collation: "Japanese_CI_AS_KS_WS"),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was created."),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, computedColumnSql: "getutcdate()", comment: "The date the entry was last updated."),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
@@ -1876,15 +1705,15 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_GameReview", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameReview_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_GameReview_Game_GameId",
                         column: x => x.GameId,
                         principalTable: "Game",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameReview_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1913,36 +1742,12 @@ namespace AniNexus.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameTagMap",
-                columns: table => new
-                {
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameTagMap", x => new { x.GameId, x.TagId });
-                    table.ForeignKey(
-                        name: "FK_GameTagMap_Game_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Game",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GameTagMap_MediaTag_TagId",
-                        column: x => x.TagId,
-                        principalTable: "MediaTag",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GameThirdPartyMap",
                 columns: table => new
                 {
                     GameId = table.Column<int>(type: "int", nullable: false),
                     ThirdPartyId = table.Column<int>(type: "int", nullable: false),
-                    ExternalMediaId = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The Id that the third party tracker has assigned to the game entry.")
+                    ExternalMediaId = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false, comment: "The Id that the third party tracker has assigned to the game entry.")
                 },
                 constraints: table =>
                 {
@@ -2012,20 +1817,14 @@ namespace AniNexus.Domain.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GameId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     GameRecommendationId = table.Column<int>(type: "int", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "The reason why this user recommends the game.", collation: "Japanese_CI_AS_KS_WS"),
+                    Reason = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: false, comment: "The reason why this user recommends the game.", collation: "Japanese_CI_AS_KS_WS"),
                     IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this entity is soft deleted.")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameUserRec", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GameUserRec_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GameUserRec_Game_GameId",
                         column: x => x.GameId,
@@ -2036,6 +1835,12 @@ namespace AniNexus.Domain.Migrations
                         column: x => x.GameRecommendationId,
                         principalTable: "Game",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_GameUserRec_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -2063,6 +1868,78 @@ namespace AniNexus.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AnimeTagMap",
+                columns: table => new
+                {
+                    AnimeId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimeTagMap", x => new { x.AnimeId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_AnimeTagMap_Anime_AnimeId",
+                        column: x => x.AnimeId,
+                        principalTable: "Anime",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimeTagMap_MediaTag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "MediaTag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameTagMap",
+                columns: table => new
+                {
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameTagMap", x => new { x.GameId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_GameTagMap_Game_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Game",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameTagMap_MediaTag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "MediaTag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MangaTagMap",
+                columns: table => new
+                {
+                    MangaId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MangaTagMap", x => new { x.MangaId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_MangaTagMap_Manga_MangaId",
+                        column: x => x.MangaId,
+                        principalTable: "Manga",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MangaTagMap_MediaTag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "MediaTag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AnimeEpisode",
                 columns: table => new
                 {
@@ -2075,7 +1952,7 @@ namespace AniNexus.Domain.Migrations
                         .Annotation("SqlServer:Sparse", true),
                     RomajiEpisodeName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name if the name is not already in English.")
                         .Annotation("SqlServer:Sparse", true),
-                    EnglishEpisodeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name of the episode in English if the name is not already in English.")
+                    EnglishEpisodeName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name of the episode in English if the name is not already in English.")
                         .Annotation("SqlServer:Sparse", true),
                     IsSpoiler = table.Column<bool>(type: "bit", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: true, comment: "The length of the episode."),
@@ -2123,7 +2000,7 @@ namespace AniNexus.Domain.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NativeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The native name.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name."),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name in English."),
+                    EnglishName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name in English."),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this name is the primary name of the release.")
                 },
                 constraints: table =>
@@ -2278,7 +2155,7 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     ReviewId = table.Column<int>(type: "int", nullable: false),
                     Agrees = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this user agrees with the review.")
                 },
@@ -2292,9 +2169,9 @@ namespace AniNexus.Domain.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnimeReviewVote_AspNetUsers_UserId",
+                        name: "FK_AnimeReviewVote_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id");
                 });
 
@@ -2302,7 +2179,7 @@ namespace AniNexus.Domain.Migrations
                 name: "AnimeUserRecVote",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     RecommendationId = table.Column<int>(type: "int", nullable: false),
                     Agrees = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this user agrees with the recommendation.")
                 },
@@ -2316,9 +2193,9 @@ namespace AniNexus.Domain.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnimeUserRecVote_AspNetUsers_UserId",
+                        name: "FK_AnimeUserRecVote_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id");
                 });
 
@@ -2368,7 +2245,7 @@ namespace AniNexus.Domain.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NativeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The native name.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name."),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name in English."),
+                    EnglishName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name in English."),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this name is the primary name of the release.")
                 },
                 constraints: table =>
@@ -2416,7 +2293,7 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     ReviewId = table.Column<int>(type: "int", nullable: false),
                     Agrees = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this user agrees with the review.")
                 },
@@ -2424,23 +2301,23 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_MangaReviewVote", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MangaReviewVote_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_MangaReviewVote_MangaReview_ReviewId",
                         column: x => x.ReviewId,
                         principalTable: "MangaReview",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MangaReviewVote_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "MangaUserRecVote",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     RecommendationId = table.Column<int>(type: "int", nullable: false),
                     Agrees = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this user agrees with the recommendation.")
                 },
@@ -2448,16 +2325,16 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_MangaUserRecVote", x => new { x.UserId, x.RecommendationId });
                     table.ForeignKey(
-                        name: "FK_MangaUserRecVote_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_MangaUserRecVote_MangaUserRec_RecommendationId",
                         column: x => x.RecommendationId,
                         principalTable: "MangaUserRec",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MangaUserRecVote_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -2466,7 +2343,7 @@ namespace AniNexus.Domain.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     ReviewId = table.Column<int>(type: "int", nullable: false),
                     Agrees = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this user agrees with the review.")
                 },
@@ -2474,23 +2351,23 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_GameReviewVote", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameReviewVote_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_GameReviewVote_GameReview_ReviewId",
                         column: x => x.ReviewId,
                         principalTable: "GameReview",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameReviewVote_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "GameUserRecVote",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "char(36)", fixedLength: true, nullable: false),
                     RecommendationId = table.Column<int>(type: "int", nullable: false),
                     Agrees = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this user agrees with the recommendation.")
                 },
@@ -2498,16 +2375,16 @@ namespace AniNexus.Domain.Migrations
                 {
                     table.PrimaryKey("PK_GameUserRecVote", x => new { x.UserId, x.RecommendationId });
                     table.ForeignKey(
-                        name: "FK_GameUserRecVote_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_GameUserRecVote_GameUserRec_RecommendationId",
                         column: x => x.RecommendationId,
                         principalTable: "GameUserRec",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameUserRecVote_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -2551,7 +2428,7 @@ namespace AniNexus.Domain.Migrations
                     MangaVolumeModelId = table.Column<long>(type: "bigint", nullable: false),
                     NativeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The native name.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name."),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name in English."),
+                    EnglishName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name in English."),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false, comment: "Whether this name is the primary name of the release.")
                 },
                 constraints: table =>
@@ -2572,7 +2449,7 @@ namespace AniNexus.Domain.Migrations
                     MangaChapterModelId = table.Column<long>(type: "bigint", nullable: false),
                     NativeName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The native name.", collation: "Japanese_CI_AS_KS_WS"),
                     RomajiName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The romanization of the native name."),
-                    EnglishName = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The name in English.")
+                    EnglishName = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true, comment: "The name in English.")
                 },
                 constraints: table =>
                 {
@@ -3058,43 +2935,6 @@ namespace AniNexus.Domain.Migrations
                 column: "RecommendationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
-                table: "AspNetRoleClaims",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Audit_Action",
                 table: "Audit",
                 column: "Action");
@@ -3230,17 +3070,6 @@ namespace AniNexus.Domain.Migrations
                 table: "CompanyRole",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DeviceCodes_DeviceCode",
-                table: "DeviceCodes",
-                column: "DeviceCode",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DeviceCodes_Expiration",
-                table: "DeviceCodes",
-                column: "Expiration");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Game_CategoryId",
@@ -3405,11 +3234,6 @@ namespace AniNexus.Domain.Migrations
                 name: "IX_GameUserRecVote_RecommendationId",
                 table: "GameUserRecVote",
                 column: "RecommendationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Keys_Use",
-                table: "Keys",
-                column: "Use");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Locale_LanguageCode",
@@ -3696,26 +3520,6 @@ namespace AniNexus.Domain.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_ConsumedTime",
-                table: "PersistedGrants",
-                column: "ConsumedTime");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_Expiration",
-                table: "PersistedGrants",
-                column: "Expiration");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_SubjectId_ClientId_Type",
-                table: "PersistedGrants",
-                columns: new[] { "SubjectId", "ClientId", "Type" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_SubjectId_SessionId_Type",
-                table: "PersistedGrants",
-                columns: new[] { "SubjectId", "SessionId", "Type" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Person_IsSoftDeleted",
                 table: "Person",
                 column: "IsSoftDeleted");
@@ -3736,6 +3540,21 @@ namespace AniNexus.Domain.Migrations
                 table: "TwitterHashTag",
                 column: "Hashtag",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_IsSoftDeleted",
+                table: "User",
+                column: "IsSoftDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Username",
+                table: "User",
+                column: "Username");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserClaimMap_ClaimId",
+                table: "UserClaimMap",
+                column: "ClaimId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -3792,21 +3611,6 @@ namespace AniNexus.Domain.Migrations
                 name: "AppResource");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
                 name: "Audit");
 
             migrationBuilder.DropTable(
@@ -3832,9 +3636,6 @@ namespace AniNexus.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "CompanyRelatedMap");
-
-            migrationBuilder.DropTable(
-                name: "DeviceCodes");
 
             migrationBuilder.DropTable(
                 name: "GameCharacterMap");
@@ -3877,9 +3678,6 @@ namespace AniNexus.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "GameUserRecVote");
-
-            migrationBuilder.DropTable(
-                name: "Keys");
 
             migrationBuilder.DropTable(
                 name: "MangaChapterName");
@@ -3939,10 +3737,13 @@ namespace AniNexus.Domain.Migrations
                 name: "MediaSeriesName");
 
             migrationBuilder.DropTable(
-                name: "PersistedGrants");
+                name: "PersonName");
 
             migrationBuilder.DropTable(
-                name: "PersonName");
+                name: "UserClaimMap");
+
+            migrationBuilder.DropTable(
+                name: "UserEmailCode");
 
             migrationBuilder.DropTable(
                 name: "AnimeListStatus");
@@ -3952,9 +3753,6 @@ namespace AniNexus.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "AnimeUserRec");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AnimeRelease");
@@ -4017,6 +3815,9 @@ namespace AniNexus.Domain.Migrations
                 name: "Person");
 
             migrationBuilder.DropTable(
+                name: "UserClaim");
+
+            migrationBuilder.DropTable(
                 name: "Anime");
 
             migrationBuilder.DropTable(
@@ -4029,7 +3830,7 @@ namespace AniNexus.Domain.Migrations
                 name: "MangaVolume");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "AnimeCategory");

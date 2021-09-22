@@ -16,8 +16,8 @@ public class AnimeReviewVoteModel : IEntityTypeConfiguration<AnimeReviewVoteMode
     /// <summary>
     /// The Id of the user.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the review this vote is associated with.
@@ -34,7 +34,7 @@ public class AnimeReviewVoteModel : IEntityTypeConfiguration<AnimeReviewVoteMode
     /// <summary>
     /// The user that this vote belongs to.
     /// </summary>
-    public ApplicationUserModel User { get; set; } = default!;
+    public UserModel User { get; set; } = default!;
 
     /// <summary>
     /// The review this vote is associated with.

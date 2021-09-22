@@ -21,8 +21,8 @@ public class MangaUserRecommendationModel : IHasSoftDelete, IEntityTypeConfigura
     /// <summary>
     /// The Id of the user who made the recommendation.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the manga being recommended.
@@ -48,7 +48,7 @@ public class MangaUserRecommendationModel : IHasSoftDelete, IEntityTypeConfigura
     /// <summary>
     /// The user who recommended the manga.
     /// </summary>
-    public ApplicationUserModel User { get; set; } = default!;
+    public UserModel User { get; set; } = default!;
 
     /// <summary>
     /// The manga the recommendation is based on.

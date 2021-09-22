@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using AniNexus.Domain.Models
-@inject SignInManager<ApplicationUserModel> SignInManager
-@inject UserManager<ApplicationUserModel> UserManager
+@inject SignInManager<UserModel> SignInManager
+@inject UserManager<UserModel> UserManager
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{

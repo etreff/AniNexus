@@ -1,6 +1,5 @@
 using AniNexus.Domain;
-using AniNexus.Domain.Models;
-using Microsoft.AspNetCore.Authentication;
+using AniNexus.Web.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -12,30 +11,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddTriggeredPooledDbContextFactoryExtended<ApplicationDbContext>((provider, options) =>
+builder.Services.AddTriggeredPooledDbContextFactory<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString, b =>
     {
         b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
     });
     options.UseAniNexusTriggers();
-    if (provider.GetRequiredService<IHostEnvironment>().IsDevelopment())
-    {
-        options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
-    }
+    options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddDefaultIdentity<ApplicationUserModel>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthentication();
 
-builder.Services.AddIdentityServer()
-    .AddApiAuthorization<ApplicationUserModel, ApplicationDbContext>();
-
-builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policy.User.UpdateInfo, policy => policy.RequireClaim(Policy.User.UpdateInfo));
+});
 
 //builder.Services.AddGraphQLServer()
 //    .AddAniNexusGraphQLTypes()
@@ -72,7 +66,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
 

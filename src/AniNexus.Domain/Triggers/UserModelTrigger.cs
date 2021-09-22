@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AniNexus.Domain.Triggers;
 
-public class ApplicationUserModelTrigger : IBeforeSaveTrigger<ApplicationUserModel>
+public class UserModelTrigger : IBeforeSaveTrigger<UserModel>
 {
     private readonly IDbContextFactory<ApplicationDbContext> DbContextFactory;
 
-    public ApplicationUserModelTrigger(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+    public UserModelTrigger(IDbContextFactory<ApplicationDbContext> dbContextFactory)
     {
         DbContextFactory = dbContextFactory;
     }
 
-    public async Task BeforeSave(ITriggerContext<ApplicationUserModel> context, CancellationToken cancellationToken)
+    public async Task BeforeSave(ITriggerContext<UserModel> context, CancellationToken cancellationToken)
     {
         if (context.ChangeType == ChangeType.Deleted)
         {
@@ -21,7 +21,7 @@ public class ApplicationUserModelTrigger : IBeforeSaveTrigger<ApplicationUserMod
         }
     }
 
-    private async Task DeleteUserRecommendationVotes(ITriggerContext<ApplicationUserModel> context, CancellationToken cancellationToken)
+    private async Task DeleteUserRecommendationVotes(ITriggerContext<UserModel> context, CancellationToken cancellationToken)
     {
         await using var dbContext = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 

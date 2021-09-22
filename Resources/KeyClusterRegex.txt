@@ -1,0 +1,14 @@
+The migration code gen messes up key clustering code to generate code that
+is not compilable. The regex below can be entered into Visual Studio's Find+Replace
+to fix the issues manually.
+
+
+Find:
+b\.HasKey\("(.+?)"\);(?:\r\n)*\W*SqlServerKeyBuilderExtensions.IsClustered\(b\);
+Replace:
+b.HasKey("$1").IsClustered();
+
+Find:
+b\.HasKey\("(.+?)"\);(?:\r\n)*\W*SqlServerKeyBuilderExtensions.IsClustered\(b, false\);
+Replace:
+b.HasKey("$1").IsClustered(false);

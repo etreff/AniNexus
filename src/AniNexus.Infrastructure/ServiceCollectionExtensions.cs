@@ -10,6 +10,7 @@ namespace AniNexus.Infrastructure
         {
             services.TryAddScoped<IRepositoryProvider, DefaultRepositoryProvider>();
             services.TryAddScoped<IAnimeRepository, DefaultAnimeRepository>();
+            services.TryAddScoped<IUserRepository, DefaultUserRepository>();
 
             return services;
         }

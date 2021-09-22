@@ -16,8 +16,8 @@ public class AnimeReviewModel : IHasAudit, IHasSoftDelete, IEntityTypeConfigurat
     /// <summary>
     /// The Id of the user who wrote the review.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     /// <summary>
     /// The Id of the anime being reviewed.
@@ -63,7 +63,7 @@ public class AnimeReviewModel : IHasAudit, IHasSoftDelete, IEntityTypeConfigurat
     /// <summary>
     /// The user who wrote the review.
     /// </summary>
-    public ApplicationUserModel User { get; set; } = default!;
+    public UserModel User { get; set; } = default!;
 
     /// <summary>
     /// A collection of votes that affirm or deny the review.

@@ -30,7 +30,7 @@ public class AuditModel : IEntityTypeConfiguration<AuditModel>
     /// <summary>
     /// The Id of the user who caused the change.
     /// </summary>
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     /// <summary>
     /// The keys (and values where possible) of the rows that were changed.
@@ -53,7 +53,7 @@ public class AuditModel : IEntityTypeConfiguration<AuditModel>
         builder.HasIndex(m => m.Table);
         builder.HasIndex(m => m.UserId).HasFilter("[UserId] IS NOT NULL");
 
-        builder.HasOne<ApplicationUserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
+        builder.HasOne<UserModel>().WithMany().HasForeignKey(m => m.UserId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
 
         builder.Property(m => m.Table).HasComment("The table that was affected.");
         builder.Property(m => m.Action).HasComment("The action that was performed on the table.");

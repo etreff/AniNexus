@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\AniNexus.Web.Shared.csproj" />
+    <ProjectReference Include="..\..\AniNexus.Models\AniNexus.Models.csproj" />
   </ItemGroup>
 
 </Project>

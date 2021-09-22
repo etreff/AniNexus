@@ -1,4 +1,4 @@
-﻿using AniNexus.Web.Models;
+﻿using AniNexus.Models.Anime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,15 +21,10 @@ namespace AniNexus.Web.Server.Controllers
 
             await Task.Yield();
 
-            LogAnimeFetchById(Logger, id);
-
             return Ok(new AnimeDTO
             {
                 Name = $"Test Anime Name {id}"
             });
         }
-
-        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "Fetching anime information for anime {AnimeId}.")]
-        static partial void LogAnimeFetchById(ILogger logger, int animeId);
     }
 }

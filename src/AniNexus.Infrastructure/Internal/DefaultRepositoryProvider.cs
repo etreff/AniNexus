@@ -31,5 +31,10 @@ namespace AniNexus.Infrastructure.Internal
         {
             return new DefaultAnimeRepository(DbContext, LoggerFactory.CreateLogger<DefaultAnimeRepository>());
         }
+
+        public IUserRepository GetUserRepository()
+        {
+            return new DefaultUserRepository(DbContext, LoggerFactory.CreateLogger<DefaultUserRepository>());
+        }
     }
 }

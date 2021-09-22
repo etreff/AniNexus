@@ -21,8 +21,8 @@ public class MediaTagModel : IHasAudit, IHasSoftDelete, IEntityTypeConfiguration
     /// <summary>
     /// The Id of the user who created the tag.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string? UserId { get; set; }
+    /// <seealso cref="UserModel"/>
+    public Guid? UserId { get; set; }
 
     /// <summary>
     /// A description of the tag.
@@ -67,7 +67,7 @@ public class MediaTagModel : IHasAudit, IHasSoftDelete, IEntityTypeConfiguration
     /// <summary>
     /// The user who created the tag.
     /// </summary>
-    public ApplicationUserModel? User { get; set; }
+    public UserModel? User { get; set; }
 
     /// <summary>
     /// The anime that contain this tag.

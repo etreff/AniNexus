@@ -17,8 +17,8 @@ public class GameFavoriteMapModel : IEntityTypeConfiguration<GameFavoriteMapMode
     /// <summary>
     /// The Id of the user who favorited the game.
     /// </summary>
-    /// <seealso cref="ApplicationUserModel"/>
-    public string UserId { get; set; } = default!;
+    /// <seealso cref="UserModel"/>
+    public Guid UserId { get; set; } = default!;
 
     #region Navigation Properties
     /// <summary>

@@ -12,23 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="GoogleAuthenticator" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0-rc.1.21452.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0-rc.1.21452.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0-rc.1.21452.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0-rc.1.21452.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-rc.1.21452.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\AniNexus.Domain\AniNexus.Domain.csproj" />
+    <ProjectReference Include="..\..\AniNexus.Infrastructure\AniNexus.Infrastructure.csproj" />
     <ProjectReference Include="..\Client\AniNexus.Web.Client.csproj" />
-    <ProjectReference Include="..\Shared\AniNexus.Web.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0-rc.1.21452.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0-rc.1.21452.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-rc.1.21452.10" />
   </ItemGroup>
 
 </Project>

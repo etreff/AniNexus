@@ -29,7 +29,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the AnimeAgeRating enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -79,7 +80,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the AnimeCategory enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -177,7 +179,8 @@ namespace AniNexus.Domain.Migrations
                         .HasComment("The length of the episode.");
 
                     b.Property<string>("EnglishEpisodeName")
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The name of the episode in English if the name is not already in English.");
 
                     SqlServerPropertyBuilderExtensions.IsSparse(b.Property<string>("EnglishEpisodeName"));
@@ -251,7 +254,8 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("AnimeId", "UserId");
 
@@ -278,7 +282,8 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.AnimeListEntryModel", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<int>("AnimeId")
                         .HasColumnType("int");
@@ -333,7 +338,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the AnimeListStatus enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -645,13 +651,15 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Review")
                         .IsRequired()
                         .HasMaxLength(2500)
-                        .HasColumnType("nvarchar(2500)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2500)")
                         .HasComment("The review content.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -681,7 +689,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -700,7 +709,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the AnimeSeason enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -780,7 +790,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("ExternalMediaId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The Id that the third party tracker has assigned to the anime entry.");
 
                     b.HasKey("AnimeId", "ThirdPartyId");
@@ -826,13 +837,15 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(1000)")
                         .HasComment("The reason why this user recommends the anime.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -850,7 +863,8 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.AnimeUserRecommendationVoteModel", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<int>("RecommendationId")
                         .HasColumnType("int");
@@ -869,11 +883,13 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.ApplicationResourceModel", b =>
                 {
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The key of the dictionary.");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The value of the dictionary.");
 
                     b.HasKey("Name");
@@ -913,78 +929,6 @@ namespace AniNexus.Domain.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AniNexus.Domain.Models.ApplicationUserModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
             modelBuilder.Entity("AniNexus.Domain.Models.AuditModel", b =>
                 {
                     b.Property<string>("Id")
@@ -994,11 +938,13 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The action that was performed on the table.");
 
                     b.Property<string>("AffectedKeys")
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The values of the primary keys that were affected.");
 
                     b.Property<DateTime>("Date")
@@ -1007,11 +953,13 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Table")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The table that was affected.");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id").IsClustered(false);
 
@@ -1036,7 +984,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the CharacterRole enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -1066,7 +1015,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the CompanyRole enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -1101,7 +1051,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the GameCategory enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -1160,7 +1111,8 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("GameId", "UserId");
 
@@ -1187,7 +1139,8 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.GameListEntryModel", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<int>("GameId")
                         .HasColumnType("int");
@@ -1238,7 +1191,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the GameListStatus enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -1436,13 +1390,15 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Review")
                         .IsRequired()
                         .HasMaxLength(2500)
-                        .HasColumnType("nvarchar(2500)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2500)")
                         .HasComment("The review content.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -1472,7 +1428,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -1531,7 +1488,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("ExternalMediaId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The Id that the third party tracker has assigned to the game entry.");
 
                     b.HasKey("GameId", "ThirdPartyId");
@@ -1577,13 +1535,15 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(1000)")
                         .HasComment("The reason why this user recommends the game.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -1601,7 +1561,8 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.GameUserRecommendationVoteModel", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<int>("RecommendationId")
                         .HasColumnType("int");
@@ -1640,14 +1601,16 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("LanguageCode")
                         .IsRequired()
                         .HasMaxLength(17)
-                        .HasColumnType("nchar(17)")
+                        .IsUnicode(false)
+                        .HasColumnType("char(17)")
                         .IsFixedLength()
                         .HasComment("The i18n language code of the locale.");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(64)")
                         .HasComment("The name of the locale.");
 
                     b.Property<byte[]>("RowVersion")
@@ -1689,7 +1652,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the MangaAgeRating enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -1734,7 +1698,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the MangaCategory enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -1882,7 +1847,8 @@ namespace AniNexus.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("MangaId", "UserId");
 
@@ -1909,7 +1875,8 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.MangaListEntryModel", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<int>("MangaId")
                         .HasColumnType("int");
@@ -1970,7 +1937,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the MangaListStatus enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -2261,13 +2229,15 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Review")
                         .IsRequired()
                         .HasMaxLength(2500)
-                        .HasColumnType("nvarchar(2500)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2500)")
                         .HasComment("The review content.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -2297,7 +2267,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -2356,7 +2327,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("ExternalMediaId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The Id that the third party tracker has assigned to the manga entry.");
 
                     b.HasKey("MangaId", "ThirdPartyId");
@@ -2402,13 +2374,15 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(1000)")
                         .HasComment("The reason why this user recommends the manga.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -2426,7 +2400,8 @@ namespace AniNexus.Domain.Migrations
             modelBuilder.Entity("AniNexus.Domain.Models.MangaUserRecommendationVoteModel", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<int>("RecommendationId")
                         .HasColumnType("int");
@@ -2718,7 +2693,8 @@ namespace AniNexus.Domain.Migrations
                         .HasComment("The date this company was established or founded.");
 
                     b.Property<string>("CreationLocation")
-                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasComment("The location the company was established or founded.");
 
                     b.Property<DateTime>("DateAdded")
@@ -2813,7 +2789,8 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(32)")
                         .HasComment("The name of the genre, for example \"Action\" or \"Fantasy\".");
 
                     b.HasKey("Id");
@@ -2988,7 +2965,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("BirthPlace")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(128)")
                         .HasComment("The place this person was born.");
 
                     b.Property<DateTime>("DateAdded")
@@ -3039,7 +3017,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the MediaRelationType enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -3198,7 +3177,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the MediaStatus enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -3292,11 +3272,13 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(32)")
                         .HasComment("The name of the tag.");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
@@ -3317,7 +3299,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)")
                         .HasComment("The name of the PersonRole enum value.");
 
                     b.HasKey("Id").IsClustered();
@@ -3432,7 +3415,8 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(64)")
                         .HasComment("The name of the third party tracker.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
@@ -3444,7 +3428,8 @@ namespace AniNexus.Domain.Migrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(16)")
                         .HasComment("The short name or alias of the third party tracker.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
@@ -3540,7 +3525,8 @@ namespace AniNexus.Domain.Migrations
                     b.Property<string>("Hashtag")
                         .IsRequired()
                         .HasMaxLength(240)
-                        .HasColumnType("nvarchar(240)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(240)")
                         .HasComment("The Twitter hashtag.")
                         .UseCollation("Japanese_CI_AS_KS_WS");
 
@@ -3552,301 +3538,131 @@ namespace AniNexus.Domain.Migrations
                     b.ToTable("TwitterHashTag", (string)null);
                 });
 
-            modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.DeviceFlowCodes", b =>
+            modelBuilder.Entity("AniNexus.Domain.Models.UserClaimMapModel", b =>
                 {
-                    b.Property<string>("UserCode")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<int>("ClaimId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
+                    b.HasKey("UserId", "ClaimId");
 
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasMaxLength(50000)
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("ClaimId");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(200)")
-                        .UseCollation("Japanese_CI_AS_KS_WS");
-
-                    b.Property<string>("DeviceCode")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("Expiration")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SessionId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("SubjectId")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("UserCode");
-
-                    b.HasIndex("DeviceCode")
-                        .IsUnique();
-
-                    b.HasIndex("Expiration");
-
-                    b.ToTable("DeviceCodes", (string)null);
+                    b.ToTable("UserClaimMap", (string)null);
                 });
 
-            modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.Key", b =>
+            modelBuilder.Entity("AniNexus.Domain.Models.UserClaimModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Algorithm")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("DataProtected")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsX509Certificate")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Use")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Version")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .IsRequired()
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasComment("The claim type.");
+
+                    b.Property<string>("ClaimValue")
+                        .IsRequired()
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasComment("The claim value.");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Use");
-
-                    b.ToTable("Keys");
+                    b.ToTable("UserClaim", (string)null);
                 });
 
-            modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.PersistedGrant", b =>
-                {
-                    b.Property<string>("Key")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("ConsumedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasMaxLength(50000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(200)")
-                        .UseCollation("Japanese_CI_AS_KS_WS");
-
-                    b.Property<DateTime?>("Expiration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SessionId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("SubjectId")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("ConsumedTime");
-
-                    b.HasIndex("Expiration");
-
-                    b.HasIndex("SubjectId", "ClientId", "Type");
-
-                    b.HasIndex("SubjectId", "SessionId", "Type");
-
-                    b.ToTable("PersistedGrants", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("AniNexus.Domain.Models.UserEmailCodeModel", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
-                    b.Property<string>("ConcurrencyStamp")
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("The code to validate the email address.");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2")
+                        .HasComment("The UTC time until which the code is valid.");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserEmailCode", (string)null);
+                });
+
+            modelBuilder.Entity("AniNexus.Domain.Models.UserModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int")
+                        .HasComment("The number of times the user entered incorrect credentials since their last login.");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(250)")
+                        .HasComment("The user's email address.");
+
+                    b.Property<bool>("EmailValidated")
+                        .HasColumnType("bit")
+                        .HasComment("Whether the user has validated their email address.");
+
+                    b.Property<bool>("IsSoftDeleted")
+                        .HasColumnType("bit")
+                        .HasComment("Whether this entity is soft deleted.");
+
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("datetime2")
+                        .HasComment("The UTC time until which the user is locked out of their account.");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasComment("The user's hashed password.");
+
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
-                    b.Property<string>("Name")
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit")
+                        .HasComment("Whether MFA is enabled for this user.");
+
+                    b.Property<string>("TwoFactorKey")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasComment("The MFA secret key for this user.");
+
+                    b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(16)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(16)")
+                        .HasComment("The user's username.");
 
-                    b.Property<string>("NormalizedName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.HasKey("Id").IsClustered(false);
 
-                    b.HasKey("Id");
+                    b.HasIndex("IsSoftDeleted");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
+                    b.HasIndex("Username");
 
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ClaimType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ClaimType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("AniNexus.Domain.Models.AnimeCharacterMapModel", b =>
@@ -3931,7 +3747,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
+                    b.HasOne("AniNexus.Domain.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4062,7 +3878,8 @@ namespace AniNexus.Domain.Migrations
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
 
                             b1.Property<string>("EnglishName")
-                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(max)")
                                 .HasColumnName("EnglishName")
                                 .HasComment("The name in English.");
 
@@ -4139,7 +3956,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4158,7 +3975,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -4259,7 +4076,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4280,7 +4097,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -4293,7 +4110,7 @@ namespace AniNexus.Domain.Migrations
 
             modelBuilder.Entity("AniNexus.Domain.Models.AuditModel", b =>
                 {
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
+                    b.HasOne("AniNexus.Domain.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -4370,7 +4187,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
+                    b.HasOne("AniNexus.Domain.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4407,7 +4224,8 @@ namespace AniNexus.Domain.Migrations
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
 
                             b1.Property<string>("EnglishName")
-                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(max)")
                                 .HasColumnName("EnglishName")
                                 .HasComment("The name in English.");
 
@@ -4547,7 +4365,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4566,7 +4384,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -4667,7 +4485,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4688,7 +4506,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -4718,7 +4536,8 @@ namespace AniNexus.Domain.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("EnglishName")
-                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(max)")
                                 .HasColumnName("EnglishName")
                                 .HasComment("The name in English.");
 
@@ -4821,7 +4640,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
+                    b.HasOne("AniNexus.Domain.Models.UserModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4934,7 +4753,8 @@ namespace AniNexus.Domain.Migrations
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
 
                             b1.Property<string>("EnglishName")
-                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(max)")
                                 .HasColumnName("EnglishName")
                                 .HasComment("The name in English.");
 
@@ -4983,7 +4803,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -5002,7 +4822,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5103,7 +4923,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -5124,7 +4944,7 @@ namespace AniNexus.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5149,7 +4969,8 @@ namespace AniNexus.Domain.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("EnglishName")
-                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(max)")
                                 .HasColumnName("EnglishName")
                                 .HasComment("The name in English.");
 
@@ -5601,7 +5422,8 @@ namespace AniNexus.Domain.Migrations
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
 
                             b1.Property<string>("EnglishName")
-                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(max)")
                                 .HasColumnName("EnglishName")
                                 .HasComment("The name in English.");
 
@@ -5636,7 +5458,7 @@ namespace AniNexus.Domain.Migrations
 
             modelBuilder.Entity("AniNexus.Domain.Models.MediaTagModel", b =>
                 {
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", "User")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -5644,53 +5466,30 @@ namespace AniNexus.Domain.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("AniNexus.Domain.Models.UserClaimMapModel", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("AniNexus.Domain.Models.UserClaimModel", "Claim")
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
-                        .WithMany()
+                    b.HasOne("AniNexus.Domain.Models.UserModel", "User")
+                        .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Claim");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("AniNexus.Domain.Models.UserEmailCodeModel", b =>
                 {
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("AniNexus.Domain.Models.ApplicationUserModel", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("AniNexus.Domain.Models.UserModel", null)
+                        .WithOne()
+                        .HasForeignKey("AniNexus.Domain.Models.UserEmailCodeModel", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -5887,6 +5686,11 @@ namespace AniNexus.Domain.Migrations
                     b.Navigation("Games");
 
                     b.Navigation("Manga");
+                });
+
+            modelBuilder.Entity("AniNexus.Domain.Models.UserModel", b =>
+                {
+                    b.Navigation("Claims");
                 });
 #pragma warning restore 612, 618
         }
