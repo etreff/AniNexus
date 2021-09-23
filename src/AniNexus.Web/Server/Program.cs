@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using AniNexus.Domain;
 using AniNexus.Models.Configuration;
@@ -54,6 +55,41 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings.Audience,
         ClockSkew = TimeSpan.FromMinutes(jwtSettings.ClockSkew),
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Key)),
+    };
+    options.Events.OnTokenValidated = async context =>
+    {
+        // Last chance to reject the token.
+
+        var claimsPrincipal = context.Principal!;
+
+        // Check that the claim has a valid username.
+        string? username = claimsPrincipal.FindFirstValue(ClaimTypes.Name);
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            context.Fail("Token is missing required claim.");
+            return;
+        }
+
+        await using var repositoryProvider = context.HttpContext.RequestServices.GetRequiredService<IRepositoryProvider>();
+        var user = await repositoryProvider.GetUserRepository().GetUserByNameAsync(username, context.HttpContext.RequestAborted);
+
+        // Check that the user exists.
+        if (user is null)
+        {
+            context.Fail("User not found.");
+            return;
+        }
+
+        // Check that the user is not banned.
+        if (user.IsBanned)
+        {
+            // An unset BannedUntil value indicates a permanent ban.
+            if (!user.BannedUntil.HasValue || user.BannedUntil.Value <= DateTime.UtcNow)
+            {
+                context.Fail("User is banned.");
+                return;
+            }
+        }
     };
 });
 

@@ -6,4 +6,5 @@ public record UserDTO(
     Guid Id,
     string Username,
     bool TwoFactorEnabled,
-    bool IsBanned);
+    bool IsBanned,
+    DateTime? BannedUntil);
