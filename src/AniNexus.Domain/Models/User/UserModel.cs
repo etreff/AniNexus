@@ -55,6 +55,17 @@ public class UserModel : IHasGuidPK, IHasRowVersion, IHasSoftDelete, IEntityType
     /// </summary>
     public int AccessFailedCount { get; set; }
 
+    /// <summary>
+    /// Whether the user is banned, restricting access to certain site features.
+    /// </summary>
+    public bool IsBanned { get; set; }
+
+    /// <summary>
+    /// The UTC time until which the user is banned. Setting this to <see langword="null"/> will
+    /// permenantly ban the user.
+    /// </summary>
+    public DateTime? BannedUntil { get; set; }
+
     #region Interface Properties
     /// <summary>
     /// The row version.
@@ -74,6 +85,11 @@ public class UserModel : IHasGuidPK, IHasRowVersion, IHasSoftDelete, IEntityType
     /// The claims the user has.
     /// </summary>
     public IList<UserClaimMapModel> Claims { get; set; } = default!;
+
+    /// <summary>
+    /// Reasons why a user was banned.
+    /// </summary>
+    public IList<UserBanReasonModel> BanReasons { get; set; } = default!;
     #endregion
 
     public void Configure(EntityTypeBuilder<UserModel> builder)
@@ -90,6 +106,8 @@ public class UserModel : IHasGuidPK, IHasRowVersion, IHasSoftDelete, IEntityType
         builder.Property(m => m.TwoFactorKey).HasComment("The MFA secret key for this user.");
         builder.Property(m => m.LockoutEnd).HasComment("The UTC time until which the user is locked out of their account.");
         builder.Property(m => m.AccessFailedCount).HasComment("The number of times the user entered incorrect credentials since their last login.");
+        builder.Property(m => m.IsBanned).HasComment("Whether the user is banned.");
+        builder.Property(m => m.BannedUntil).HasComment("The UTC time until which the user is banned. A null value will permanently ban the user.");
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

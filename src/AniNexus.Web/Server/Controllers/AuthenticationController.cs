@@ -1,29 +1,50 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using AniNexus.Infrastructure;
 using AniNexus.Models.User;
+using AniNexus.Repository;
 using Google.Authenticator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniNexus.Web.Server.Controllers
 {
-    [Route("/api/account/mfa")]
-    public partial class MFAController : Controller
+    [Route("/api/account/authenticate")]
+    public partial class AuthenticationController : Controller
     {
         private readonly IRepositoryProvider RepositoryProvider;
         private readonly ILogger Logger;
 
-        public MFAController(IRepositoryProvider repositoryProvider, ILogger<MFAController> logger)
+        public AuthenticationController(IRepositoryProvider repositoryProvider, ILogger<AuthenticationController> logger)
         {
             RepositoryProvider = repositoryProvider;
             Logger = logger;
         }
 
         [HttpPost]
+        [Route("/login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Validate(string username, string? code, CancellationToken cancellationToken)
+        public async Task<ActionResult> Login(LoginRequestDTO model, CancellationToken cancellationToken)
+        {
+            if (model is null)
+            {
+                return Unauthorized();
+            }
+
+            var userRepository = RepositoryProvider.GetUserRepository();
+            var loginInfo = await userRepository.LoginAsync(model.Username, model.Password, cancellationToken);
+            if (!loginInfo.Succeeded)
+            {
+                return Unauthorized(loginInfo.ToLoginResponse());
+            }
+
+            return Ok(loginInfo.ToLoginResponse());
+        }
+
+        [HttpPost]
+        [Route("/mfa/validate")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidateMFA(string username, string? code, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -56,6 +77,7 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
+        [Route("/mfa/setup")]
         [Authorize]
         public async Task<IActionResult> Setup(CancellationToken cancellationToken)
         {
@@ -84,6 +106,7 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
+        [Route("/mfa/verify")]
         [Authorize]
         public async Task<IActionResult> VerifySetup(string code, CancellationToken cancellationToken)
         {
@@ -111,6 +134,7 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
+        [Route("/mfa/disable")]
         [Authorize]
         public async Task<IActionResult> Disable(string code, CancellationToken cancellationToken)
         {
@@ -134,6 +158,7 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
+        [Route("/mfa/disable-by-id")]
         [Authorize(Policy.User.UpdateInfo)]
         public async Task<IActionResult> Disable(Guid userId, CancellationToken cancellationToken)
         {

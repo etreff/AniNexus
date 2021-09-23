@@ -1,18 +1,15 @@
-﻿using AniNexus.Infrastructure.Internal;
+﻿using AniNexus.Repository.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace AniNexus.Infrastructure
-{
-    public static class ServiceCollectionExtensions
-    {
-        public static IServiceCollection AddAniNexusProviders(this IServiceCollection services)
-        {
-            services.TryAddScoped<IRepositoryProvider, DefaultRepositoryProvider>();
-            services.TryAddScoped<IAnimeRepository, DefaultAnimeRepository>();
-            services.TryAddScoped<IUserRepository, DefaultUserRepository>();
+namespace AniNexus.Repository;
 
-            return services;
-        }
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddAniNexusProviders(this IServiceCollection services)
+    {
+        services.TryAddScoped<IRepositoryProvider, DefaultRepositoryProvider>();
+
+        return services;
     }
 }

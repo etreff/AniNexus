@@ -1,19 +1,9 @@
 ﻿using System;
 
-namespace AniNexus.Models.User
-{
-    public class UserDTO
-    {
-        public Guid Id { get; }
+namespace AniNexus.Models.User;
 
-        public string Username { get; }
-
-        public bool TwoFactorEnabled { get; set; }
-
-        public UserDTO(Guid userId, string username)
-        {
-            Id = userId;
-            Username = username;
-        }
-    }
-}
+public record UserDTO(
+    Guid Id,
+    string Username,
+    bool TwoFactorEnabled,
+    bool IsBanned);
