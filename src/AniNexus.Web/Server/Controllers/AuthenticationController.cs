@@ -89,7 +89,7 @@ namespace AniNexus.Web.Server.Controllers
                 return GetActionResult(false);
             }
 
-            byte[]? keyBytes = new byte[40];
+            byte[] keyBytes = new byte[40];
             RandomNumberGenerator.Create().GetBytes(keyBytes);
 
             string key = Convert.ToBase64String(keyBytes);

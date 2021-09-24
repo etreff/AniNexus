@@ -6,6 +6,7 @@ using AniNexus.Domain.Models;
 using AniNexus.Models;
 using AniNexus.Models.Configuration;
 using AniNexus.Models.User;
+using Isopoh.Cryptography.Argon2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,6 @@ namespace AniNexus.Repository.Internal
     {
         private readonly ApplicationDbContext Context;
         private readonly IOptions<JwtSettings> JwtSettings;
-        [SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Used by LoggerMessage source generator.")]
         private readonly ILogger Logger;
 
         public DefaultUserRepository(ApplicationDbContext dbContext, IOptions<JwtSettings> jwtSettings, ILogger<DefaultUserRepository> logger)
@@ -101,11 +101,13 @@ namespace AniNexus.Repository.Internal
 
         public async Task<LoginResult> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
         {
-            string passwordHash = password;
+            //string passwordHash = Argon2.Hash(password);
+
             var user = await Context.Users
                 .Include(m => m.Claims)
-                .FirstOrDefaultAsync(u => u.Username == username && u.PasswordHash == passwordHash, cancellationToken);
-            if (user is null)
+                .FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
+
+            if (user is null || !Argon2.Verify(user.PasswordHash, password))
             {
                 return LoginResult.Failed();
             }
