@@ -3,6 +3,7 @@
 @code {
     protected override void OnInitialized()
     {
+        //TODO: Remove this file once auth is implemented. Keeping for now so I know how to do redirect with returnUrl
         Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
     }
 }

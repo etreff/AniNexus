@@ -22,13 +22,22 @@ builder.Configuration
 
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddTriggeredPooledDbContextFactory<ApplicationDbContext>(options =>
+
+//builder.Services.AddTriggeredPooledDbContextFactory<ApplicationDbContext>(options =>
+//{
+//    options.UseSqlServer(connectionString, b =>
+//    {
+//        b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
+//    });
+//    options.UseAniNexusTriggers();
+//    options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+//});
+builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString, b =>
     {
         b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
     });
-    options.UseAniNexusTriggers();
     options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -56,38 +65,42 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.FromMinutes(jwtSettings.ClockSkew),
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Key)),
     };
-    options.Events.OnTokenValidated = async context =>
+
+    options.Events = new JwtBearerEvents
     {
-        // Last chance to reject the token.
-
-        var claimsPrincipal = context.Principal!;
-
-        // Check that the claim has a valid username.
-        string? username = claimsPrincipal.FindFirstValue(ClaimTypes.Name);
-        if (string.IsNullOrWhiteSpace(username))
+        OnTokenValidated = async context =>
         {
-            context.Fail("Token is missing required claim.");
-            return;
-        }
+            // Last chance to reject the token.
 
-        await using var repositoryProvider = context.HttpContext.RequestServices.GetRequiredService<IRepositoryProvider>();
-        var user = await repositoryProvider.GetUserRepository().GetUserByNameAsync(username, context.HttpContext.RequestAborted);
+            var claimsPrincipal = context.Principal!;
 
-        // Check that the user exists.
-        if (user is null)
-        {
-            context.Fail("User not found.");
-            return;
-        }
-
-        // Check that the user is not banned.
-        if (user.IsBanned)
-        {
-            // An unset BannedUntil value indicates a permanent ban.
-            if (!user.BannedUntil.HasValue || user.BannedUntil.Value <= DateTime.UtcNow)
+            // Check that the claim has a valid username.
+            string? username = claimsPrincipal.FindFirstValue(ClaimTypes.Name);
+            if (string.IsNullOrWhiteSpace(username))
             {
-                context.Fail("User is banned.");
+                context.Fail("Token is missing required claim.");
                 return;
+            }
+
+            await using var repositoryProvider = context.HttpContext.RequestServices.GetRequiredService<IRepositoryProvider>();
+            var user = await repositoryProvider.GetUserRepository().GetUserByNameAsync(username, context.HttpContext.RequestAborted);
+
+            // Check that the user exists.
+            if (user is null)
+            {
+                context.Fail("User not found.");
+                return;
+            }
+
+            // Check that the user is not banned.
+            if (user.IsBanned)
+            {
+                // An unset BannedUntil value indicates a permanent ban.
+                if (!user.BannedUntil.HasValue || user.BannedUntil.Value <= DateTime.UtcNow)
+                {
+                    context.Fail("User is banned.");
+                    return;
+                }
             }
         }
     };

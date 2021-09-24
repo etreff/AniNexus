@@ -41,7 +41,7 @@ namespace AniNexus.Models
             };
         }
 
-        internal static LoginResult Failed(string? reason = null)
+        public static LoginResult Failed(string? reason = null)
         {
             return new LoginResult
             {

@@ -60,6 +60,7 @@ namespace AniNexus.Domain
                     var isSoftDeleteProperty = entityType.FindProperty(nameof(IHasSoftDelete.IsSoftDeleted))!;
                     isSoftDeleteProperty.SetComment("Whether this entity is soft deleted.");
                     isSoftDeleteProperty.IsNullable = false;
+                    isSoftDeleteProperty.SetDefaultValue(false);
 
                     AddSoftDeleteFilter(entityType);
                 }
@@ -98,6 +99,18 @@ namespace AniNexus.Domain
                             entityProperty.SetIsUnicode(true);
                             entityProperty.SetCollation(Collation.Japanese);
                         }
+                    }
+
+                    // Set default values for booleans.
+                    if (entityProperty.ClrType == typeof(bool))
+                    {
+                        entityProperty.SetDefaultValue(false);
+                    }
+
+                    // Set default values for numbers.
+                    if (entityProperty.ClrType.IsNumeric())
+                    {
+                        entityProperty.SetDefaultValue(0);
                     }
                 }
             }

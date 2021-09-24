@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using AniNexus.Models;
 using AniNexus.Models.User;
 using AniNexus.Repository;
 using Google.Authenticator;
@@ -22,13 +23,13 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
-        [Route("/login")]
+        [Route("login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login(LoginRequestDTO model, CancellationToken cancellationToken)
+        public async Task<ActionResult> Login([FromBody] LoginRequestDTO model, CancellationToken cancellationToken)
         {
-            if (model is null)
+            if (model is null || !ModelState.IsValid)
             {
-                return Unauthorized();
+                return Unauthorized(LoginResult.Failed("A username and password is required.").ToLoginResponse());
             }
 
             var userRepository = RepositoryProvider.GetUserRepository();

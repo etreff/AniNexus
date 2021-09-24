@@ -1,0 +1,100 @@
+﻿@page "/account"
+@using AniNexus.Models.User
+
+<h3>Login</h3>
+
+<Field>
+	<Addons>
+		<Addon AddonType="AddonType.Start">
+			<AddonLabel><Icon Name="IconName.User"></Icon></AddonLabel>
+		</Addon>
+		<Addon AddonType="AddonType.Body">
+			<TextEdit @bind-Text="@LoginModel.Username" MaxLength="16" Placeholder="Username" Size="Size.Large">
+				@*<FieldHelp>The username is required.</FieldHelp>*@
+			</TextEdit>
+		</Addon>
+	</Addons>
+</Field>
+<Field>
+	<Addons>
+		<Addon AddonType="AddonType.Start">
+			<AddonLabel><Icon Name="IconName.Key"></Icon></AddonLabel>
+		</Addon>
+		<Addon AddonType="AddonType.Body">
+			<TextEdit @bind-Text="@LoginModel.Password" Role="TextRole.Password" Placeholder="Password" Size="Size.Large" />
+		</Addon>
+	</Addons>
+</Field>
+<Button Color="Color.Primary" Clicked="@Submit" Disabled="@LoginButtonDisabled">Login</Button>
+
+
+@code {
+
+	[Inject]
+	private ILocalStorageService LocalStorage { get; set; } = default!;
+
+	[Inject]
+	private IHttpClientService HttpService { get; set; } = default!;
+
+	[Inject]
+	private JSConsoleLogger ConsoleLogger { get; set; } = default!;
+
+	private LoginRequestDTO LoginModel = new LoginRequestDTO();
+	private bool LoginButtonDisabled;
+
+	private async Task Submit()
+	{
+		try
+		{
+			LoginButtonDisabled = true;
+			var http = await HttpService.GetHttpClientAsync();
+			using var response = await http.PostAsJsonAsync<LoginRequestDTO>("/api/account/authenticate/login", LoginModel);
+			var responseDTO = await response.Content.ReadFromJsonAsync<LoginResponseDTO>();
+			if (responseDTO is null)
+			{
+				//TODO: Inform the user that a username and password is required (this is technically a developer error).
+				await ConsoleLogger.Error("Received null response from server.");
+				throw new Exception();
+			}
+			else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+			{
+				//TODO: Inform the user that login failed.
+				await ConsoleLogger.Warning("User is not authorized.");
+				throw new Exception();
+			}
+			else if (response.StatusCode == System.Net.HttpStatusCode.OK)
+			{
+				if (responseDTO.Succeeded)
+				{
+					if (responseDTO.TwoFactorRequired)
+					{
+						//TODO: Display a MFA dialog and get the code.
+						await ConsoleLogger.Info("User MFA required.");
+					}
+					else if (!string.IsNullOrWhiteSpace(responseDTO.Token))
+					{
+						await ConsoleLogger.Info("Received access token from server.");
+						await LocalStorage.SetAccessTokenAsync(responseDTO.Token);
+						//TODO: Redirect to homepage or account page.
+					}
+					else
+					{
+						//TODO: Developer error. Should be impossible.
+					}
+				}
+				else
+				{
+					//TODO: Developer error. 200 should never return a failed login.
+				}
+			}
+			else
+			{
+				//TODO: Do something with unknown error. Maybe tell the user there was an issue logging them in and to try again later.
+			}
+		}
+		catch
+		{
+			LoginButtonDisabled = false;
+		}
+	}
+}
