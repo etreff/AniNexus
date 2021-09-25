@@ -98,7 +98,7 @@ namespace AniNexus.Repository.Internal
 
         private static readonly Func<ApplicationDbContext, string, Task<UserModel?>> GetUserByNameQuery = EF.CompileAsyncQuery((ApplicationDbContext context, string username) =>
             context.Users
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Include(m => m.Claims)
                 .FirstOrDefault(u => u.Username == username));
         public async Task<LoginResult> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
