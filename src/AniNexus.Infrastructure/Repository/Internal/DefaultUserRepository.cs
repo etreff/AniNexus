@@ -14,17 +14,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AniNexus.Repository.Internal
 {
-    internal partial class DefaultUserRepository : IUserRepository
+    internal partial class DefaultUserRepository : DefaultRepositoryBase, IUserRepository
     {
-        private readonly ApplicationDbContext Context;
         private readonly IOptions<JwtSettings> JwtSettings;
-        private readonly ILogger Logger;
 
         public DefaultUserRepository(ApplicationDbContext dbContext, IOptions<JwtSettings> jwtSettings, ILogger<DefaultUserRepository> logger)
+            : base(dbContext, logger)
         {
-            Context = dbContext;
             JwtSettings = jwtSettings;
-            Logger = logger;
         }
 
         public async Task ClearMFAAsync(Guid userId, CancellationToken cancellationToken)
@@ -35,7 +32,7 @@ namespace AniNexus.Repository.Internal
                 return;
             }
 
-            LogMFADisabled(user.Username);
+            LogMFADisabled(Logger, user.Username);
 
             user.TwoFactorEnabled = false;
             user.TwoFactorKey = null;
@@ -99,13 +96,16 @@ namespace AniNexus.Repository.Internal
             user.TwoFactorKey = key;
         }
 
+        private static readonly Func<ApplicationDbContext, string, Task<UserModel?>> GetUserByNameQuery = EF.CompileAsyncQuery((ApplicationDbContext context, string username) =>
+            context.Users
+                .AsNoTracking()
+                .Include(m => m.Claims)
+                .FirstOrDefault(u => u.Username == username));
         public async Task<LoginResult> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
         {
             //string passwordHash = Argon2.Hash(password);
 
-            var user = await Context.Users
-                .Include(m => m.Claims)
-                .FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
+            var user = await GetUserByNameQuery(Context, username);
 
             if (user is null || !Argon2.Verify(user.PasswordHash, password))
             {
@@ -142,7 +142,7 @@ namespace AniNexus.Repository.Internal
 
         private string GetJwtToken(UserModel user)
         {
-            LogJWTGenerating(user.Username);
+            LogJWTGenerating(Logger, user.Username);
 
             byte[] key = Encoding.ASCII.GetBytes(JwtSettings.Value.Key);
 
@@ -187,9 +187,9 @@ namespace AniNexus.Repository.Internal
         }
 
         [LoggerMessage(EventId = LoggerEvents.MFADisabling, Level = LogLevel.Information, Message = "Disabling MFA for user {Username}")]
-        partial void LogMFADisabled(string username);
+        static partial void LogMFADisabled(ILogger logger, string username);
 
         [LoggerMessage(EventId = LoggerEvents.JWTGenerating, Level = LogLevel.Information, Message = "Generating JWT for user {Username}")]
-        partial void LogJWTGenerating(string username);
+        static partial void LogJWTGenerating(ILogger logger, string username);
     }
 }

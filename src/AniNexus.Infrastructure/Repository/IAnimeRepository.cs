@@ -6,7 +6,7 @@ namespace AniNexus.Repository;
 /// <summary>
 /// A repository for anime.
 /// </summary>
-public interface IAnimeRepository
+public interface IAnimeRepository : IRepository
 {
     /// <summary>
     /// Specifies to return a result using the release that contains the

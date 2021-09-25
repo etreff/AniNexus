@@ -6,7 +6,7 @@ namespace AniNexus.Repository;
 /// <summary>
 /// A repository for users.
 /// </summary>
-public interface IUserRepository
+public interface IUserRepository : IRepository
 {
     /// <summary>
     /// Returns basic information about a user.

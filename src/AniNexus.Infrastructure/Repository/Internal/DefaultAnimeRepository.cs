@@ -8,15 +8,12 @@ using Microsoft.Extensions.Logging;
 
 namespace AniNexus.Repository.Internal;
 
-internal class DefaultAnimeRepository : IAnimeRepository
+internal class DefaultAnimeRepository : DefaultRepositoryBase, IAnimeRepository
 {
-    private readonly ApplicationDbContext Context;
-    private readonly ILogger Logger;
-
     public DefaultAnimeRepository(ApplicationDbContext dbContext, ILogger<DefaultAnimeRepository> logger)
+        : base(dbContext, logger)
     {
-        Context = dbContext;
-        Logger = logger;
+
     }
 
     public async ValueTask<EAnimeAgeRating?> GetAnimeAgeRating(int animeId, int localeId, CancellationToken cancellationToken)
@@ -43,11 +40,8 @@ internal class DefaultAnimeRepository : IAnimeRepository
         return anime?.AgeRatingId is not null ? (EAnimeAgeRating)anime.AgeRatingId : null;
     }
 
-    public ValueTask<AnimeDTO?> GetAnimeAsync(int animeId, CancellationToken cancellationToken)
-    {
-        Logger.LogDebug("Fetching anime by Id: {AnimeId}", animeId);
-
-        var anime = Context.Anime
+    private static readonly Func<ApplicationDbContext, int, Task<AnimeModel?>> GetAnimeQuery = EF.CompileAsyncQuery((ApplicationDbContext context, int animeId) =>
+        context.Anime
             .AsNoTrackingWithIdentityResolution()
             .Include(m => m.Category)
             .Include(m => m.Season)
@@ -79,9 +73,15 @@ internal class DefaultAnimeRepository : IAnimeRepository
             // Favorites is *not* included for performance reasons. The count is inline in the record.
             //.Include(m => m.Favorites)
             .AsSplitQuery()
-            .FirstOrDefaultAsync(a => a.Id == animeId, cancellationToken);
+            .FirstOrDefault(a => a.Id == animeId)
+    );
+    public async ValueTask<AnimeDTO?> GetAnimeAsync(int animeId, CancellationToken cancellationToken)
+    {
+        Logger.LogDebug("Fetching anime by Id: {AnimeId}", animeId);
 
-        return new ValueTask<AnimeDTO?>(new AnimeDTO());
+        var anime = await GetAnimeQuery(Context, animeId);
+
+        return new AnimeDTO();
     }
 
     public async ValueTask<AnimeDTO?> GetAnimeAsync(string animeName, CancellationToken cancellationToken)

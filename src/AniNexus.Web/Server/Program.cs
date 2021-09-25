@@ -23,21 +23,13 @@ builder.Configuration
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-//builder.Services.AddTriggeredPooledDbContextFactory<ApplicationDbContext>(options =>
-//{
-//    options.UseSqlServer(connectionString, b =>
-//    {
-//        b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
-//    });
-//    options.UseAniNexusTriggers();
-//    options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
-//});
-builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
+builder.Services.AddTriggeredPooledDbContextFactory<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString, b =>
     {
         b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
     });
+    options.UseAniNexusTriggers();
     options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -82,8 +74,10 @@ builder.Services.AddAuthentication(options =>
                 return;
             }
 
-            await using var repositoryProvider = context.HttpContext.RequestServices.GetRequiredService<IRepositoryProvider>();
-            var user = await repositoryProvider.GetUserRepository().GetUserByNameAsync(username, context.HttpContext.RequestAborted);
+            var repositoryProvider = context.HttpContext.RequestServices.GetRequiredService<IRepositoryProvider>();
+            await using var scope = repositoryProvider.CreateAsyncScope();
+
+            var user = await scope.GetUserRepository().GetUserByNameAsync(username, context.HttpContext.RequestAborted);
 
             // Check that the user exists.
             if (user is null)

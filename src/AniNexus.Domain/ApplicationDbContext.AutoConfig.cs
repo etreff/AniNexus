@@ -10,7 +10,11 @@ namespace AniNexus.Domain
 {
     public partial class ApplicationDbContext
     {
-        private void AutoConfigureProperties(ModelBuilder builder)
+        /// <summary>
+        /// Configures conventions used by AniNexus.
+        /// </summary>
+        /// <param name="builder">The model builder.</param>
+        private void ConfigureConventions(ModelBuilder builder)
         {
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
@@ -100,18 +104,6 @@ namespace AniNexus.Domain
                             entityProperty.SetCollation(Collation.Japanese);
                         }
                     }
-
-                    // Set default values for booleans.
-                    if (entityProperty.ClrType == typeof(bool))
-                    {
-                        entityProperty.SetDefaultValue(false);
-                    }
-
-                    // Set default values for numbers.
-                    if (entityProperty.ClrType.IsNumeric())
-                    {
-                        entityProperty.SetDefaultValue(0);
-                    }
                 }
             }
 
@@ -126,22 +118,39 @@ namespace AniNexus.Domain
             }
         }
 
-        private void FixSoftDeleteQueryFiltersOnNavigationProperties(ModelBuilder builder)
+        /// <summary>
+        /// Applies rules that can only be properly configured after the configurations
+        /// have been applied.
+        /// </summary>
+        /// <param name="builder">The model builder.</param>
+        private void PostApplyConfigurations(ModelBuilder builder)
         {
-            /**
-             * This code attempts to fix the following error:
-             *
-             * Entity '{PrincipalModelName}' has a global query filter defined and is the required end of a relationship
-             * with the entity '{DependentModelName}'. This may lead to unexpected results when the required entity is
-             * filtered out. Either configure the navigation as optional, or define matching query filters for both entities
-             * in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
-             *
-             * This logic does so by adding a query filter automagically to models that contain navigation properties
-             * that implement <see cref="IHasSoftDelete"/>.
-             */
-
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
+                FixSoftDeleteQueryFiltersOnNavigationProperties(entityType);
+
+                AddDefaultsToPrimitiveTypes(entityType);
+            }
+
+            void FixSoftDeleteQueryFiltersOnNavigationProperties(IMutableEntityType? entityType)
+            {
+                /**
+                 * This code attempts to fix the following error:
+                 *
+                 * Entity '{PrincipalModelName}' has a global query filter defined and is the required end of a relationship
+                 * with the entity '{DependentModelName}'. This may lead to unexpected results when the required entity is
+                 * filtered out. Either configure the navigation as optional, or define matching query filters for both entities
+                 * in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+                 *
+                 * This logic does so by adding a query filter automagically to models that contain navigation properties
+                 * that implement <see cref="IHasSoftDelete"/>.
+                 */
+
+                if (entityType is null)
+                {
+                    return;
+                }
+
                 // If a query filter already exists for the model we will return early.
                 // Entities can only have a single filter.
                 //
@@ -151,7 +160,7 @@ namespace AniNexus.Domain
                 // going to skip that for now.
                 if (entityType.GetQueryFilter() is not null)
                 {
-                    continue;
+                    return;
                 }
 
                 /* We are creating the following expression:
@@ -200,6 +209,49 @@ namespace AniNexus.Domain
 
                     // Set the query filter on the entity type.
                     entityType.SetQueryFilter(lambda);
+                }
+            }
+
+            void AddDefaultsToPrimitiveTypes(IMutableEntityType? entityType)
+            {
+                if (entityType is null)
+                {
+                    return;
+                }
+
+                // Configure property-specific conventions.
+                foreach (var entityProperty in entityType.GetProperties())
+                {
+                    // Nullable properties will be assigned NULL by default. Only non-nullable
+                    // properties are the issue.
+                    if (entityProperty.ClrType.IsNullable())
+                    {
+                        continue;
+                    }
+
+                    // The default value was already set.
+                    if (entityProperty.GetDefaultValue() is not null)
+                    {
+                        continue;
+                    }
+
+                    // Set default values for booleans.
+                    if (entityProperty.ClrType == typeof(bool))
+                    {
+                        entityProperty.SetDefaultValue(false);
+                    }
+
+                    // Set default values for numbers.
+                    if (entityProperty.ClrType.IsNumeric())
+                    {
+                        // We do not want to set default values (constants) for
+                        // important keys or indices.
+                        bool isPartOfIndexOrKey = entityProperty.IsKey() || entityProperty.IsIndex();
+                        if (!isPartOfIndexOrKey)
+                        {
+                            entityProperty.SetDefaultValue(0);
+                        }
+                    }
                 }
             }
         }

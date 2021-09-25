@@ -47,13 +47,13 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        AutoConfigureProperties(builder);
+        ConfigureConventions(builder);
 
         builder.ApplyConfigurationsFromAssembly(typeof(AnimeModel).Assembly);
 
         base.OnModelCreating(builder);
 
-        FixSoftDeleteQueryFiltersOnNavigationProperties(builder);
+        PostApplyConfigurations(builder);
     }
 
     /// <summary>

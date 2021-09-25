@@ -8,9 +8,19 @@ namespace AniNexus.Collections.Concurrent;
 /// </summary>
 /// <typeparam name="TKey">The key type of the cache.</typeparam>
 /// <typeparam name="TValue">The value type of the cache.</typeparam>
-public sealed class ThreadSafeCache<TKey, TValue>
+public class ThreadSafeCache<TKey, TValue>
     where TKey : notnull
 {
+    /// <summary>
+    /// The keys of the elements in this cache.
+    /// </summary>
+    public ICollection<TKey> Keys => Cache.Keys;
+
+    /// <summary>
+    /// The values of the elements in this cache.
+    /// </summary>
+    public ICollection<TValue> Values => Cache.Values;
+
     private readonly ConcurrentDictionary<TKey, TValue> Cache;
     private readonly Func<TKey, TValue> ValueFactory;
 

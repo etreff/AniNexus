@@ -3,15 +3,16 @@
 /// <summary>
 /// Defines a repository providers and a unit of work.
 /// </summary>
-public interface IRepositoryProvider : IDisposable, IAsyncDisposable
+public interface IRepositoryProvider
 {
     /// <summary>
-    /// Gets an anime repository.
+    /// Creates a synchronous scope.
     /// </summary>
-    IAnimeRepository GetAnimeRepository();
+    public IRepositoryScope CreateScope();
 
     /// <summary>
-    /// Gets a user repository
+    /// Creates an asynchronous scope.
     /// </summary>
-    IUserRepository GetUserRepository();
+    /// <param name="cancellationToken">A token that, when cancelled, will stop commits to the scope.</param>
+    public IAsyncRepositoryScope CreateAsyncScope(in CancellationToken cancellationToken = default);
 }

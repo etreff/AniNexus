@@ -32,7 +32,8 @@ namespace AniNexus.Web.Server.Controllers
                 return Unauthorized(LoginResult.Failed("A username and password is required.").ToLoginResponse());
             }
 
-            var userRepository = RepositoryProvider.GetUserRepository();
+            await using var scope = RepositoryProvider.CreateAsyncScope();
+            var userRepository = scope.GetUserRepository();
             var loginInfo = await userRepository.LoginAsync(model.Username, model.Password, cancellationToken);
             if (!loginInfo.Succeeded)
             {
@@ -52,9 +53,10 @@ namespace AniNexus.Web.Server.Controllers
                 return GetActionResult(false);
             }
 
-            var userRepsitory = RepositoryProvider.GetUserRepository();
+            await using var scope = RepositoryProvider.CreateAsyncScope();
+            var userRepository = scope.GetUserRepository();
 
-            var user = await userRepsitory.GetUserByNameAsync(username, cancellationToken);
+            var user = await userRepository.GetUserByNameAsync(username, cancellationToken);
             if (user is null)
             {
                 return GetActionResult(false);
@@ -65,7 +67,7 @@ namespace AniNexus.Web.Server.Controllers
                 return GetActionResult(true);
             }
 
-            string? key = await userRepsitory.GetMFAKeyAsync(user.Id, cancellationToken);
+            string? key = await userRepository.GetMFAKeyAsync(user.Id, cancellationToken);
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(code))
             {
                 return GetActionResult(false);
@@ -82,8 +84,10 @@ namespace AniNexus.Web.Server.Controllers
         [Authorize]
         public async Task<IActionResult> Setup(CancellationToken cancellationToken)
         {
-            var userRepsitory = RepositoryProvider.GetUserRepository();
-            var user = await userRepsitory.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
+            await using var scope = RepositoryProvider.CreateAsyncScope();
+            var userRepository = scope.GetUserRepository();
+
+            var user = await userRepository.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
             if (user is null)
             {
                 return GetActionResult(false);
@@ -97,7 +101,7 @@ namespace AniNexus.Web.Server.Controllers
             var mfa = new TwoFactorAuthenticator();
             var setupInfo = mfa.GenerateSetupCode("AniNexus", user.Username, key, false, 3);
 
-            await userRepsitory.SetMFAKeyAsync(user.Id, key, cancellationToken);
+            await userRepository.SetMFAKeyAsync(user.Id, key, cancellationToken);
 
             return Ok(new
             {
@@ -111,14 +115,16 @@ namespace AniNexus.Web.Server.Controllers
         [Authorize]
         public async Task<IActionResult> VerifySetup(string code, CancellationToken cancellationToken)
         {
-            var userRepsitory = RepositoryProvider.GetUserRepository();
-            var user = await userRepsitory.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
+            await using var scope = RepositoryProvider.CreateAsyncScope();
+            var userRepository = scope.GetUserRepository();
+
+            var user = await userRepository.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
             if (user is null)
             {
                 return GetActionResult(false);
             }
 
-            string? key = await userRepsitory.GetMFAKeyAsync(user.Id, cancellationToken);
+            string? key = await userRepository.GetMFAKeyAsync(user.Id, cancellationToken);
             if (string.IsNullOrWhiteSpace(key))
             {
                 return GetActionResult(false);
@@ -128,7 +134,7 @@ namespace AniNexus.Web.Server.Controllers
             bool isValid = mfa.ValidateTwoFactorPIN(key, code);
             if (isValid)
             {
-                await userRepsitory.SetMFAEnabledAsync(user.Id, cancellationToken);
+                await userRepository.SetMFAEnabledAsync(user.Id, cancellationToken);
             }
 
             return GetActionResult(isValid);
@@ -139,14 +145,16 @@ namespace AniNexus.Web.Server.Controllers
         [Authorize]
         public async Task<IActionResult> Disable(string code, CancellationToken cancellationToken)
         {
-            var userRepsitory = RepositoryProvider.GetUserRepository();
-            var user = await userRepsitory.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
+            await using var scope = RepositoryProvider.CreateAsyncScope();
+            var userRepository = scope.GetUserRepository();
+
+            var user = await userRepository.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
             if (user is null)
             {
                 return GetActionResult(false);
             }
 
-            string? key = await userRepsitory.GetMFAKeyAsync(user.Id, cancellationToken);
+            string? key = await userRepository.GetMFAKeyAsync(user.Id, cancellationToken);
             if (string.IsNullOrWhiteSpace(key))
             {
                 return GetActionResult(true);
@@ -155,7 +163,7 @@ namespace AniNexus.Web.Server.Controllers
             var mfa = new TwoFactorAuthenticator();
 
             bool isValid = mfa.ValidateTwoFactorPIN(key, code);
-            return await DisableAsync(user, userRepsitory, isValid, cancellationToken);
+            return await DisableAsync(user, userRepository, isValid, cancellationToken);
         }
 
         [HttpPost]
@@ -163,14 +171,16 @@ namespace AniNexus.Web.Server.Controllers
         [Authorize(Policy.User.UpdateInfo)]
         public async Task<IActionResult> Disable(Guid userId, CancellationToken cancellationToken)
         {
-            var userRepsitory = RepositoryProvider.GetUserRepository();
-            var user = await userRepsitory.GetUserByIdAsync(userId, cancellationToken);
+            await using var scope = RepositoryProvider.CreateAsyncScope();
+            var userRepository = scope.GetUserRepository();
+
+            var user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
             if (user is null)
             {
                 return GetActionResult(false);
             }
 
-            return await DisableAsync(user, userRepsitory, true, cancellationToken);
+            return await DisableAsync(user, userRepository, true, cancellationToken);
         }
 
         private async Task<IActionResult> DisableAsync(UserDTO user, IUserRepository userRepository, bool isValid, CancellationToken cancellationToken)

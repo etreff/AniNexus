@@ -1564,16 +1564,7 @@ public static class ReflectionExtensions
     /// <param name="type">The type to check.</param>
     /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/></exception>
     public static bool IsNullable(this Type type)
-    {
-        Guard.IsNotNull(type, nameof(type));
-
-        if (type.IsValueType)
-        {
-            return Nullable.GetUnderlyingType(type) != null;
-        }
-
-        return true;
-    }
+        => IsNullableCore(type, null, type?.CustomAttributes!);
 
     /// <summary>
     /// Returns whether the given field declares a nullable type.
@@ -1595,7 +1586,7 @@ public static class ReflectionExtensions
     /// This method respects nullable reference types.
     /// </remarks>
     public static bool IsNullable(this ParameterInfo parameter)
-        => IsNullableCore(parameter?.ParameterType!, parameter!.Member, parameter!.CustomAttributes!);
+        => IsNullableCore(parameter?.ParameterType!, parameter?.Member, parameter?.CustomAttributes!);
 
     /// <summary>
     /// Returns whether the given property declares a nullable type.
@@ -1606,7 +1597,7 @@ public static class ReflectionExtensions
     /// This method respects nullable reference types.
     /// </remarks>
     public static bool IsNullable(this PropertyInfo property)
-        => IsNullableCore(property?.PropertyType!, property!.DeclaringType, property!.CustomAttributes!);
+        => IsNullableCore(property?.PropertyType!, property?.DeclaringType, property?.CustomAttributes!);
 
     private static bool IsNullableCore(Type memberType, MemberInfo? declaringType, IEnumerable<CustomAttributeData> customAttributes)
     {
