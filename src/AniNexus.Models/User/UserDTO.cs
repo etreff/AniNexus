@@ -1,10 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace AniNexus.Models.User;
 
 public record UserDTO(
-    Guid Id,
     string Username,
-    bool TwoFactorEnabled,
-    bool IsBanned,
-    DateTime? BannedUntil);
+    string Token,
+    Dictionary<string, string> Claims);

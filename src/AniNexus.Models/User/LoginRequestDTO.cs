@@ -18,4 +18,9 @@ public class LoginRequestDTO
     /// </summary>
     [Required(AllowEmptyStrings = false, ErrorMessage = "The password is required.")]
     public string Password { get; set; } = default!;
+
+    /// <summary>
+    /// The MFA code.
+    /// </summary>
+    public string? TwoFactorCode { get; set; }
 }

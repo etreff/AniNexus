@@ -9,9 +9,7 @@
 			<AddonLabel><Icon Name="IconName.User"></Icon></AddonLabel>
 		</Addon>
 		<Addon AddonType="AddonType.Body">
-			<TextEdit @bind-Text="@LoginModel.Username" MaxLength="16" Placeholder="Username" Size="Size.Large">
-				@*<FieldHelp>The username is required.</FieldHelp>*@
-			</TextEdit>
+			<TextEdit @bind-Text="@LoginModel.Username" MaxLength="16" Placeholder="Username" Size="Size.Large" />
 		</Addon>
 	</Addons>
 </Field>
@@ -21,80 +19,90 @@
 			<AddonLabel><Icon Name="IconName.Key"></Icon></AddonLabel>
 		</Addon>
 		<Addon AddonType="AddonType.Body">
-			<TextEdit @bind-Text="@LoginModel.Password" Role="TextRole.Password" Placeholder="Password" Size="Size.Large" />
+			@*Need to specify ChangeTextOnKeyPress="true" since we have the option to hit enter.
+			  This will send the model without the password being flushed to the data model.*@
+			<TextEdit @bind-Text="@LoginModel.Password" Role="TextRole.Password" Placeholder="Password" Size="Size.Large" KeyPress="@OnKeyPressedInPasswordAsync"
+					  ChangeTextOnKeyPress="true" />
 		</Addon>
 	</Addons>
 </Field>
-<Button Color="Color.Primary" Clicked="@Submit" Disabled="@LoginButtonDisabled">Login</Button>
 
+<Button Loading="@LoginButtonDisabled" Color="Color.Primary" Clicked="@Submit" Disabled="@LoginButtonDisabled">@(LoginButtonDisabled ? null : "Login")</Button>
+
+<MFACodeCollector @ref="MFAModal" CodeCollected="SubmitWithMFAAsync" />
+<ErrorModal @ref="ErrorModal" />
 
 @code {
 
 	[Inject]
-	private ILocalStorageService LocalStorage { get; set; } = default!;
-
-	[Inject]
-	private IHttpClientService HttpService { get; set; } = default!;
+	private IAuthenticationService AuthenticationService { get; set; } = default!;
 
 	[Inject]
 	private JSConsoleLogger ConsoleLogger { get; set; } = default!;
 
+	[Inject]
+	private NavigationManager Navigation { get; set; } = default!;
+
+	private ErrorModal ErrorModal = default!;
+	private MFACodeCollector MFAModal = default!;
 	private LoginRequestDTO LoginModel = new LoginRequestDTO();
 	private bool LoginButtonDisabled;
 
 	private async Task Submit()
 	{
+		bool loggedIn = false;
 		try
 		{
 			LoginButtonDisabled = true;
-			var http = await HttpService.GetHttpClientAsync();
-			using var response = await http.PostAsJsonAsync<LoginRequestDTO>("/api/account/authenticate/login", LoginModel);
-			var responseDTO = await response.Content.ReadFromJsonAsync<LoginResponseDTO>();
-			if (responseDTO is null)
+			var authenticationResult = await AuthenticationService.Authenticate(LoginModel);
+
+			if (authenticationResult.Code == ELoginResult.MFACodeRequired)
 			{
-				//TODO: Inform the user that a username and password is required (this is technically a developer error).
-				await ConsoleLogger.Error("Received null response from server.");
-				throw new Exception();
+				await MFAModal.ShowAsync();
+				return;
 			}
-			else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+
+			if (authenticationResult.Code != ELoginResult.Success)
 			{
-				//TODO: Inform the user that login failed.
-				await ConsoleLogger.Warning("User is not authorized.");
-				throw new Exception();
+				await ConsoleLogger.Error(authenticationResult.Message);
+				ErrorModal.Show("Login Failed", authenticationResult.Message);
+
+				LoginModel.TwoFactorCode = null;
+
+				return;
 			}
-			else if (response.StatusCode == System.Net.HttpStatusCode.OK)
-			{
-				if (responseDTO.Succeeded)
-				{
-					if (responseDTO.TwoFactorRequired)
-					{
-						//TODO: Display a MFA dialog and get the code.
-						await ConsoleLogger.Info("User MFA required.");
-					}
-					else if (!string.IsNullOrWhiteSpace(responseDTO.Token))
-					{
-						await ConsoleLogger.Info("Received access token from server.");
-						await LocalStorage.SetAccessTokenAsync(responseDTO.Token);
-						//TODO: Redirect to homepage or account page.
-					}
-					else
-					{
-						//TODO: Developer error. Should be impossible.
-					}
-				}
-				else
-				{
-					//TODO: Developer error. 200 should never return a failed login.
-				}
-			}
-			else
-			{
-				//TODO: Do something with unknown error. Maybe tell the user there was an issue logging them in and to try again later.
-			}
+
+			await authenticationResult.Commit();
+			loggedIn = true;
+
+			Navigation.NavigateTo("", false, true);
 		}
-		catch
+		catch (Exception e)
 		{
-			LoginButtonDisabled = false;
+			await ConsoleLogger.Error(e.Message);
+		}
+		finally
+		{
+			LoginButtonDisabled = loggedIn;
+		}
+	}
+
+	private async Task SubmitWithMFAAsync(string code)
+	{
+		await ConsoleLogger.Info($"Submitting MFA code {code}");
+
+		LoginModel.TwoFactorCode = code;
+		
+		await MFAModal.CloseAsync();
+		await Submit();
+	}
+
+	private async Task OnKeyPressedInPasswordAsync(KeyboardEventArgs e)
+	{
+		// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+		if (e.Key == "Enter" && !e.AltKey && !e.CtrlKey)
+		{
+			await Submit();
 		}
 	}
 }

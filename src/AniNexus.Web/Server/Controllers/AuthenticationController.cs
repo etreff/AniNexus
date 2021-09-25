@@ -1,7 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Cryptography;
-using AniNexus.Models;
 using AniNexus.Models.User;
 using AniNexus.Repository;
 using Google.Authenticator;
@@ -25,72 +23,41 @@ namespace AniNexus.Web.Server.Controllers
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] LoginRequestDTO model, CancellationToken cancellationToken)
+        public async Task<ActionResult<LoginResponseDTO>> Login([FromBody] LoginRequestDTO model, CancellationToken cancellationToken)
         {
             if (model is null || !ModelState.IsValid)
             {
-                return Unauthorized(LoginResult.Failed("A username and password is required.").ToLoginResponse());
+                return UnprocessableEntity(new LoginResponseDTO
+                {
+                    Code = ELoginResult.InvalidCredentials,
+                    Error = "The login request was invalid."
+                });
             }
 
             await using var scope = RepositoryProvider.CreateAsyncScope();
             var userRepository = scope.GetUserRepository();
-            var loginInfo = await userRepository.LoginAsync(model.Username, model.Password, cancellationToken);
-            if (!loginInfo.Succeeded)
-            {
-                return Unauthorized(loginInfo.ToLoginResponse());
-            }
+            var loginResult = await userRepository.LoginAsync(model.Username, model.Password, model.TwoFactorCode, cancellationToken);
 
-            return Ok(loginInfo.ToLoginResponse());
+            return loginResult.Code switch
+            {
+                ELoginResult.Success => Ok(loginResult.ToLoginResponse()),
+                ELoginResult.UserBanned => Unauthorized(loginResult.ToLoginResponse()),
+                _ => UnprocessableEntity(loginResult.ToLoginResponse())
+            };
         }
 
         [HttpPost]
-        [Route("/mfa/validate")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ValidateMFA(string username, string? code, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                return GetActionResult(false);
-            }
-
-            await using var scope = RepositoryProvider.CreateAsyncScope();
-            var userRepository = scope.GetUserRepository();
-
-            var user = await userRepository.GetUserByNameAsync(username, cancellationToken);
-            if (user is null)
-            {
-                return GetActionResult(false);
-            }
-
-            if (!user.TwoFactorEnabled)
-            {
-                return GetActionResult(true);
-            }
-
-            string? key = await userRepository.GetMFAKeyAsync(user.Id, cancellationToken);
-            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(code))
-            {
-                return GetActionResult(false);
-            }
-
-            var mfa = new TwoFactorAuthenticator();
-            bool isValid = mfa.ValidateTwoFactorPIN(key, code);
-
-            return GetActionResult(isValid);
-        }
-
-        [HttpPost]
-        [Route("/mfa/setup")]
+        [Route("mfa/setup")]
         [Authorize]
         public async Task<IActionResult> Setup(CancellationToken cancellationToken)
         {
-            await using var scope = RepositoryProvider.CreateAsyncScope();
+            await using var scope = RepositoryProvider.CreateAsyncScope(cancellationToken);
             var userRepository = scope.GetUserRepository();
 
             var user = await userRepository.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
             if (user is null)
             {
-                return GetActionResult(false);
+                return UnprocessableEntity();
             }
 
             byte[] keyBytes = new byte[40];
@@ -111,7 +78,7 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
-        [Route("/mfa/verify")]
+        [Route("mfa/verify")]
         [Authorize]
         public async Task<IActionResult> VerifySetup(string code, CancellationToken cancellationToken)
         {
@@ -121,13 +88,13 @@ namespace AniNexus.Web.Server.Controllers
             var user = await userRepository.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
             if (user is null)
             {
-                return GetActionResult(false);
+                return UnprocessableEntity();
             }
 
             string? key = await userRepository.GetMFAKeyAsync(user.Id, cancellationToken);
             if (string.IsNullOrWhiteSpace(key))
             {
-                return GetActionResult(false);
+                return UnprocessableEntity();
             }
 
             var mfa = new TwoFactorAuthenticator();
@@ -137,11 +104,13 @@ namespace AniNexus.Web.Server.Controllers
                 await userRepository.SetMFAEnabledAsync(user.Id, cancellationToken);
             }
 
-            return GetActionResult(isValid);
+            return isValid
+                ? Ok()
+                : UnprocessableEntity();
         }
 
         [HttpPost]
-        [Route("/mfa/disable")]
+        [Route("mfa/disable")]
         [Authorize]
         public async Task<IActionResult> Disable(string code, CancellationToken cancellationToken)
         {
@@ -151,13 +120,13 @@ namespace AniNexus.Web.Server.Controllers
             var user = await userRepository.GetUserByNameAsync(User.FindFirstValue(ClaimTypes.Name)!, cancellationToken);
             if (user is null)
             {
-                return GetActionResult(false);
+                return UnprocessableEntity();
             }
 
             string? key = await userRepository.GetMFAKeyAsync(user.Id, cancellationToken);
             if (string.IsNullOrWhiteSpace(key))
             {
-                return GetActionResult(true);
+                return UnprocessableEntity();
             }
 
             var mfa = new TwoFactorAuthenticator();
@@ -167,7 +136,7 @@ namespace AniNexus.Web.Server.Controllers
         }
 
         [HttpPost]
-        [Route("/mfa/disable-by-id")]
+        [Route("mfa/disable-by-id")]
         [Authorize(Policy.User.UpdateInfo)]
         public async Task<IActionResult> Disable(Guid userId, CancellationToken cancellationToken)
         {
@@ -177,13 +146,13 @@ namespace AniNexus.Web.Server.Controllers
             var user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
             if (user is null)
             {
-                return GetActionResult(false);
+                return UnprocessableEntity();
             }
 
             return await DisableAsync(user, userRepository, true, cancellationToken);
         }
 
-        private async Task<IActionResult> DisableAsync(UserDTO user, IUserRepository userRepository, bool isValid, CancellationToken cancellationToken)
+        private async Task<IActionResult> DisableAsync(UserInfo user, IUserRepository userRepository, bool isValid, CancellationToken cancellationToken)
         {
             if (isValid)
             {
@@ -191,14 +160,8 @@ namespace AniNexus.Web.Server.Controllers
                 await userRepository.ClearMFAAsync(user.Id, cancellationToken);
             }
 
-            return GetActionResult(isValid);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private IActionResult GetActionResult(bool isValid)
-        {
             return isValid
-                ? Accepted()
+                ? Ok()
                 : UnprocessableEntity();
         }
 

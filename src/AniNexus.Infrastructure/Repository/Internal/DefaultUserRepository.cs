@@ -6,6 +6,7 @@ using AniNexus.Domain.Models;
 using AniNexus.Models;
 using AniNexus.Models.Configuration;
 using AniNexus.Models.User;
+using Google.Authenticator;
 using Isopoh.Cryptography.Argon2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -38,6 +39,22 @@ namespace AniNexus.Repository.Internal
             user.TwoFactorKey = null;
         }
 
+        public async Task<UserInfo> ClearMFAAsync(UserInfo user, CancellationToken cancellationToken)
+        {
+            var userModel = await Context.Users.FindAsync(new object[] { user.Id }, cancellationToken);
+            if (userModel is null)
+            {
+                throw new InvalidOperationException("The specified user does not exist.");
+            }
+
+            LogMFADisabled(Logger, userModel.Username);
+
+            userModel.TwoFactorEnabled = false;
+            userModel.TwoFactorKey = null;
+
+            return MapUser(userModel);
+        }
+
         public async Task<string?> GetMFAKeyAsync(Guid userId, CancellationToken cancellationToken)
         {
             var user = await Context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
@@ -60,18 +77,30 @@ namespace AniNexus.Repository.Internal
             return user.TwoFactorKey;
         }
 
-        public async Task<UserDTO?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<UserInfo?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             var user = await Context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
             return MapUser(user);
         }
 
-        public async Task<UserDTO?> GetUserByNameAsync(string username, CancellationToken cancellationToken)
+        public async Task<UserInfo?> GetUserByNameAsync(string username, CancellationToken cancellationToken)
         {
             var user = await Context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
 
             return MapUser(user);
+        }
+
+        public async Task<UserInfo> SetMFAEnabledAsync(UserInfo user, CancellationToken cancellationToken)
+        {
+            var userModel = await Context.Users.FindAsync(new object[] { user.Id }, cancellationToken);
+            if (userModel is null)
+            {
+                throw new InvalidOperationException("The specified user does not exist.");
+            }
+
+            userModel.TwoFactorEnabled = true;
+            return MapUser(userModel);
         }
 
         public async Task SetMFAEnabledAsync(Guid userId, CancellationToken cancellationToken)
@@ -84,6 +113,7 @@ namespace AniNexus.Repository.Internal
 
             user.TwoFactorEnabled = true;
         }
+
 
         public async Task SetMFAKeyAsync(Guid userId, string key, CancellationToken cancellationToken)
         {
@@ -101,43 +131,89 @@ namespace AniNexus.Repository.Internal
                 .AsNoTrackingWithIdentityResolution()
                 .Include(m => m.Claims)
                 .FirstOrDefault(u => u.Username == username));
-        public async Task<LoginResult> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
+        public async Task<LoginResult> LoginAsync(string username, string password, string? code, CancellationToken cancellationToken = default)
         {
-            //string passwordHash = Argon2.Hash(password);
-
             var user = await GetUserByNameQuery(Context, username);
-
-            if (user is null || !Argon2.Verify(user.PasswordHash, password))
+            if (user is null)
             {
-                return LoginResult.Failed();
+                return new LoginResult(ELoginResult.InvalidCredentials)
+                {
+                    Error = "The username or password is incorrect."
+                };
+            }
+
+            // Do this first since password verification time can cause a token
+            // to expire. We want to delay returning this as the failure until after
+            // the password has been validated. We do not want to prompt for MFA
+            // if the password is incorrect.
+            bool requiresMFA = user.TwoFactorKey is not null && user.TwoFactorEnabled;
+            bool? isMFAValid = null;
+            if (requiresMFA && !string.IsNullOrWhiteSpace(code))
+            {
+                var mfa = new TwoFactorAuthenticator();
+                isMFAValid = mfa.ValidateTwoFactorPIN(user.TwoFactorKey, code);
+            }
+
+            if (!Argon2.Verify(user.PasswordHash, password))
+            {
+                return new LoginResult(ELoginResult.InvalidCredentials)
+                {
+                    Error = "The username or password is incorrect."
+                };
+            }
+
+            if (isMFAValid.HasValue)
+            {
+                if (!isMFAValid.Value)
+                {
+                    return new LoginResult(ELoginResult.InvalidMFACode)
+                    {
+                        Error = "The MFA code was invalid."
+                    };
+                }
+            }
+            else if (requiresMFA)
+            {
+                return new LoginResult(ELoginResult.MFACodeRequired)
+                {
+                    Error = "The user requires an MFA code to supplement login."
+                };
             }
 
             if (user.IsBanned)
             {
                 if (!user.BannedUntil.HasValue)
                 {
-                    return LoginResult.Failed("User is banned.");
+                    return new LoginResult(ELoginResult.UserBanned)
+                    {
+                        Error = "The user is banned."
+                    };
                 }
 
                 var now = DateTime.UtcNow;
                 if (user.BannedUntil.Value > now)
                 {
-                    return LoginResult.Failed("User is banned.");
+                    return new LoginResult(ELoginResult.UserBanned)
+                    {
+                        Error = "The user is banned."
+                    };
                 }
                 else
                 {
+                    // Go ahead and unban them.
                     user.IsBanned = false;
                     user.BannedUntil = null;
                 }
             }
 
-            if (user.TwoFactorKey is not null && !user.TwoFactorEnabled)
-            {
-                return LoginResult.MFARequired();
-            }
-
             string token = GetJwtToken(user);
-            return LoginResult.Success(token);
+            return new LoginResult(ELoginResult.Success)
+            {
+                User = new UserDTO(
+                    user.Username,
+                    GetJwtToken(user),
+                    user.Claims.ToDictionary(k => k.Claim.ClaimType, v => v.Claim.ClaimValue))
+            };
         }
 
         private string GetJwtToken(UserModel user)
@@ -170,17 +246,19 @@ namespace AniNexus.Repository.Internal
         }
 
         [return: NotNullIfNotNull("user")]
-        private static UserDTO? MapUser(UserModel? user)
+        private static UserInfo? MapUser(UserModel? user)
         {
             if (user is null)
             {
                 return null;
             }
 
-            return new UserDTO(
+            return new UserInfo(
                 user.Id,
                 user.Username,
+                user.PasswordHash,
                 user.TwoFactorEnabled,
+                user.TwoFactorKey,
                 user.IsBanned,
                 user.BannedUntil
             );

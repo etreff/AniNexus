@@ -13,14 +13,14 @@ public interface IUserRepository : IRepository
     /// </summary>
     /// <param name="userId">The user's Id.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    Task<UserDTO?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<UserInfo?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns basic information about a user.
     /// </summary>
     /// <param name="username">The user's username.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    Task<UserDTO?> GetUserByNameAsync(string username, CancellationToken cancellationToken = default);
+    Task<UserInfo?> GetUserByNameAsync(string username, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns the MFA key for a user.
@@ -52,6 +52,14 @@ public interface IUserRepository : IRepository
     Task SetMFAEnabledAsync(Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Enables MFA for a user.
+    /// </summary>
+    /// <param name="user">The user.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An updated <see cref="UserInfo"/> object.</returns>
+    Task<UserInfo> SetMFAEnabledAsync(UserInfo user, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Clears MFA information and disables MFA for a user.
     /// </summary>
     /// <param name="userId">The user's Id.</param>
@@ -59,10 +67,19 @@ public interface IUserRepository : IRepository
     Task ClearMFAAsync(Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Clears MFA information and disables MFA for a user.
+    /// </summary>
+    /// <param name="user">The user.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An updated <see cref="UserInfo"/> object.</returns>
+    Task<UserInfo> ClearMFAAsync(UserInfo user, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Checks that a user's credentials are valid and returns an authentication token on success.
     /// </summary>
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
+    /// <param name="code">The MFA code.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    Task<LoginResult> LoginAsync(string username, string password, CancellationToken cancellationToken = default);
+    Task<LoginResult> LoginAsync(string username, string password, string? code, CancellationToken cancellationToken = default);
 }

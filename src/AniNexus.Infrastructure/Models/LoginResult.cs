@@ -8,55 +8,23 @@ namespace AniNexus.Models
     public sealed class LoginResult
     {
         /// <summary>
-        /// Whether the user was successfully logged in.
+        /// The result code.
         /// </summary>
-        public bool Succeeded { get; private set; }
+        public ELoginResult Code { get; }
 
         /// <summary>
-        /// Whether the user requires MFA before login can succeed.
+        /// The user information.
         /// </summary>
-        public bool TwoFactorRequired { get; private set; }
+        public UserDTO? User { get; init; }
 
         /// <summary>
-        /// The authentication token.
+        /// The error, if one occurred.
         /// </summary>
-        public string? Token { get; private set; }
+        public string? Error { get; init; }
 
-        /// <summary>
-        /// The reason the login failed.
-        /// </summary>
-        public string? Error { get; private set; }
-
-        private LoginResult()
+        public LoginResult(ELoginResult code)
         {
-
-        }
-
-        internal static LoginResult Success(string token)
-        {
-            return new LoginResult
-            {
-                Succeeded = true,
-                Token = token
-            };
-        }
-
-        public static LoginResult Failed(string? reason = null)
-        {
-            return new LoginResult
-            {
-                Succeeded = false,
-                Error = reason
-            };
-        }
-
-        internal static LoginResult MFARequired()
-        {
-            return new LoginResult
-            {
-                Succeeded = true,
-                TwoFactorRequired = true
-            };
+            Code = code;
         }
 
         public LoginResponseDTO ToLoginResponse()
@@ -64,9 +32,8 @@ namespace AniNexus.Models
             return new LoginResponseDTO
             {
                 Error = Error,
-                Succeeded = Succeeded,
-                Token = Token,
-                TwoFactorRequired = TwoFactorRequired
+                Code = Code,
+                User = User
             };
         }
     }

@@ -15,7 +15,7 @@ builder.Services.AddHttpClient("AniNexus", client => client.BaseAddress = new Ur
 
 builder.Services.AddBlazorise(options =>
 {
-    //options.ChangeTextOnKeyPress = true;
+    options.ChangeTextOnKeyPress = false;
     //options.DelayTextOnKeyPress = true;
     //options.DelayTextOnKeyPressInterval = 300;
     options.EnableNumericStep = true;
@@ -26,6 +26,7 @@ builder.Services.AddBlazorise(options =>
 
 builder.Services
     .AddSingleton<JSConsoleLogger>()
+    .AddSingleton<IAuthenticationService, AuthenticationService>()
     .AddSingleton<ILocalStorageService, LocalStorageService>()
     .AddSingleton<IHttpClientService, HttpClientService>();
 

@@ -1,27 +1,35 @@
 ﻿namespace AniNexus.Models.User;
 
 /// <summary>
+/// The underlying login result code.
+/// </summary>
+public enum ELoginResult : byte
+{
+    GenericFailure,
+    Success,
+    InvalidCredentials,
+    UserBanned,
+    MFACodeRequired,
+    InvalidMFACode
+}
+
+/// <summary>
 /// Login result.
 /// </summary>
 public class LoginResponseDTO
 {
     /// <summary>
-    /// Whether the user was successfully logged in.
+    /// The result code.
     /// </summary>
-    public bool Succeeded { get; set; }
+    public ELoginResult Code { get; set; }
 
     /// <summary>
-    /// Whether the user requires MFA before login can succeed.
+    /// The user information.
     /// </summary>
-    public bool TwoFactorRequired { get; set; }
+    public UserDTO? User { get; set; }
 
     /// <summary>
-    /// The authentication token.
-    /// </summary>
-    public string? Token { get; set; }
-
-    /// <summary>
-    /// The reason the login failed.
+    /// The error, if one occurred.
     /// </summary>
     public string? Error { get; set; }
 }
