@@ -1,33 +1,37 @@
 ﻿@page "/account"
 @using AniNexus.Models.User
 
-<h3>Login</h3>
-
-<Field>
-	<Addons>
-		<Addon AddonType="AddonType.Start">
-			<AddonLabel><Icon Name="IconName.User"></Icon></AddonLabel>
-		</Addon>
-		<Addon AddonType="AddonType.Body">
-			<TextEdit @bind-Text="@LoginModel.Username" MaxLength="16" Placeholder="Username" Size="Size.Large" />
-		</Addon>
-	</Addons>
-</Field>
-<Field>
-	<Addons>
-		<Addon AddonType="AddonType.Start">
-			<AddonLabel><Icon Name="IconName.Key"></Icon></AddonLabel>
-		</Addon>
-		<Addon AddonType="AddonType.Body">
-			@*Need to specify ChangeTextOnKeyPress="true" since we have the option to hit enter.
-			  This will send the model without the password being flushed to the data model.*@
-			<TextEdit @bind-Text="@LoginModel.Password" Role="TextRole.Password" Placeholder="Password" Size="Size.Large" KeyPress="@OnKeyPressedInPasswordAsync"
-					  ChangeTextOnKeyPress="true" />
-		</Addon>
-	</Addons>
-</Field>
-
-<Button Loading="@LoginButtonDisabled" Color="Color.Primary" Clicked="@Submit" Disabled="@LoginButtonDisabled">@(LoginButtonDisabled ? null : "Login")</Button>
+<Column ColumnSize="ColumnSize.Is4.OnDesktop.Is6.OnTablet" Margin="Margin.Is0.FromTop.Is0.FromBottom.IsAuto.FromLeft.IsAuto.FromRight">
+	<Jumbotron Background="Background.Light">
+		<JumbotronTitle>Login</JumbotronTitle>
+		<JumbotronSubtitle>Login or <NavLink href="account/register">Register</NavLink> to manage your anime collection.</JumbotronSubtitle>
+		<Divider />
+		<Field>
+			<Addons>
+				<Addon AddonType="AddonType.Start">
+					<AddonLabel><Icon Name="IconName.User"></Icon></AddonLabel>
+				</Addon>
+				<Addon AddonType="AddonType.Body">
+					<TextEdit @bind-Text="@LoginModel.Username" MaxLength="16" Placeholder="Username" Size="Size.Large" />
+				</Addon>
+			</Addons>
+		</Field>
+		<Field>
+			<Addons>
+				<Addon AddonType="AddonType.Start">
+					<AddonLabel><Icon Name="IconName.Key"></Icon></AddonLabel>
+				</Addon>
+				<Addon AddonType="AddonType.Body">
+					@*Need to specify ChangeTextOnKeyPress="true" since we have the option to hit enter.
+						This will send the model without the password being flushed to the data model.*@
+					<TextEdit @bind-Text="@LoginModel.Password" Role="TextRole.Password" Placeholder="Password" Size="Size.Large" KeyPress="@OnKeyPressedInPasswordAsync"
+							  ChangeTextOnKeyPress="true" />
+				</Addon>
+			</Addons>
+		</Field>
+		<Button Loading="@LoginButtonDisabled" Color="Color.Primary" Clicked="@Submit" Disabled="@LoginButtonDisabled">@(LoginButtonDisabled ? null : "Login")</Button>
+	</Jumbotron>
+</Column>
 
 <MFACodeCollector @ref="MFAModal" CodeCollected="SubmitWithMFAAsync" />
 <ErrorModal @ref="ErrorModal" />
@@ -36,6 +40,9 @@
 
 	[Inject]
 	private IAuthenticationService AuthenticationService { get; set; } = default!;
+
+	[Inject]
+	private IPageProgressService PageProgress { get; set; } = default!;
 
 	[Inject]
 	private JSConsoleLogger ConsoleLogger { get; set; } = default!;
@@ -54,6 +61,8 @@
 		try
 		{
 			LoginButtonDisabled = true;
+			await PageProgress.Go(null, options => options.Color = Color.Info);
+
 			var authenticationResult = await AuthenticationService.Authenticate(LoginModel);
 
 			if (authenticationResult.Code == ELoginResult.MFACodeRequired)
@@ -84,6 +93,7 @@
 		finally
 		{
 			LoginButtonDisabled = loggedIn;
+			await PageProgress.Go(-1);
 		}
 	}
 
@@ -92,7 +102,7 @@
 		await ConsoleLogger.Info($"Submitting MFA code {code}");
 
 		LoginModel.TwoFactorCode = code;
-		
+
 		await MFAModal.CloseAsync();
 		await Submit();
 	}
