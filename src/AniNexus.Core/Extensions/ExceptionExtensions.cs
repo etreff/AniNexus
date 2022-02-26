@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
@@ -7,6 +8,9 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="Exception"/> extensions.
+/// </summary>
 public static class ExceptionExtensions
 {
     /// <summary>
@@ -60,7 +64,7 @@ public static class ExceptionExtensions
     /// <typeparam name="T">The exception type to find.</typeparam>
     /// <param name="e">The outer exception.</param>
     /// <param name="strictType">Whether the type to find must match exactly instead of accepting a child type.</param>
-    /// <exception cref="Reflection.TargetInvocationException">A static initializer is invoked and throws an exception.</exception>
+    /// <exception cref="TargetInvocationException">A static initializer is invoked and throws an exception.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [return: MaybeNull]
     public static T GetInnerExceptionOfType<T>(this Exception? e, bool strictType = true)
@@ -74,7 +78,7 @@ public static class ExceptionExtensions
     /// <param name="type">The exception type to find.</param>
     /// <param name="strictType">Whether the type to find must match exactly instead of accepting a child type.</param>
     /// <exception cref="ArgumentException"><paramref name="type"/> is not of type <see cref="Exception"/>.</exception>
-    /// <exception cref="Reflection.TargetInvocationException">A static initializer is invoked and throws an exception.</exception>
+    /// <exception cref="TargetInvocationException">A static initializer is invoked and throws an exception.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Exception? GetInnerExceptionOfType(this Exception? e, Type type, bool strictType = true)
     {
@@ -145,6 +149,7 @@ public static class ExceptionExtensions
     /// Returns the message of the innermost exception.
     /// </summary>
     /// <param name="e">The outer exception.</param>
+    /// <param name="depth">The number of <see cref="Exception.InnerException"/> to go down.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetInnermostExceptionMessage(this Exception e, int depth)
         => GetInnermostException(e, depth).Message;

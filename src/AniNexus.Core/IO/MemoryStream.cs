@@ -43,7 +43,7 @@ public class MemoryStream : Stream
     public override bool CanWrite
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => !IsReadOnlyMemory && !IsDisposed;
+        get => !_isReadOnlyMemory && !IsDisposed;
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class MemoryStream : Stream
         {
             CheckDisposed();
 
-            return Memory.Length;
+            return _memory.Length;
         }
     }
 
@@ -74,48 +74,59 @@ public class MemoryStream : Stream
         {
             CheckDisposed();
 
-            return InternalPosition;
+            return _internalPosition;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
             CheckDisposed();
-            CheckPosition(value, Memory.Length);
+            CheckPosition(value, _memory.Length);
 
-            InternalPosition = unchecked((int)value);
+            _internalPosition = unchecked((int)value);
         }
     }
 
     /// <summary>
-    /// Whether <see cref="Memory"/> was originally a
+    /// Whether <see cref="_memory"/> was originally a
     /// <see cref="ReadOnlyMemory{T}"/> instance.
     /// </summary>
-    private readonly bool IsReadOnlyMemory;
+    private readonly bool _isReadOnlyMemory;
 
     /// <summary>
     /// The memory we are tracking.
     /// </summary>
-    private Memory<byte> Memory;
+    private Memory<byte> _memory;
 
     /// <summary>
     /// The index of the current position pointer.
     /// </summary>
-    private int InternalPosition;
+    private int _internalPosition;
 
+    /// <summary>
+    /// Creates a new <see cref="MemoryStream"/> instance.
+    /// </summary>
+    /// <param name="memory">The memory span this stream covers.</param>
     public MemoryStream(in Memory<byte> memory)
     {
-        Memory = memory;
+        _memory = memory;
         Position = 0;
-        IsReadOnlyMemory = false;
+        _isReadOnlyMemory = false;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="MemoryStream"/> instance.
+    /// </summary>
+    /// <param name="memory">The memory span this stream covers.</param>
     public MemoryStream(in ReadOnlyMemory<byte> memory)
     {
-        Memory = MemoryMarshal.AsMemory(memory);
+        _memory = MemoryMarshal.AsMemory(memory);
         Position = 0;
-        IsReadOnlyMemory = true;
+        _isReadOnlyMemory = true;
     }
 
+    /// <summary>
+    /// Disposes resources used by this class.
+    /// </summary>
     protected override void Dispose(bool disposing)
     {
         if (IsDisposed)
@@ -123,7 +134,7 @@ public class MemoryStream : Stream
             return;
         }
 
-        Memory = default;
+        _memory = default;
         IsDisposed = true;
 
         base.Dispose(disposing);
@@ -149,9 +160,9 @@ public class MemoryStream : Stream
             _ => throw new ArgumentException("Invalid seek origin", nameof(origin))
         };
 
-        CheckPosition(index, Memory.Length);
+        CheckPosition(index, _memory.Length);
 
-        InternalPosition = unchecked((int)index);
+        _internalPosition = unchecked((int)index);
 
         return index;
     }
@@ -161,7 +172,6 @@ public class MemoryStream : Stream
     /// </summary>
     public sealed override void Flush()
     {
-
     }
 
     /// <summary>
@@ -190,9 +200,9 @@ public class MemoryStream : Stream
     {
         CheckDisposed();
 
-        var source = Memory.Span[InternalPosition..];
+        var source = _memory.Span[_internalPosition..];
 
-        InternalPosition += source.Length;
+        _internalPosition += source.Length;
 
         destination.Write(source);
     }
@@ -205,7 +215,7 @@ public class MemoryStream : Stream
     /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
     /// <returns>A task that represents the asynchronous copy operation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="buffersize" /> is negative or zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferSize" /> is negative or zero.</exception>
     /// <exception cref="ObjectDisposedException">Either the current stream or the destination stream is disposed.</exception>
     /// <exception cref="NotSupportedException">The current stream does not support reading, or the destination stream does not support writing.</exception>
     public sealed override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
@@ -241,12 +251,9 @@ public class MemoryStream : Stream
     {
         CheckDisposed();
 
-        if (InternalPosition == Memory.Length)
-        {
-            return -1;
-        }
-
-        return Memory.Span[InternalPosition++];
+        return _internalPosition != _memory.Length
+            ? _memory.Span[_internalPosition++]
+            : -1;
     }
 
     /// <summary>
@@ -265,15 +272,15 @@ public class MemoryStream : Stream
         CheckDisposed();
         CheckBuffer(buffer, offset, count);
 
-        int bytesAvailable = Memory.Length - InternalPosition;
+        int bytesAvailable = _memory.Length - _internalPosition;
         int bytesCopied = Math.Min(bytesAvailable, count);
 
-        var source = Memory.Span.Slice(InternalPosition, bytesCopied);
+        var source = _memory.Span.Slice(_internalPosition, bytesCopied);
         var dest = buffer.AsSpan(offset, bytesCopied);
 
         source.CopyTo(dest);
 
-        InternalPosition += bytesCopied;
+        _internalPosition += bytesCopied;
 
         return bytesCopied;
     }
@@ -288,14 +295,14 @@ public class MemoryStream : Stream
     {
         CheckDisposed();
 
-        int bytesAvailable = Memory.Length - InternalPosition;
+        int bytesAvailable = _memory.Length - _internalPosition;
         int bytesCopied = Math.Min(bytesAvailable, buffer.Length);
 
-        var source = Memory.Span.Slice(InternalPosition, bytesCopied);
+        var source = _memory.Span.Slice(_internalPosition, bytesCopied);
 
         source.CopyTo(buffer);
 
-        InternalPosition += bytesCopied;
+        _internalPosition += bytesCopied;
 
         return bytesCopied;
     }
@@ -307,7 +314,7 @@ public class MemoryStream : Stream
     /// <param name="offset">The byte offset in <paramref name="buffer" /> at which to begin writing data from the stream.</param>
     /// <param name="count">The maximum number of bytes to read.</param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
-    /// <returns>A task that represents the asynchronous read operation. The value of the <paramref name="TResult" /> parameter contains the total number of bytes read into the buffer. The result value can be less than the number of bytes requested if the number of bytes currently available is less than the requested number, or it can be 0 (zero) if the end of the stream has been reached.</returns>
+    /// <returns>A task that represents the asynchronous read operation. The value of the parameter contains the total number of bytes read into the buffer. The result value can be less than the number of bytes requested if the number of bytes currently available is less than the requested number, or it can be 0 (zero) if the end of the stream has been reached.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
     /// <exception cref="ArgumentException">The sum of <paramref name="offset" /> and <paramref name="count" /> is larger than the buffer length.</exception>
@@ -387,14 +394,14 @@ public class MemoryStream : Stream
         CheckBuffer(buffer, offset, count);
 
         var source = buffer.AsSpan(offset, count);
-        var dest = Memory.Span[InternalPosition..];
+        var dest = _memory.Span[_internalPosition..];
 
         if (!source.TryCopyTo(dest))
         {
             throw new ArgumentException("The current stream cannot contain the requested input data.");
         }
 
-        InternalPosition += source.Length;
+        _internalPosition += source.Length;
     }
 
     /// <summary>
@@ -411,14 +418,14 @@ public class MemoryStream : Stream
             throw new NotSupportedException();
         }
 
-        var dest = Memory.Span[InternalPosition..];
+        var dest = _memory.Span[_internalPosition..];
 
         if (!buffer.TryCopyTo(dest))
         {
             throw new ArgumentException("The current stream cannot contain the requested input data.");
         }
 
-        InternalPosition += buffer.Length;
+        _internalPosition += buffer.Length;
     }
 
     /// <summary>
@@ -487,22 +494,33 @@ public class MemoryStream : Stream
         }
     }
 
+    /// <summary>
+    /// Writes a byte to the current index.
+    /// </summary>
+    /// <param name="value">The byte to write.</param>
+    /// <exception cref="InvalidOperationException">The stream is read-only.</exception>
+    /// <exception cref="ArgumentException">The current stream cannot contain the requested input data.</exception>
     public override void WriteByte(byte value)
     {
         CheckDisposed();
         if (!CanWrite)
         {
-            throw new NotSupportedException();
+            throw new InvalidOperationException();
         }
 
-        if (InternalPosition == Memory.Length)
+        if (_internalPosition == _memory.Length)
         {
             throw new ArgumentException("The current stream cannot contain the requested input data.");
         }
 
-        Memory.Span[InternalPosition++] = value;
+        _memory.Span[_internalPosition++] = value;
     }
 
+    /// <summary>
+    /// Sets the length of the stream.
+    /// </summary>
+    /// <param name="value">The length of the stream.</param>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public sealed override void SetLength(long value)
     {
         throw new NotSupportedException();

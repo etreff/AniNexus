@@ -10,7 +10,7 @@ public static partial class Linq
     /// <summary>
     /// A random number generator.
     /// </summary>
-    private static MersenneTwisterRandom LinqRandom { get; set; } = new MersenneTwisterRandom();
+    private static MersenneTwisterRandom _linqRandom { get; set; } = new MersenneTwisterRandom();
 
     /// <summary>
     /// Seeds the random number generator used for extensions that
@@ -19,7 +19,7 @@ public static partial class Linq
     /// <param name="seed">The seed.</param>
     public static void SeedRandom(ulong seed)
     {
-        LinqRandom = new MersenneTwisterRandom(seed);
+        _linqRandom = new MersenneTwisterRandom(seed);
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public static partial class Linq
     /// <param name="seed">The seed.</param>
     public static void SeedRandom(ulong[] seed)
     {
-        LinqRandom = new MersenneTwisterRandom(seed);
+        _linqRandom = new MersenneTwisterRandom(seed);
     }
 }
 

@@ -8,9 +8,12 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus.Reflection;
 
+/// <summary>
+/// Reflection-related extensions.
+/// </summary>
 public static class ReflectionExtensions
 {
-    private static readonly Func<FieldInfo, bool> IsConstantDelegate = new Func<FieldInfo, bool>(IsConstant);
+    private static readonly Func<FieldInfo, bool> _isConstantDelegate = new(IsConstant);
 
     /// <summary>
     /// Filters types according to the member visibility.
@@ -216,13 +219,13 @@ public static class ReflectionExtensions
         var visibility = ((memberVisibility & EMemberVisibilityFlags.Public) > 0 ? BindingFlags.Public : 0) |
                          ((memberVisibility & (EMemberVisibilityFlags.Protected | EMemberVisibilityFlags.Private)) > 0 ? BindingFlags.NonPublic : 0);
 
-        var fields = type.GetFields(visibility | BindingFlags.Static).Where(IsConstantDelegate).ToList();
+        var fields = type.GetFields(visibility | BindingFlags.Static).Where(_isConstantDelegate).ToList();
         if (!declaredOnly)
         {
             var parent = type;
             while ((parent = parent?.BaseType) is not null && parent != typeof(object))
             {
-                fields.AddRange(parent.GetFields(visibility | BindingFlags.Static).Where(IsConstantDelegate));
+                fields.AddRange(parent.GetFields(visibility | BindingFlags.Static).Where(_isConstantDelegate));
             }
         }
 
@@ -598,7 +601,7 @@ public static class ReflectionExtensions
         Guard.IsNotNull(property, nameof(property));
 
         var setter = property.GetGetMethod(nonPublic);
-        if (!(setter is null))
+        if (setter is not null)
         {
             return setter;
         }
@@ -631,7 +634,7 @@ public static class ReflectionExtensions
         Guard.IsNotNull(property, nameof(property));
 
         var setter = property.GetSetMethod(nonPublic);
-        if (!(setter is null))
+        if (setter is not null)
         {
             return setter;
         }
@@ -1410,12 +1413,9 @@ public static class ReflectionExtensions
         Guard.IsNotNull(type, nameof(type));
         Guard.IsNotNull(interfaceType, nameof(interfaceType));
 
-        if (!interfaceType.IsInterface)
-        {
-            throw new ArgumentException($"Type must be an interface type.", nameof(interfaceType));
-        }
-
-        return type.GetInterfaces().Contains(interfaceType);
+        return interfaceType.IsInterface
+            ? type.GetInterfaces().Contains(interfaceType)
+            : throw new ArgumentException("Type must be an interface type.", nameof(interfaceType));
     }
 
     /// <summary>
@@ -1430,12 +1430,8 @@ public static class ReflectionExtensions
     {
         Guard.IsNotNull(type, nameof(type));
 
-        if (!type.HasAttribute<CompilerGeneratedAttribute>() || !type.Name.StartsWith("<>") || !type.IsClass)
-        {
-            return false;
-        }
-
-        return TypeDescriptor.GetProperties(type).Cast<PropertyDescriptor>().All(static p => p.Attributes[typeof(ReadOnlyAttribute)]!.Equals(ReadOnlyAttribute.Yes));
+        return type.HasAttribute<CompilerGeneratedAttribute>() && type.Name.StartsWith("<>") && type.IsClass &&
+            TypeDescriptor.GetProperties(type).Cast<PropertyDescriptor>().All(static p => p.Attributes[typeof(ReadOnlyAttribute)]!.Equals(ReadOnlyAttribute.Yes));
     }
 
     /// <summary>
@@ -1469,6 +1465,10 @@ public static class ReflectionExtensions
         }
     }
 
+    private static readonly MethodInfo _isDefaultValueGenericMethod = typeof(ReflectionExtensions)
+        .GetMethods()
+        .Single(m => m.Name == nameof(IsDefaultValue) && m.GetParameters().Length == 2);
+
     /// <summary>
     /// Returns whether this object is the default value for its type.
     /// </summary>
@@ -1482,47 +1482,42 @@ public static class ReflectionExtensions
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
     /// <param name="obj">The object to check.</param>
-    /// <param name="nullableIsDefault">Whether nullable values are considered non-default.</param>
-    public static bool IsDefaultValue<T>([AllowNull, NotNullWhen(false)] this T obj, bool nullableIsDefault)
+    /// <param name="valueTypeDefaultsAreDefaultForNullable">Whether default values of value types are considered default for nullable types (ex. 0 is considered default for Nullable&lt;int&gt;).</param>
+    public static bool IsDefaultValue<T>([AllowNull, NotNullWhen(false)] this T obj, bool valueTypeDefaultsAreDefaultForNullable)
     {
-        // Class types are an easy null check.
-        if (obj is null || Equals(obj, default(T)))
-        {
-            return true;
-        }
+        var memberType = typeof(T);
 
-        if (!typeof(T).IsValueType)
+        // Class types are an easy null check.
+        if (memberType.IsClass)
         {
-            return false;
+            return obj is null;
         }
 
         // Nullables 
-        var methodType = typeof(T);
-        if (methodType.IsNullable())
+        if (memberType.IsNullable())
         {
-            if (nullableIsDefault)
+            if (obj is null)
             {
-                return false;
+                return true;
             }
 
-            object? underlyingValue = typeof(Nullable<>).MakeGenericType(Nullable.GetUnderlyingType(methodType)!).GetProperty(nameof(Nullable<int>.Value))!.GetGetMethod()!.Invoke(obj, null);
-            return IsDefaultValue(underlyingValue, nullableIsDefault);
+            var innerType = Nullable.GetUnderlyingType(memberType)!;
+            object? underlyingValue = typeof(Nullable<>).MakeGenericType(innerType).GetProperty(nameof(Nullable<int>.Value))!.GetGetMethod()!.Invoke(obj, null);
+            if (underlyingValue is null)
+            {
+                return true;
+            }
+
+            bool isDefaultValue = (bool)_isDefaultValueGenericMethod.MakeGenericMethod(innerType).Invoke(null, new[] { underlyingValue, valueTypeDefaultsAreDefaultForNullable })!;
+            return isDefaultValue && valueTypeDefaultsAreDefaultForNullable;
         }
 
         // Value types. We need them unboxed.
-        // T may be an interface type which is a reference type, but the underlying type
-        // is a value type. We need the real underlying type here, so we cannot reuse
-        // the Type variable above.
-        var argumentType = obj.GetType();
-        if (argumentType.IsValueType && argumentType != methodType)
-        {
-            // Value types all have a default constructor. Making the objects
-            // may not be cheap, but there is nothing we can do about that.
-            object? o = Activator.CreateInstance(argumentType);
-            return obj.Equals(o);
-        }
 
-        return false;
+        // Value types all have a default constructor. Making the objects
+        // may not be cheap, but there is nothing we can do about that.
+        object? o = Activator.CreateInstance(memberType);
+        return Equals(obj, o);
     }
 
     /// <summary>

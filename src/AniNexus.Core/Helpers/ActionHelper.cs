@@ -2,6 +2,9 @@
 
 namespace AniNexus;
 
+/// <summary>
+/// A utility for working with Actions and Funcs.
+/// </summary>
 public static class ActionHelper
 {
     /// <summary>
@@ -77,7 +80,7 @@ public static class ActionHelper
     /// </summary>
     /// <param name="paramTypes">The parameter types of the action to create.</param>
     /// <param name="returnType">The return type of the <see cref="Func{T, TResult}"/>, or <see langword="null"/> to create an <see cref="Action"/> type.</param>
-    /// <exception cref="NotSupportedException"><paramref name="argumentCount"/> is greater than 7.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="paramTypes"/> has more than 7 elements.</exception>
     public static Type GetFuncOrActionType(Type[]? paramTypes, Type? returnType)
     {
         if (returnType == typeof(void) || returnType is null)

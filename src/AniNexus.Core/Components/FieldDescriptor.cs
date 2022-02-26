@@ -4,14 +4,14 @@ using Microsoft.Toolkit.Diagnostics;
 namespace AniNexus.Components;
 
 /// <summary>
-/// An <see cref="IDescriptor"/> for a <see cref="FieldInfo"/>.
+/// A descriptor for a <see cref="FieldInfo"/>.
 /// </summary>
 public class FieldDescriptor : IEquatable<FieldDescriptor>
 {
-    private static readonly Dictionary<FieldInfo, AttributeDescriptorCache[]> AttributeCache = new Dictionary<FieldInfo, AttributeDescriptorCache[]>();
+    private static readonly Dictionary<FieldInfo, AttributeDescriptorCache[]> _attributeCache = new();
 
     /// <summary>
-    /// The <see cref="Framework.TypeDescriptor"/> associated with this <see cref="FieldDescriptor"/>.
+    /// The <see cref="Components.TypeDescriptor"/> associated with this <see cref="FieldDescriptor"/>.
     /// </summary>
     public TypeDescriptor TypeDescriptor { get; }
 
@@ -20,8 +20,11 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
     /// </summary>
     public FieldInfo Field { get; }
 
-    private readonly AttributeDescriptorCache[] Attributes;
+    private readonly AttributeDescriptorCache[] _attributes;
 
+    /// <summary>
+    /// Creates a new <see cref="FieldDescriptor"/> instance.
+    /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="field"/> is <see langword="null"/></exception>
     /// <exception cref="TypeLoadException">A custom attribute type could not be loaded.</exception>
     /// <exception cref="InvalidCastException">An element in the sequence cannot be cast to type <see cref="Attribute"/>.</exception>
@@ -33,17 +36,17 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
         Field = field;
         TypeDescriptor = type;
 
-        if (AttributeCache.TryGetValue(Field, out var attributeCache))
+        if (_attributeCache.TryGetValue(Field, out var attributeCache))
         {
-            Attributes = attributeCache;
+            _attributes = attributeCache;
         }
         else
         {
-            lock (AttributeCache)
+            lock (_attributeCache)
             {
-                if (AttributeCache.TryGetValue(Field, out attributeCache))
+                if (_attributeCache.TryGetValue(Field, out attributeCache))
                 {
-                    Attributes = attributeCache;
+                    _attributes = attributeCache;
                 }
                 else
                 {
@@ -61,17 +64,22 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
                         IsInherited = true
                     }));
 
-                    Attributes = aCache.ToArray();
-                    AttributeCache.Add(Field, Attributes);
+                    _attributes = aCache.ToArray();
+                    _attributeCache.Add(Field, _attributes);
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Creates a new <see cref="FieldDescriptor"/> instance.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="field"/> is <see langword="null"/></exception>
+    /// <exception cref="TypeLoadException">A custom attribute type could not be loaded.</exception>
+    /// <exception cref="InvalidCastException">An element in the sequence cannot be cast to type <see cref="Attribute"/>.</exception>
     public FieldDescriptor(FieldInfo field, Type type)
         : this(field, new TypeDescriptor(type))
     {
-
     }
 
     /// <summary>
@@ -94,7 +102,7 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -130,7 +138,7 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -167,7 +175,7 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -184,39 +192,30 @@ public class FieldDescriptor : IEquatable<FieldDescriptor>
     /// <inheritdoc />
     public bool Equals(FieldDescriptor? other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return ReferenceEquals(this, other) || Field.Equals(other.Field);
+        return other is not null && (ReferenceEquals(this, other) || Field.Equals(other.Field));
     }
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj.GetType() == GetType() && Equals((FieldDescriptor)obj);
+        return obj is not null && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((FieldDescriptor)obj)));
     }
 
     /// <inheritdoc />
     public override int GetHashCode()
         => Field.GetHashCode();
 
+    /// <summary>
+    /// Compares two instances for equality.
+    /// </summary>
     public static bool operator ==(FieldDescriptor? left, FieldDescriptor? right)
     {
         return Equals(left, right);
     }
 
+    /// <summary>
+    /// Compares two instances for inequality.
+    /// </summary>
     public static bool operator !=(FieldDescriptor? left, FieldDescriptor? right)
     {
         return !Equals(left, right);

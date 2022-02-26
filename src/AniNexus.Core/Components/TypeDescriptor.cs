@@ -8,8 +8,8 @@ namespace AniNexus.Components;
 /// </summary>
 public class TypeDescriptor : IEquatable<TypeDescriptor>
 {
-    private static readonly Dictionary<Type, TypeDescriptorCache> Cache = new Dictionary<Type, TypeDescriptorCache>();
-    private static readonly Dictionary<Type, AttributeDescriptorCache[]> AttributeCache = new Dictionary<Type, AttributeDescriptorCache[]>();
+    private static readonly Dictionary<Type, TypeDescriptorCache> _cache = new();
+    private static readonly Dictionary<Type, AttributeDescriptorCache[]> _attributeCache = new();
 
     /// <summary>
     /// The type this descriptor is for.
@@ -19,16 +19,19 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
     /// <summary>
     /// The public properties of this type.
     /// </summary>
-    public IImmutableList<PropertyDescriptor> Properties => Info.Properties;
+    public IImmutableList<PropertyDescriptor> Properties => _info.Properties;
 
     /// <summary>
     /// The public fields of this type.
     /// </summary>
-    public IImmutableList<FieldDescriptor> Fields => Info.Fields;
+    public IImmutableList<FieldDescriptor> Fields => _info.Fields;
 
-    private readonly TypeDescriptorCache Info;
-    private readonly AttributeDescriptorCache[] Attributes;
+    private readonly TypeDescriptorCache _info;
+    private readonly AttributeDescriptorCache[] _attributes;
 
+    /// <summary>
+    /// Creates a new <see cref="TypeDescriptor"/> instance.
+    /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/></exception>
     /// <exception cref="TypeLoadException">A custom attribute type could not be loaded.</exception>
     /// <exception cref="InvalidCastException">An element in the sequence cannot be cast to type <see cref="Attribute"/>.</exception>
@@ -37,42 +40,42 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
         Guard.IsNotNull(type, nameof(type));
 
         Type = type;
-        if (Cache.TryGetValue(Type, out var cache))
+        if (_cache.TryGetValue(Type, out var cache))
         {
-            Info = cache;
+            _info = cache;
         }
         else
         {
-            lock (Cache)
+            lock (_cache)
             {
-                if (Cache.TryGetValue(Type, out cache))
+                if (_cache.TryGetValue(Type, out cache))
                 {
-                    Info = cache;
+                    _info = cache;
                 }
                 else
                 {
-                    Info = new TypeDescriptorCache
+                    _info = new TypeDescriptorCache
                     {
                         Properties = Type.GetProperties().Select(p => new PropertyDescriptor(p, this)).ToImmutableArray(),
                         Fields = Type.GetFields().Select(f => new FieldDescriptor(f, this)).ToImmutableArray()
                     };
 
-                    Cache.Add(Type, Info);
+                    _cache.Add(Type, _info);
                 }
             }
         }
 
-        if (AttributeCache.TryGetValue(Type, out var attributeCache))
+        if (_attributeCache.TryGetValue(Type, out var attributeCache))
         {
-            Attributes = attributeCache;
+            _attributes = attributeCache;
         }
         else
         {
-            lock (AttributeCache)
+            lock (_attributeCache)
             {
-                if (AttributeCache.TryGetValue(Type, out attributeCache))
+                if (_attributeCache.TryGetValue(Type, out attributeCache))
                 {
-                    Attributes = attributeCache;
+                    _attributes = attributeCache;
                 }
                 else
                 {
@@ -81,8 +84,8 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
 
                     implemented.AddRangeUnique(inherited);
 
-                    Attributes = implemented.ToArray();
-                    AttributeCache.Add(Type, Attributes);
+                    _attributes = implemented.ToArray();
+                    _attributeCache.Add(Type, _attributes);
                 }
             }
         }
@@ -108,7 +111,7 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -144,7 +147,7 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -181,7 +184,7 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -198,40 +201,26 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
     /// <inheritdoc />
     public bool Equals(TypeDescriptor? other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        return Type == other.Type;
+        return other is not null && (ReferenceEquals(this, other) || Type == other.Type);
     }
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj is TypeDescriptor other && Equals(other);
+        return obj is not null && (ReferenceEquals(this, obj) || (obj is TypeDescriptor other && Equals(other)));
     }
 
+    /// <summary>
+    /// Checks two instances for equality.
+    /// </summary>
     public static bool operator ==(TypeDescriptor? left, TypeDescriptor? right)
     {
         return Equals(left, right);
     }
 
+    /// <summary>
+    /// Checks two instances for inequality.
+    /// </summary>
     public static bool operator !=(TypeDescriptor? left, TypeDescriptor? right)
     {
         return !Equals(left, right);
@@ -266,33 +255,13 @@ public class TypeDescriptor : IEquatable<TypeDescriptor>
         /// <inheritdoc />
         public bool Equals(AttributeDescriptorCache? other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return Attribute.Equals(other.Attribute);
+            return other is not null && (ReferenceEquals(this, other) || Attribute.Equals(other.Attribute));
         }
 
         /// <inheritdoc />
         public override bool Equals(object? obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj.GetType() == GetType() && Equals((AttributeDescriptorCache)obj);
+            return obj is not null && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((AttributeDescriptorCache)obj)));
         }
 
         /// <inheritdoc />

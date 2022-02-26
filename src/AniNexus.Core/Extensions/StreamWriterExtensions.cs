@@ -2,6 +2,9 @@
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="StreamWriter"/> extensions.
+/// </summary>
 public static class StreamWriterExtensions
 {
     /// <summary>

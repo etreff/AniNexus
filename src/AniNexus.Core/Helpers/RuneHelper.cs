@@ -5,6 +5,9 @@ using AniNexus.Collections;
 
 namespace AniNexus.Helpers;
 
+/// <summary>
+/// A utility for working with <see cref="Rune"/> instances.
+/// </summary>
 public static class RuneHelper
 {
     /// <summary>
@@ -24,12 +27,12 @@ public static class RuneHelper
     }
 
     /// <summary>
-    /// Returns the number of steps needed to change the contents of <paramref name="span"/> into <paramref name="other"/>.
+    /// Returns the number of steps needed to change the contents of <paramref name="sourceRunes"/> into <paramref name="otherRunes"/>.
     /// </summary>
     /// <param name="sourceRunes">The first text instance.</param>
     /// <param name="otherRunes">The second text instance.</param>
     /// <param name="comparison">How to compare two chars.</param>
-    /// <returns>The number of steps needed to change <paramref name="span"/> into <paramref name="other"/>.</returns>
+    /// <returns>The number of steps needed to change <paramref name="sourceRunes"/> into <paramref name="otherRunes"/>.</returns>
     /// <exception cref="NotImplementedException">The specified comparison is not implemented between two Runes with different ordinal values.</exception>
     private static int DamerauLevenshteinDistance(ref StackList<Rune> sourceRunes, ref StackList<Rune> otherRunes, StringComparison comparison = StringComparison.Ordinal)
     {

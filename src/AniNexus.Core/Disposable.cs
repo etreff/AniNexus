@@ -204,34 +204,32 @@ public static class Disposable
 
     private sealed class DelegateDisposable : IDisposable, IAsyncDisposable
     {
-        private readonly Action?[] Actions;
-        private readonly Func<Task>?[] Funcs;
-        private readonly bool SuppressErrors;
+        private readonly Action?[] _actions;
+        private readonly Func<Task>?[] _funcs;
+        private readonly bool _suppressErrors;
 
         public DelegateDisposable(Action? action, bool suppressErrors)
             : this(new[] { action }, suppressErrors)
         {
-
         }
 
         public DelegateDisposable(Action?[]? actions, bool suppressErrors)
         {
-            Actions = actions ?? Array.Empty<Action>();
-            Funcs = Array.Empty<Func<Task>>();
-            SuppressErrors = suppressErrors;
+            _actions = actions ?? Array.Empty<Action>();
+            _funcs = Array.Empty<Func<Task>>();
+            _suppressErrors = suppressErrors;
         }
 
         public DelegateDisposable(Func<Task>? action, bool suppressErrors)
             : this(new[] { action }, suppressErrors)
         {
-
         }
 
         public DelegateDisposable(Func<Task>?[]? actions, bool suppressErrors)
         {
-            Actions = Array.Empty<Action>();
-            Funcs = actions ?? Array.Empty<Func<Task>>();
-            SuppressErrors = suppressErrors;
+            _actions = Array.Empty<Action>();
+            _funcs = actions ?? Array.Empty<Func<Task>>();
+            _suppressErrors = suppressErrors;
         }
 
         void IDisposable.Dispose()
@@ -248,7 +246,7 @@ public static class Disposable
 
         public void Dispose()
         {
-            foreach (var action in Actions)
+            foreach (var action in _actions)
             {
                 if (action is null)
                 {
@@ -259,7 +257,7 @@ public static class Disposable
                 {
                     action.Invoke();
                 }
-                catch when (SuppressErrors)
+                catch when (_suppressErrors)
                 {
                     // Suppress
                 }
@@ -268,7 +266,7 @@ public static class Disposable
 
         public async ValueTask DisposeAsync()
         {
-            foreach (var action in Funcs)
+            foreach (var action in _funcs)
             {
                 if (action is null)
                 {
@@ -279,7 +277,7 @@ public static class Disposable
                 {
                     await action.Invoke();
                 }
-                catch when (SuppressErrors)
+                catch when (_suppressErrors)
                 {
                     // Suppress
                 }
@@ -289,25 +287,25 @@ public static class Disposable
 
     private sealed class CompositeDisposable : IDisposable, IAsyncDisposable
     {
-        private readonly IDisposable?[] Disposables;
-        private readonly IAsyncDisposable?[] AsyncDisposables;
+        private readonly IDisposable?[] _disposables;
+        private readonly IAsyncDisposable?[] _asyncDisposables;
 
         public CompositeDisposable(params IDisposable?[]? disposables)
         {
-            Disposables = disposables ?? Array.Empty<IDisposable?>();
-            AsyncDisposables = Array.Empty<IAsyncDisposable?>();
+            _disposables = disposables ?? Array.Empty<IDisposable?>();
+            _asyncDisposables = Array.Empty<IAsyncDisposable?>();
         }
 
         public CompositeDisposable(params IAsyncDisposable?[]? disposables)
         {
-            Disposables = Array.Empty<IDisposable?>();
-            AsyncDisposables = disposables ?? Array.Empty<IAsyncDisposable?>();
+            _disposables = Array.Empty<IDisposable?>();
+            _asyncDisposables = disposables ?? Array.Empty<IAsyncDisposable?>();
         }
 
         public CompositeDisposable(IDisposable?[]? disposables, IAsyncDisposable?[]? asyncDisposables)
         {
-            Disposables = disposables ?? Array.Empty<IDisposable?>();
-            AsyncDisposables = asyncDisposables ?? Array.Empty<IAsyncDisposable?>();
+            _disposables = disposables ?? Array.Empty<IDisposable?>();
+            _asyncDisposables = asyncDisposables ?? Array.Empty<IAsyncDisposable?>();
         }
 
         void IDisposable.Dispose()
@@ -324,7 +322,7 @@ public static class Disposable
 
         public void Dispose()
         {
-            foreach (var disposable in Disposables)
+            foreach (var disposable in _disposables)
             {
                 if (disposable is null)
                 {
@@ -344,7 +342,7 @@ public static class Disposable
 
         public async ValueTask DisposeAsync()
         {
-            foreach (var disposable in AsyncDisposables)
+            foreach (var disposable in _asyncDisposables)
             {
                 if (disposable is null)
                 {

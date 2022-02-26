@@ -114,8 +114,9 @@ internal interface IEnumInfo<TEnum>
     /// Returns whether this enum value has every flag defined in <paramref name="flags"/> set.
     /// </summary>
     /// <param name="value">The enum value to check the flags of.</param>
+    /// <param name="flags">The flags to check for.</param>
     /// <remarks>
-    /// This is equivalent to ((<paramref name="value"/> & <paramref name="flags"/>) == <paramref name="flags"/>),
+    /// This is equivalent to ((<paramref name="value"/> &amp; <paramref name="flags"/>) == <paramref name="flags"/>),
     /// but has support for enum types that do not support bit manipulation.
     /// </remarks>
     bool HasAllFlags(TEnum value, TEnum flags);
@@ -130,8 +131,9 @@ internal interface IEnumInfo<TEnum>
     /// Returns whether this enum value has any flag defined in <paramref name="flags"/> set.
     /// </summary>
     /// <param name="value">The enum value to check the flags of.</param>
+    /// <param name="flags">The flags to check for.</param>
     /// <remarks>
-    /// This is equivalent to ((<paramref name="value"/> & <paramref name="flags"/>) != 0),
+    /// This is equivalent to ((<paramref name="value"/> &amp; <paramref name="flags"/>) != 0),
     /// but has support for enum types that do not support bit manipulation.
     /// </remarks>
     bool HasAnyFlags(TEnum value, TEnum flags);
@@ -159,7 +161,7 @@ internal interface IEnumInfo<TEnum>
     /// </summary>
     /// <param name="value">The value to parse.</param>
     /// <param name="ignoreCase">Whether to ignore casing when parsing the value.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"./></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException"><paramref name="value"/> is not a member of type <typeparamref name="TEnum"/>.</exception>
     TEnum Parse(string value, bool ignoreCase = false);
 
@@ -178,7 +180,7 @@ internal interface IEnumInfo<TEnum>
     /// <param name="value">The value to parse.</param>
     /// <param name="ignoreCase">Whether to ignore casing when parsing the value.</param>
     /// <param name="delimiter">The delimiter that acts as a separator for the individual flag components.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"./></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException"><paramref name="value"/> is not a member of type <typeparamref name="TEnum"/>.</exception>
     TEnum ParseFlags(string value, bool ignoreCase = false, string? delimiter = null);
 
@@ -344,8 +346,8 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     where TNumeric : struct, IComparable<TNumeric>, IEquatable<TNumeric>
     where TNumericProvider : struct, INumeric<TNumeric>
 {
-    private static readonly ReadOnlyMemory<char> DefaultDelimiterMemory = new ReadOnlyMemory<char>(new[] { ',' });
-    private static readonly Type EnumType = typeof(TEnum);
+    private static readonly ReadOnlyMemory<char> _defaultDelimiterMemory = new(new[] { ',' });
+    private static readonly Type _enumType = typeof(TEnum);
 
     /// <summary>
     /// Obtains the <see cref="TypeCode" /> for this enum.
@@ -362,26 +364,26 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// </summary>
     public bool IsFlagEnum { get; }
 
-    private readonly TNumericProvider Provider = new TNumericProvider();
+    private readonly TNumericProvider _provider = new();
 
-    private readonly Dictionary<TNumeric, EnumMember<TEnum, TNumeric, TNumericProvider>> Cache;
-    private readonly List<EnumMember<TEnum, TNumeric, TNumericProvider>> DuplicateMembers;
-    private readonly bool IsContiguous;
-    private readonly TNumeric AllFlags;
-    private readonly TNumeric Min;
-    private readonly TNumeric Max;
+    private readonly Dictionary<TNumeric, EnumMember<TEnum, TNumeric, TNumericProvider>> _cache;
+    private readonly List<EnumMember<TEnum, TNumeric, TNumericProvider>> _duplicateMembers;
+    private readonly bool _isContiguous;
+    private readonly TNumeric _allFlags;
+    private readonly TNumeric _min;
+    private readonly TNumeric _max;
 
     public EnumInfo(Type underlyingType, TypeCode typeCode)
     {
         UnderlyingType = underlyingType;
-        IsFlagEnum = EnumType.IsDefined(typeof(FlagsAttribute), false);
+        IsFlagEnum = _enumType.IsDefined(typeof(FlagsAttribute), false);
         TypeCode = typeCode;
 
-        var fields = EnumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-        Cache = new Dictionary<TNumeric, EnumMember<TEnum, TNumeric, TNumericProvider>>(fields.Length);
+        var fields = _enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+        _cache = new Dictionary<TNumeric, EnumMember<TEnum, TNumeric, TNumericProvider>>(fields.Length);
         if (fields.Length == 0)
         {
-            DuplicateMembers = new List<EnumMember<TEnum, TNumeric, TNumericProvider>>(0);
+            _duplicateMembers = new List<EnumMember<TEnum, TNumeric, TNumericProvider>>(0);
             return;
         }
 
@@ -393,8 +395,8 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
         if (isBoolean)
         {
             fieldDictionary = new Dictionary<string, TNumeric>();
-            var values = (TNumeric[])Enum.GetValues(EnumType);
-            string[] names = Enum.GetNames(EnumType);
+            var values = (TNumeric[])Enum.GetValues(_enumType);
+            string[] names = Enum.GetNames(_enumType);
             for (int i = 0; i < names.Length; ++i)
             {
                 fieldDictionary.Add(names[i], values[i]);
@@ -406,17 +408,17 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             string name = field.Name;
             var value = isBoolean ? fieldDictionary![name] : (TNumeric)field.GetValue(null)!;
             var member = new EnumMember<TEnum, TNumeric, TNumericProvider>(name, value);
-            if (Cache.ContainsKey(value))
+            if (_cache.ContainsKey(value))
             {
                 (duplicateValues ??= new List<EnumMember<TEnum, TNumeric, TNumericProvider>>()).Add(member);
             }
             else
             {
-                Cache.Add(value, member);
+                _cache.Add(value, member);
                 // Is Power of Two
-                if (Provider.BitCount(value) == 1)
+                if (_provider.BitCount(value) == 1)
                 {
-                    AllFlags = Provider.Or(AllFlags, value);
+                    _allFlags = _provider.Or(_allFlags, value);
                 }
             }
         }
@@ -424,12 +426,12 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
         bool isInOrder = true;
         var previous = default(TNumeric);
         bool isFirst = true;
-        foreach (var pair in Cache)
+        foreach (var pair in _cache)
         {
             var key = pair.Key;
             if (isFirst)
             {
-                Min = key;
+                _min = key;
                 isFirst = false;
             }
             else if (previous.CompareTo(key) > 0)
@@ -442,37 +444,37 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
         if (isInOrder)
         {
-            Max = previous;
+            _max = previous;
         }
         else
         {
             // Makes sure is in increasing value order, due to no removals
-            var values = Cache.ToArray();
+            var values = _cache.ToArray();
             Array.Sort(values, static (first, second) => first.Key.CompareTo(second.Key));
-            Cache = new Dictionary<TNumeric, EnumMember<TEnum, TNumeric, TNumericProvider>>(Cache.Count);
+            _cache = new Dictionary<TNumeric, EnumMember<TEnum, TNumeric, TNumericProvider>>(_cache.Count);
 
             foreach (var value in values)
             {
-                Cache.Add(value.Key, value.Value);
+                _cache.Add(value.Key, value.Value);
             }
 
-            Max = values[^1].Key;
-            Min = values[0].Key;
+            _max = values[^1].Key;
+            _min = values[0].Key;
         }
 
-        IsContiguous = Provider.Subtract(Min, Provider.Create(Cache.Count - 1)).Equals(Min);
+        _isContiguous = _provider.Subtract(_min, _provider.Create(_cache.Count - 1)).Equals(_min);
 
         if (duplicateValues is not null)
         {
             duplicateValues.TrimExcess();
             // Makes sure is in increasing order
             duplicateValues.Sort(static (first, second) => first.Value.CompareTo(second.Value));
-            DuplicateMembers = duplicateValues;
-            DuplicateMembers.Capacity = DuplicateMembers.Count;
+            _duplicateMembers = duplicateValues;
+            _duplicateMembers.Capacity = _duplicateMembers.Count;
         }
         else
         {
-            DuplicateMembers = new List<EnumMember<TEnum, TNumeric, TNumericProvider>>(0);
+            _duplicateMembers = new List<EnumMember<TEnum, TNumeric, TNumericProvider>>(0);
         }
     }
 
@@ -514,9 +516,9 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     {
         return memberSelection switch
         {
-            EEnumMemberSelection.Distinct => Cache.Count,
-            EEnumMemberSelection.All => Cache.Count + (DuplicateMembers?.Count ?? 0),
-            _ => Cache.Count + (DuplicateMembers?.Count ?? 0)
+            EEnumMemberSelection.Distinct => _cache.Count,
+            EEnumMemberSelection.All => _cache.Count + (_duplicateMembers?.Count ?? 0),
+            _ => _cache.Count + (_duplicateMembers?.Count ?? 0)
         };
     }
 
@@ -525,7 +527,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetFlagCount()
-        => Provider.BitCount(AllFlags);
+        => _provider.BitCount(_allFlags);
 
     /// <summary>
     /// Gets the number of flats set in <paramref name="value" />.
@@ -533,7 +535,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The value to check the flag count of.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetFlagCount(TEnum value)
-        => Provider.BitCount(Provider.And(ToNumeric(value), AllFlags));
+        => _provider.BitCount(_provider.And(ToNumeric(value), _allFlags));
 
     /// <summary>
     /// Obtains the names of all enum values.
@@ -550,9 +552,9 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public EnumMember<TEnum> GetMember(TEnum value)
     {
-        if (!Cache.TryGetValue(ToNumeric(value), out var member))
+        if (!_cache.TryGetValue(ToNumeric(value), out var member))
         {
-            ThrowHelper.ThrowInvalidEnumValue(value, EnumType);
+            ThrowHelper.ThrowInvalidEnumValue(value, _enumType);
         }
 
         return member;
@@ -597,7 +599,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     {
         return memberSelection switch
         {
-            EEnumMemberSelection.Distinct => Cache.Values.ToList(),
+            EEnumMemberSelection.Distinct => _cache.Values.ToList(),
             EEnumMemberSelection.All => GetAllMembers(),
             var _ => GetAllMembers()
         };
@@ -605,17 +607,17 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
     private IEnumerable<EnumMember<TEnum>> GetAllMembers()
     {
-        using var primaryEnumerator = Cache.GetEnumerator();
+        using var primaryEnumerator = _cache.GetEnumerator();
         bool primaryIsActive = primaryEnumerator.MoveNext();
         var primaryMember = primaryEnumerator.Current.Value;
 
-        using var duplicateEnumerator = DuplicateMembers.GetEnumerator();
+        using var duplicateEnumerator = _duplicateMembers.GetEnumerator();
         bool duplicateIsActive = duplicateEnumerator.MoveNext();
         var duplicateMember = duplicateEnumerator.Current;
 
         while (primaryIsActive || duplicateIsActive)
         {
-            if (duplicateIsActive && (!primaryIsActive || Provider.LessThan(ToNumeric(duplicateMember.Value), ToNumeric(primaryMember.Value))))
+            if (duplicateIsActive && (!primaryIsActive || _provider.LessThan(ToNumeric(duplicateMember.Value), ToNumeric(primaryMember.Value))))
             {
                 yield return duplicateMember;
                 if (duplicateIsActive = duplicateEnumerator.MoveNext())
@@ -640,9 +642,9 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The composite flag enum value.</param>
     public IEnumerable<TEnum> GetFlags(TEnum value)
     {
-        var validValue = Provider.And(ToNumeric(value), AllFlags);
-        bool isLessThanZero = Provider.LessThan(validValue, Provider.Zero);
-        for (var currentValue = Provider.One; (isLessThanZero || !Provider.LessThan(validValue, currentValue)) && !currentValue.Equals(Provider.Zero); currentValue = Provider.LeftShift(currentValue, 1))
+        var validValue = _provider.And(ToNumeric(value), _allFlags);
+        bool isLessThanZero = _provider.LessThan(validValue, _provider.Zero);
+        for (var currentValue = _provider.One; (isLessThanZero || !_provider.LessThan(validValue, currentValue)) && !currentValue.Equals(_provider.Zero); currentValue = _provider.LeftShift(currentValue, 1))
         {
             if (HasAnyFlags(ToEnum(validValue), ToEnum(currentValue)))
             {
@@ -690,19 +692,20 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The enum value to check the flags of.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAllFlags(TEnum value)
-        => HasAllFlags(value, ToEnum(AllFlags));
+        => HasAllFlags(value, ToEnum(_allFlags));
 
     /// <summary>
     /// Returns whether this enum value has every flag defined in <paramref name="flags"/> set.
     /// </summary>
     /// <param name="value">The enum value to check the flags of.</param>
+    /// <param name="flags">The flags to check for.</param>
     /// <remarks>
-    /// This is equivalent to ((<paramref name="value"/> & <paramref name="flags"/>) == <paramref name="flags"/>),
+    /// This is equivalent to ((<paramref name="value"/> &amp; <paramref name="flags"/>) == <paramref name="flags"/>),
     /// but has support for enum types that do not support bit manipulation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAllFlags(TEnum value, TEnum flags)
-        => Provider.And(ToNumeric(value), ToNumeric(flags)).Equals(ToNumeric(flags));
+        => _provider.And(ToNumeric(value), ToNumeric(flags)).Equals(ToNumeric(flags));
 
     /// <summary>
     /// Returns whether this enum value has any flags set.
@@ -710,19 +713,20 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The enum value to check the flags of.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAnyFlags(TEnum value)
-        => ToNumeric(value).Equals(Provider.Zero);
+        => ToNumeric(value).Equals(_provider.Zero);
 
     /// <summary>
     /// Returns whether this enum value has any flag defined in <paramref name="flags"/> set.
     /// </summary>
     /// <param name="value">The enum value to check the flags of.</param>
+    /// <param name="flags">The flags to check for.</param>
     /// <remarks>
-    /// This is equivalent to ((<paramref name="value"/> & <paramref name="flags"/>) != 0),
+    /// This is equivalent to ((<paramref name="value"/> &amp; <paramref name="flags"/>) != 0),
     /// but has support for enum types that do not support bit manipulation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAnyFlags(TEnum value, TEnum flags)
-        => !Provider.And(ToNumeric(value), ToNumeric(flags)).Equals(Provider.Zero);
+        => !_provider.And(ToNumeric(value), ToNumeric(flags)).Equals(_provider.Zero);
 
     /// <summary>
     /// Returns whether <paramref name="value" /> is defined in the enum.
@@ -730,7 +734,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The value to check.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsDefined(TEnum value)
-        => IsContiguous ? !(Provider.LessThan(ToNumeric(value), Min) || Provider.LessThan(Max, ToNumeric(value))) : Cache.ContainsKey(ToNumeric(value));
+        => _isContiguous ? !(_provider.LessThan(ToNumeric(value), _min) || _provider.LessThan(_max, ToNumeric(value))) : _cache.ContainsKey(ToNumeric(value));
 
     /// <summary>
     /// Returns whether <paramref name="value" /> is defined in the enum.
@@ -738,7 +742,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The value to check.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsDefined(object? value)
-        => value is not null && (IsContiguous ? !(Provider.LessThan(ToNumeric(value), Min) || Provider.LessThan(Max, ToNumeric(value))) : Cache.ContainsKey(ToNumeric(value)));
+        => value is not null && (_isContiguous ? !(_provider.LessThan(ToNumeric(value), _min) || _provider.LessThan(_max, ToNumeric(value))) : _cache.ContainsKey(ToNumeric(value)));
 
     /// <summary>
     /// Returns whether <paramref name="value" /> is a valid flag combination for this enum.
@@ -746,14 +750,14 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The value to check.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsValidFlagCombination(TEnum value)
-        => Provider.And(AllFlags, ToNumeric(value)).Equals(ToNumeric(value));
+        => _provider.And(_allFlags, ToNumeric(value)).Equals(ToNumeric(value));
 
     /// <summary>
     /// Attempts to parse <paramref name="value" /> into an enum of type <typeparamref name="TEnum" />.
     /// </summary>
     /// <param name="value">The value to parse.</param>
     /// <param name="ignoreCase">Whether to ignore casing when parsing the value.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"./></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException"><paramref name="value"/> is not a member of type <typeparamref name="TEnum"/>.</exception>
     public TEnum Parse(string value, bool ignoreCase = false)
     {
@@ -768,7 +772,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
         if (!TryParse(value, ignoreCase, out var result))
         {
-            ThrowHelper.ThrowInvalidEnumValue(value, EnumType);
+            ThrowHelper.ThrowInvalidEnumValue(value, _enumType);
         }
 
         return result;
@@ -780,7 +784,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <param name="value">The value to parse.</param>
     /// <param name="ignoreCase">Whether to ignore casing when parsing the value.</param>
     /// <param name="delimiter">The delimiter that acts as a separator for the individual flag components.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"./></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException"><paramref name="value"/> is not a member of type <typeparamref name="TEnum"/>.</exception>
     public TEnum ParseFlags(string value, bool ignoreCase = false, string? delimiter = null)
     {
@@ -792,7 +796,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             realDelimiter = ",";
         }
 
-        var result = Provider.Zero;
+        var result = _provider.Zero;
         int startIndex = 0;
         int valueLength = value.Length;
         while (startIndex < valueLength)
@@ -815,10 +819,10 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
             if (!TryParse(currentValue, ignoreCase, out var valueAsTInt))
             {
-                ThrowHelper.ThrowInvalidEnumValue(currentValue, EnumType);
+                ThrowHelper.ThrowInvalidEnumValue(currentValue, _enumType);
             }
 
-            result = Provider.Or(result, ToNumeric(valueAsTInt));
+            result = _provider.Or(result, ToNumeric(valueAsTInt));
 
             startIndex = newStartIndex;
         }
@@ -857,7 +861,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
         if (members.Count > 1)
         {
-            throw new AmbiguousMatchException($"Multiple values on the type {EnumType} match the value {value} (ignoreCase = {ignoreCase}).");
+            throw new AmbiguousMatchException($"Multiple values on the type {_enumType} match the value {value} (ignoreCase = {ignoreCase}).");
         }
 
         if (members.Count == 1)
@@ -924,7 +928,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             realDelimiter = ",";
         }
 
-        var r = Provider.Zero;
+        var r = _provider.Zero;
         int startIndex = 0;
         int valueLength = value!.Length;
         while (startIndex < valueLength)
@@ -946,7 +950,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             string currentValue = value[startIndex..delimiterIndex];
             if (TryParse(currentValue, ignoreCase, out var valueAsTInt))
             {
-                r = Provider.Or(r, ToNumeric(valueAsTInt));
+                r = _provider.Or(r, ToNumeric(valueAsTInt));
             }
             else
             {
@@ -962,7 +966,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
     /// <summary>
     /// Validates that <paramref name="value" /> is valid for the enum type <typeparamref name="TEnum" />. If the type
-    /// is decorated with <see cref="Flags" />, the value is checked to make sure it represents a valid flag
+    /// is decorated with <see cref="FlagsAttribute" />, the value is checked to make sure it represents a valid flag
     /// combination. If validation fails an <see cref="ArgumentOutOfRangeException" /> is thrown.
     /// </summary>
     /// <param name="value">The value being validated.</param>
@@ -996,7 +1000,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
         return TryParse(v, ignoreCase, out var result)
             ? result
-            : throw new FormatException($"The value {new string(value)} is not a member of type {EnumType} or is outside the underlying type's range.");
+            : throw new FormatException($"The value {new string(value)} is not a member of type {_enumType} or is outside the underlying type's range.");
     }
 
     /// <summary>
@@ -1026,7 +1030,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             delimiter = ",";
         }
 
-        var result = Provider.Zero;
+        var result = _provider.Zero;
         int startIndex = 0;
         int valueLength = value.Length;
         while (startIndex < valueLength)
@@ -1048,8 +1052,8 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
 
             var currentValue = value[startIndex..delimiterIndex];
             result = TryParse(currentValue, ignoreCase, out var valueAsTInt)
-                ? Provider.Or(result, ToNumeric(valueAsTInt))
-                : throw new FormatException($"The value {new string(value)} is not a member of type {EnumType} or is outside the underlying type's range.");
+                ? _provider.Or(result, ToNumeric(valueAsTInt))
+                : throw new FormatException($"The value {new string(value)} is not a member of type {_enumType} or is outside the underlying type's range.");
             startIndex = newStartIndex;
         }
         return ToEnum(result);
@@ -1090,8 +1094,8 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
         }
         if (members.Count > 1)
         {
-            string valueError = new string(value);
-            throw new AmbiguousMatchException($"Multiple values on the type {EnumType} match the value {valueError} (ignoreCase = {ignoreCase}).");
+            string valueError = new(value);
+            throw new AmbiguousMatchException($"Multiple values on the type {_enumType} match the value {valueError} (ignoreCase = {ignoreCase}).");
         }
 
         if (members.Count == 1)
@@ -1123,7 +1127,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
     /// <exception cref="AmbiguousMatchException">Multiple values on the type <typeparamref name="TEnum"/> match <paramref name="value"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryParseFlags(ReadOnlySpan<char> value, bool ignoreCase, out TEnum result)
-        => TryParseFlags(value, ignoreCase, DefaultDelimiterMemory.Span, out result);
+        => TryParseFlags(value, ignoreCase, _defaultDelimiterMemory.Span, out result);
 
     /// <summary>
     /// Attempts to parse <paramref name="value" /> into an enum of type <typeparamref name="TEnum" />.
@@ -1174,7 +1178,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             delimiter = ",";
         }
 
-        var r = Provider.Zero;
+        var r = _provider.Zero;
         int startIndex = 0;
         int valueLength = value.Length;
         while (startIndex < valueLength)
@@ -1196,7 +1200,7 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
             var currentValue = value[startIndex..delimiterIndex];
             if (TryParse(currentValue, ignoreCase, out var valueAsTInt))
             {
-                r = Provider.Or(r, ToNumeric(valueAsTInt));
+                r = _provider.Or(r, ToNumeric(valueAsTInt));
             }
             else
             {

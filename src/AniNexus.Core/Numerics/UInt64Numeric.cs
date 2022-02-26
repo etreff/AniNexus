@@ -25,6 +25,7 @@ using System.Globalization;
 
 namespace AniNexus;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public readonly struct UInt64Numeric : INumeric<ulong>
 {
     public readonly string ToHexadecimalString(ulong value)
@@ -103,4 +104,4 @@ public readonly struct UInt64Numeric : INumeric<ulong>
     public readonly ulong ToUInt64(ulong value)
         => value;
 }
-
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

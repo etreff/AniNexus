@@ -9,17 +9,23 @@ namespace AniNexus.Numerics.Random;
 /// </summary>
 public sealed class SimpleRandom : IRandomNumberProvider
 {
-    private readonly System.Random Random;
+    private readonly System.Random _random;
 
+    /// <summary>
+    /// Creates a new <see cref="SimpleRandom"/> instance.
+    /// </summary>
     public SimpleRandom()
     {
-        Random = new System.Random();
+        _random = new System.Random();
     }
 
+    /// <summary>
+    /// Creates a new <see cref="SimpleRandom"/> instance.
+    /// </summary>
     /// <param name="seed"></param>
     public SimpleRandom(int seed)
     {
-        Random = new System.Random(seed);
+        _random = new System.Random(seed);
     }
 
     /// <inheritdoc />
@@ -35,7 +41,7 @@ public sealed class SimpleRandom : IRandomNumberProvider
     /// <inheritdoc />
     public int NextInt32()
     {
-        return Random.Next();
+        return _random.Next();
     }
 
     /// <inheritdoc />
@@ -44,7 +50,7 @@ public sealed class SimpleRandom : IRandomNumberProvider
     {
         // System.Random is exclusive upper.
         int maxActual = maxValue == int.MaxValue ? int.MaxValue : maxValue + 1;
-        return Random.Next(maxActual);
+        return _random.Next(maxActual);
     }
 
     /// <inheritdoc />
@@ -56,7 +62,7 @@ public sealed class SimpleRandom : IRandomNumberProvider
         // System.Random is exclusive upper.
         int maxActual = ordered.Greater == int.MaxValue ? int.MaxValue : ordered.Greater + 1;
 
-        return Random.Next(ordered.Lesser, maxActual);
+        return _random.Next(ordered.Lesser, maxActual);
     }
 
     /// <inheritdoc />
@@ -87,7 +93,7 @@ public sealed class SimpleRandom : IRandomNumberProvider
     /// <inheritdoc />
     public double NextDouble()
     {
-        return Random.NextDouble();
+        return _random.NextDouble();
     }
 
     /// <inheritdoc />
@@ -96,7 +102,7 @@ public sealed class SimpleRandom : IRandomNumberProvider
     {
         Guard.IsGreaterThanOrEqualTo(maxValue, 0, nameof(maxValue));
 
-        return Random.NextDouble() * maxValue;
+        return _random.NextDouble() * maxValue;
     }
 
     /// <inheritdoc />
@@ -109,10 +115,12 @@ public sealed class SimpleRandom : IRandomNumberProvider
         Guard.IsGreaterThanOrEqualTo(maxValue, 0, nameof(maxValue));
 
         var ordered = new OrderedElements<double>(minValue, maxValue);
-        return Random.NextDouble() * (ordered.Greater - ordered.Lesser) + ordered.Lesser;
+        return _random.NextDouble() * (ordered.Greater - ordered.Lesser) + ordered.Lesser;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Obtains a random boolean.
+    /// </summary>
     public bool NextBool()
     {
         Span<byte> buffer = stackalloc byte[sizeof(bool)];
@@ -123,13 +131,16 @@ public sealed class SimpleRandom : IRandomNumberProvider
         return (buffer[0] & 1) != 1;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Obtains random bytes.
+    /// </summary>
+    /// <param name="size">The number of bytes to return.</param>
     public byte[] NextBytes(long size)
     {
-        lock (Random)
+        lock (_random)
         {
             byte[] data = new byte[size];
-            Random.NextBytes(data);
+            _random.NextBytes(data);
             return data;
         }
     }
@@ -140,9 +151,9 @@ public sealed class SimpleRandom : IRandomNumberProvider
     /// <param name="buffer">The buffer to fill.</param>
     public void NextBytes(Span<byte> buffer)
     {
-        lock (Random)
+        lock (_random)
         {
-            Random.NextBytes(buffer);
+            _random.NextBytes(buffer);
         }
     }
 }

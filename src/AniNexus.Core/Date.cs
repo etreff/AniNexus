@@ -22,18 +22,45 @@ public readonly struct Date : IEquatable<Date>, IComparable<Date>
     /// </summary>
     public readonly int Day { get; }
 
+    /// <summary>
+    /// Creates a new <see cref="Date"/> instance.
+    /// </summary>
+    /// <param name="year">The year.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="year"/> is 0.</exception>
     public Date(int year)
         : this(year, 0)
     {
-
     }
 
+    /// <summary>
+    /// Creates a new <see cref="Date"/> instance.
+    /// </summary>
+    /// <param name="year">The year.</param>
+    /// <param name="month">The month.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="year"/> and <paramref name="month"/> are both 0.</exception>
+    /// <remarks>
+    /// If month is higher than 12 it will be set to 12.
+    /// This class does not check for date validity.
+    /// </remarks>
     public Date(int year, int month)
         : this(year, month, 0)
     {
-
     }
 
+    /// <summary>
+    /// Creates a new <see cref="Date"/> instance.
+    /// </summary>
+    /// <param name="year">The year.</param>
+    /// <param name="month">The month.</param>
+    /// <param name="day">The day.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="year"/> and <paramref name="month"/> are both 0 -or-
+    /// <paramref name="month"/> has not been specified if <paramref name="day"/> has.
+    /// </exception>
+    /// <remarks>
+    /// If month and day are higher than 12 and 31, they will be set to those respective values.
+    /// This class does not check for date validity.
+    /// </remarks>
     public Date(int year, int month, int day)
     {
         if (year <= 0 && month <= 0)
@@ -62,7 +89,6 @@ public readonly struct Date : IEquatable<Date>, IComparable<Date>
     /// <summary>
     /// Returns a <see cref="Date"/> object that represents the current UTC date.
     /// </summary>
-    /// <returns></returns>
     public static Date UtcNow()
     {
         return DateTime.UtcNow;
@@ -81,9 +107,10 @@ public readonly struct Date : IEquatable<Date>, IComparable<Date>
     /// </summary>
     /// <param name="span">The characters to parse.</param>
     /// <param name="delimiter">The delimiter of the date components.</param>
+    /// <exception cref="FormatException"><paramref name="span"/> is not a valid Date format.</exception>
     public static Date Parse(ReadOnlySpan<char> span, char delimiter = '.')
     {
-        if (!TryParse(span, delimiter, out Date? result))
+        if (!TryParse(span, delimiter, out var result))
         {
             throw new FormatException("The input is not in a valid Date format.");
         }
@@ -153,21 +180,40 @@ public readonly struct Date : IEquatable<Date>, IComparable<Date>
         return true;
     }
 
+    /// <summary>
+    /// Creates a <see cref="Date"/> object from a <see cref="DateTime"/> object.
+    /// </summary>
+    /// <param name="dateTime"></param>
     public static implicit operator Date(DateTime dateTime)
     {
         return new Date(dateTime.Year, dateTime.Month, dateTime.Day);
     }
 
-    /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-    /// <param name="obj">The object to compare with the current instance.</param>
+    /// <summary>
+    /// Creates a <see cref="Date"/> object from a <see cref="DateTimeOffset"/> object.
+    /// </summary>
+    /// <param name="dateTime"></param>
+    public static implicit operator Date(DateTimeOffset dateTime)
+    {
+        return new Date(dateTime.Year, dateTime.Month, dateTime.Day);
+    }
+
+    /// <summary>
+    /// Indicates whether this instance and a specified object are equal.
+    /// </summary>
+    /// <param name="other">
+    /// The object to compare with the current instance.
+    /// </param>
     /// <returns>
-    ///   <see langword="true" /> if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, <see langword="false" />.</returns>
+    ///   <see langword="true" /> if <paramref name="other" /> and this instance are the same type and represent the same value; otherwise, <see langword="false" />.</returns>
     public override readonly bool Equals(object? other)
     {
         return other is Date d && Equals(d);
     }
 
-    /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+    /// <summary>
+    /// Indicates whether the current object is equal to another object of the same type.
+    /// </summary>
     /// <param name="other">An object to compare with this object.</param>
     /// <returns>
     ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
@@ -178,39 +224,71 @@ public readonly struct Date : IEquatable<Date>, IComparable<Date>
                (Day == other.Day || (Day == 0 && other.Day == 0));
     }
 
+    /// <summary>
+    /// Checks for equality.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     public static bool operator ==(Date left, Date right)
     {
         return left.Equals(right);
     }
 
+    /// <summary>
+    /// Checks for inequality.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     public static bool operator !=(Date left, Date right)
     {
         return !(left == right);
     }
 
+    /// <summary>
+    /// Checks whether <paramref name="left"/> is less than <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     public static bool operator <(Date left, Date right)
     {
         return left.CompareTo(right) < 0;
     }
 
+    /// <summary>
+    /// Checks whether <paramref name="left"/> is less than or equal to <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     public static bool operator <=(Date left, Date right)
     {
         return left.CompareTo(right) <= 0;
     }
 
+    /// <summary>
+    /// Checks whether <paramref name="left"/> is greater than <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     public static bool operator >(Date left, Date right)
     {
         return left.CompareTo(right) > 0;
     }
 
+    /// <summary>
+    /// Checks whether <paramref name="left"/> is greater than or equal to <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     public static bool operator >=(Date left, Date right)
     {
         return left.CompareTo(right) >= 0;
     }
 
-    /// <summary>Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.</summary>
+    /// <summary>
+    /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+    /// </summary>
     /// <param name="other">An object to compare with this instance.</param>
-    /// <returns>A value that indicates the relative order of the objects being compared. The return value has these meanings:  
+    /// <returns>A value that indicates the relative order of the objects being compared. The return value has these meanings:
     ///  <list type="table"><listheader><term> Value</term><description> Meaning</description></listheader><item><term> Less than zero</term><description> This instance precedes <paramref name="other" /> in the sort order.</description></item><item><term> Zero</term><description> This instance occurs in the same position in the sort order as <paramref name="other" />.</description></item><item><term> Greater than zero</term><description> This instance follows <paramref name="other" /> in the sort order.</description></item></list></returns>
     public readonly int CompareTo(Date other)
     {

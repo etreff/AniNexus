@@ -308,12 +308,9 @@ public static partial class FileSystemInfoExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Task OverwriteAsync(this FileInfo fileInfo, string? content, Encoding? encoding = null, CancellationToken cancellationToken = default)
     {
-        if (content is null)
-        {
-            return OverwriteAsync(fileInfo, Array.Empty<byte>(), cancellationToken);
-        }
-
-        return OverwriteAsync(fileInfo, (encoding ?? Encoding.UTF8).GetBytes(content), cancellationToken);
+        return content is null
+            ? OverwriteAsync(fileInfo, Array.Empty<byte>(), cancellationToken)
+            : OverwriteAsync(fileInfo, (encoding ?? Encoding.UTF8).GetBytes(content), cancellationToken);
     }
 
     /// <summary>
@@ -331,7 +328,7 @@ public static partial class FileSystemInfoExtensions
 
         await using var fs = fileInfo.CreateSafeStream(FileMode.Create);
         byte[] buffer = content ?? Array.Empty<byte>();
-        await fs.WriteAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+        await fs.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
         await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 
@@ -470,6 +467,11 @@ public static partial class FileSystemInfoExtensions
         }
     }
 
+    /// <summary>
+    /// Creates a new <see cref="FileInfo"/> object based off of this instance that has the specified extension.
+    /// </summary>
+    /// <param name="fileInfo">The file info to clone.</param>
+    /// <param name="extension">The new extension of the file.</param>
     public static FileInfo WithExtension(this FileInfo fileInfo, string extension)
     {
         Guard.IsNotNull(fileInfo, nameof(fileInfo));

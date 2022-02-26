@@ -5,6 +5,14 @@ namespace AniNexus.Linq;
 
 public static partial class Linq
 {
+    /// <summary>
+    /// Transforms a grouping with one key to a grouping with another key.
+    /// </summary>
+    /// <typeparam name="TOldKey">The type of the old key.</typeparam>
+    /// <typeparam name="TValue">The type of the grouping.</typeparam>
+    /// <typeparam name="TNewKey">The type of the new key.</typeparam>
+    /// <param name="grouping">The grouping.</param>
+    /// <param name="reducer">The method that gets the new key to group by.</param>
     public static IEnumerable<IGrouping<TNewKey, TValue>> TransformKey<TOldKey, TValue, TNewKey>(this IEnumerable<IGrouping<TOldKey, TValue>> grouping, Func<TOldKey, TNewKey> reducer)
     {
         Guard.IsNotNull(grouping, nameof(grouping));
@@ -22,15 +30,15 @@ public static partial class Linq
     private class Grouping<TKey, TValue> : IGrouping<TKey, TValue>
     {
         public TKey Key { get; }
-        private readonly IEnumerable<TValue> Value;
+        private readonly IEnumerable<TValue> _value;
 
         public Grouping(TKey key, IEnumerable<TValue> value)
         {
             Key = key;
-            Value = value;
+            _value = value;
         }
 
-        public IEnumerator<TValue> GetEnumerator() => Value.GetEnumerator();
+        public IEnumerator<TValue> GetEnumerator() => _value.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

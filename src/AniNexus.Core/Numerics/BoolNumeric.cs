@@ -25,6 +25,7 @@ using System.Globalization;
 
 namespace AniNexus;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public readonly struct BoolNumeric : INumeric<bool>
 {
     public readonly bool One => true;
@@ -107,4 +108,5 @@ public readonly struct BoolNumeric : INumeric<bool>
     public readonly ulong ToUInt64(bool value)
         => Convert.ToUInt64(value);
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 

@@ -32,41 +32,65 @@ public class LineSplitOptions
     /// </summary>
     public bool ReturnEmptyDelimiterEntries { get; set; }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions()
         : this(EWorldSplitOption.None)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(char delimiter)
         : this(delimiter, EWorldSplitOption.Split)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(EWorldSplitOption splitOption)
         : this(splitOption, true, true)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(char delimiter, EWorldSplitOption splitOption)
         : this(delimiter, splitOption, true, true)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(bool trimOutput, bool returnEmptyDelimiterEntries)
         : this(EWorldSplitOption.Split, trimOutput, returnEmptyDelimiterEntries)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(char delimiter, bool trimOutput, bool returnEmptyDelimiterEntries)
         : this(delimiter, EWorldSplitOption.Split, trimOutput, returnEmptyDelimiterEntries)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(EWorldSplitOption wordSplitOption, bool trimOutput, bool returnEmptyDelimiterEntries)
         : this(' ', wordSplitOption, trimOutput, returnEmptyDelimiterEntries)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="LineSplitOptions"/> instance.
+    /// </summary>
     public LineSplitOptions(char delimiter, EWorldSplitOption wordSplitOption, bool trimOutput, bool returnEmptyDelimiterEntries)
     {
         Delimiter = delimiter;
@@ -110,6 +134,9 @@ public enum EWorldSplitOption : byte
     Split
 }
 
+/// <summary>
+/// <see cref="string"/> extensions.
+/// </summary>
 public static class StringExtensions
 {
     /// <summary>

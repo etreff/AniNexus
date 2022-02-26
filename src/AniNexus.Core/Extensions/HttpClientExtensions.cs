@@ -19,18 +19,29 @@ public readonly struct DownloadProgress
     /// </summary>
     public readonly long TotalBytes { get; }
 
+    /// <summary>
+    /// Creates a new <see cref="DownloadProgress"/> instance.
+    /// </summary>
+    /// <param name="currentBytes">The current number of bytes downloaded.</param>
+    /// <param name="totalBytes">The total number of bytes to download.</param>
     public DownloadProgress(long currentBytes, long totalBytes)
     {
         CurrentBytes = currentBytes;
         TotalBytes = totalBytes;
     }
 
+    /// <summary>
+    /// Returns a string representation of this <see cref="DownloadProgress"/> instance.
+    /// </summary>
     public override readonly string ToString()
     {
         return $"{CurrentBytes}/{TotalBytes}";
     }
 }
 
+/// <summary>
+/// <see cref="HttpClient"/> extensions.
+/// </summary>
 public static class HttpClientExtensions
 {
     /// <summary>

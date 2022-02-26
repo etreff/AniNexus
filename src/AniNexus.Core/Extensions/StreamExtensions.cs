@@ -6,6 +6,9 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="Stream"/> extensions.
+/// </summary>
 public static class StreamExtensions
 {
     /// <summary>

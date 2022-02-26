@@ -72,7 +72,6 @@ public static class CancellationTokenExtensions
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="duration">The number of milliseconds to sleep.</param>
     /// <returns><see langword="true"/> if the thread slept for <paramref name="duration"/>, <see langword="false"/> if <paramref name="cancellationToken"/> was canceled.</returns>
-
     public static Task<bool> IsNotCancelledAfterAsync(this CancellationToken cancellationToken, int duration)
         => IsNotCancelledAfterAsync(cancellationToken, TimeSpan.FromMilliseconds(duration));
 

@@ -5,6 +5,9 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="Process"/> extensions.
+/// </summary>
 public static class ProcessExtensions
 {
     /// <summary>

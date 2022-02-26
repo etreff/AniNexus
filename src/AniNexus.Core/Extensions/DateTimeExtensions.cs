@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace AniNexus;
 
+/// <summary>
+/// Date related extensions.
+/// </summary>
 public static class DateTimeExtensions
 {
     /// <summary>
@@ -369,6 +372,10 @@ public static class DateTimeExtensions
         return years <= 1 ? "one year ago" : years + " years ago";
     }
 
+    /// <summary>
+    /// Returns a string representation of now minus this <see cref="DateTime"/> as a time span.
+    /// </summary>
+    /// <param name="startTime">The starting time.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ToTimeSpanString(this DateTime startTime)
     {
@@ -376,9 +383,13 @@ public static class DateTimeExtensions
         return ToTimeSpanString(ts);
     }
 
+    /// <summary>
+    /// Returns a string representation of now minus this <see cref="TimeSpan"/> as a time span.
+    /// </summary>
+    /// <param name="timeSpan">The starting time.</param>
     public static string ToTimeSpanString(this TimeSpan timeSpan)
     {
-        int i = TimeRanges.Keys.ToList().BinarySearch((long)timeSpan.TotalSeconds);
+        int i = _timeRanges.Keys.ToList().BinarySearch((long)timeSpan.TotalSeconds);
         // if index is positive, then one of the keys was an exact match (0-based)
         // if negative, the absolute value is the index of the next largest key (1-based)
         if (i < 0)
@@ -386,15 +397,15 @@ public static class DateTimeExtensions
             i = Math.Abs(i) - 1;
         }
         return string.Format(new HourMinSecFormatter(),
-            TimeRanges[TimeRanges.Keys[i]],
+            _timeRanges[_timeRanges.Keys[i]],
             timeSpan.Days,
             timeSpan.Hours,
             timeSpan.Minutes,
             timeSpan.Seconds);
     }
 
-    private static readonly SortedList<long, string> TimeRanges = new SortedList<long, string>
-        {
+    private static readonly SortedList<long, string> _timeRanges = new()
+    {
             { 59, "{3:S}" },
             { 60, "{2:M}" },
             { 60 * 60 - 1, "{2:M}, {3:S}" },
@@ -406,8 +417,8 @@ public static class DateTimeExtensions
 
     private sealed class HourMinSecFormatter : ICustomFormatter, IFormatProvider
     {
-        private static readonly Dictionary<string, string> TimeFormats = new Dictionary<string, string>
-            {
+        private static readonly Dictionary<string, string> _timeFormats = new()
+        {
                 { "S", "{0:P:Seconds:Second}" },
                 { "M", "{0:P:Minutes:Minute}" },
                 { "H", "{0:P:Hours:Hour}" },
@@ -416,7 +427,7 @@ public static class DateTimeExtensions
             };
 
         public string Format(string? format, object? arg, IFormatProvider? formatProvider)
-            => string.Format(new PluralFormatter(), TimeFormats[format!], arg);
+            => string.Format(new PluralFormatter(), _timeFormats[format!], arg);
 
         public object? GetFormat(Type? formatType)
             => formatType == typeof(ICustomFormatter) ? this : null;

@@ -25,7 +25,7 @@ public static class ComparerBridge
 /// <typeparam name="T">The underlying type being compared.</typeparam>
 public class ComparerBridge<T> : IComparer<T>, IComparer
 {
-    private readonly IComparer<T> Comparer;
+    private readonly IComparer<T> _comparer;
 
     /// <inheritdoc />
     public ComparerBridge()
@@ -36,18 +36,18 @@ public class ComparerBridge<T> : IComparer<T>, IComparer
     /// <inheritdoc />
     public ComparerBridge(IComparer<T>? comparer)
     {
-        Comparer = comparer ?? Comparer<T>.Default;
+        _comparer = comparer ?? Comparer<T>.Default;
     }
 
     /// <inheritdoc />
     public int Compare(T? x, T? y)
     {
-        return Comparer.Compare(x!, y!);
+        return _comparer.Compare(x!, y!);
     }
 
     /// <inheritdoc />
     public int Compare(object? x, object? y)
     {
-        return Comparer.Compare(x is not null ? (T)x : default, y is not null ? (T)y : default);
+        return _comparer.Compare(x is not null ? (T)x : default, y is not null ? (T)y : default);
     }
 }

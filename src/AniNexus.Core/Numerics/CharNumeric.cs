@@ -25,6 +25,7 @@ using System.Globalization;
 
 namespace AniNexus;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public readonly struct CharNumeric : INumeric<char>
 {
     public readonly char One => (char)1;
@@ -107,4 +108,5 @@ public readonly struct CharNumeric : INumeric<char>
     public readonly ulong ToUInt64(char value)
         => value;
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 

@@ -3,6 +3,9 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="EventHandler"/> extensions.
+/// </summary>
 public static class EventHandlerExtensions
 {
     /// <summary>

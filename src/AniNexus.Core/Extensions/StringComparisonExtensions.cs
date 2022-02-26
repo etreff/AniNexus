@@ -1,5 +1,8 @@
 ﻿namespace AniNexus;
 
+/// <summary>
+/// <see cref="StringComparison"/> extensions.
+/// </summary>
 public static class StringComparisonExtensions
 {
     /// <summary>

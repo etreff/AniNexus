@@ -9,7 +9,7 @@ namespace Microsoft.Toolkit.Diagnostics;
 public static partial class GuardEx
 {
     /// <summary>
-    /// Asserts that the input value is assignable to type <paramref name="typeOf"/>.
+    /// Asserts that the input value is assignable to type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="value">The input value to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
@@ -28,6 +28,7 @@ public static partial class GuardEx
     /// Asserts that the input value is assignable to type <paramref name="typeOf"/>.
     /// </summary>
     /// <param name="value">The input value to test.</param>
+    /// <param name="typeOf">The type to test against.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsTypeOf(Type value, Type typeOf, string name)

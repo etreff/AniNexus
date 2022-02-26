@@ -54,6 +54,7 @@ public static class ILGeneratorExtensions
     /// </summary>
     /// <param name="il">The input <see cref="ILGenerator"/> instance to use to emit instructions</param>
     /// <param name="index">The index of the argument to load</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is greater than 65534.</exception>
     public static void EmitLoadArgument(this ILGenerator il, int index)
     {
         Guard.IsNotNull(il, nameof(il));
@@ -66,7 +67,8 @@ public static class ILGeneratorExtensions
                 1 => OpCodes.Ldarg_1,
                 2 => OpCodes.Ldarg_2,
                 3 => OpCodes.Ldarg_3,
-                _ => throw new InvalidOperationException($"Invalid argument index [{index}]")
+                // Impossible - shutting up compiler.
+                _ => OpCodes.Ldarg
             });
         }
         else if (index <= 255)

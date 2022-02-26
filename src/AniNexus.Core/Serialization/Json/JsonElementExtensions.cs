@@ -3,6 +3,9 @@ using System.Text.Json;
 
 namespace AniNexus.Serialization.Json;
 
+/// <summary>
+/// <see cref="JsonElement"/> extensions.
+/// </summary>
 public static class JsonElementExtensions
 {
     /// <summary>
@@ -54,6 +57,7 @@ public static class JsonElementExtensions
     /// </summary>
     /// <typeparam name="T">The type to convert to.</typeparam>
     /// <param name="element">The element to convert.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public static ValueTask<T?> ToObjectAsync<T>(this in JsonElement element, CancellationToken cancellationToken = default)
         => ToObjectAsync<T>(element, null, cancellationToken);
 
@@ -63,6 +67,7 @@ public static class JsonElementExtensions
     /// <typeparam name="T">The type to convert to.</typeparam>
     /// <param name="element">The element to convert.</param>
     /// <param name="options">The serialization options.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public static ValueTask<T?> ToObjectAsync<T>(this in JsonElement element, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
     {
         var bufferWriter = new ArrayBufferWriter<byte>();
@@ -80,6 +85,7 @@ public static class JsonElementExtensions
     /// </summary>
     /// <param name="element">The element to convert.</param>
     /// <param name="targetType">The type to convert to.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public static ValueTask<object?> ToObjectAsync(this in JsonElement element, Type targetType, CancellationToken cancellationToken = default)
         => ToObjectAsync(element, targetType, null, cancellationToken);
 
@@ -89,6 +95,7 @@ public static class JsonElementExtensions
     /// <param name="element">The element to convert.</param>
     /// <param name="targetType">The type to convert to.</param>
     /// <param name="options">The serialization options.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public static async ValueTask<object?> ToObjectAsync(this JsonElement element, Type targetType, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
     {
         var bufferWriter = new ArrayBufferWriter<byte>();

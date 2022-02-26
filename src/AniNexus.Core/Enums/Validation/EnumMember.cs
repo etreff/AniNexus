@@ -21,19 +21,23 @@ public abstract class EnumMember<TEnum> : FieldDescriptor
     public TEnum Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => GetValue(ValueField);
+        get => GetValue(_valueField);
     }
 
-    private readonly object ValueField;
+    private readonly object _valueField;
 
     /// <inheritdoc />
     internal EnumMember(string name, object value)
         : base(typeof(TEnum).GetField(name)!, typeof(TEnum))
     {
         Name = name;
-        ValueField = value;
+        _valueField = value;
     }
 
+    /// <summary>
+    /// Gets the enum value from the specified object.
+    /// </summary>
+    /// <param name="value">The object to get the enum value of.</param>
     protected abstract TEnum GetValue(object value);
 }
 

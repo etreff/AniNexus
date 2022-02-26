@@ -5,7 +5,7 @@
 /// </summary>
 /// <typeparam name="T">The variable type.</typeparam>
 /// <remarks>
-/// This behaves like a synchronous <see cref="System.Threading.Tasks.TaskCompletionSource{TResult}"/>,
+/// This behaves like a synchronous <see cref="TaskCompletionSource{TResult}"/>,
 /// or a <see cref="ManualResetEvent"/> with a return type.
 /// </remarks>
 public sealed class ConditionVariable<T> : IDisposable
@@ -15,12 +15,12 @@ public sealed class ConditionVariable<T> : IDisposable
     /// </summary>
     public object SyncRoot { get; } = new object();
 
-    private readonly ManualResetEvent ResetEvent = new ManualResetEvent(false);
+    private readonly ManualResetEvent _resetEvent = new(false);
 
     [AllowNull, MaybeNull]
-    private T Value;
+    private T _value;
 
-    private bool IsSet;
+    private bool _isSet;
 
     /// <summary>
     /// Creates a new instance of <see cref="ConditionVariable{T}"/> that is
@@ -28,7 +28,6 @@ public sealed class ConditionVariable<T> : IDisposable
     /// </summary>
     public ConditionVariable()
     {
-
     }
 
     /// <summary>
@@ -41,9 +40,12 @@ public sealed class ConditionVariable<T> : IDisposable
         Set(initialValue);
     }
 
+    /// <summary>
+    /// Releases all resources used by the current instance of the <see cref="ConditionVariable{T}"/> class.
+    /// </summary>
     public void Dispose()
     {
-        ResetEvent.Dispose();
+        _resetEvent.Dispose();
     }
 
     /// <summary>
@@ -52,8 +54,8 @@ public sealed class ConditionVariable<T> : IDisposable
     [return: MaybeNull]
     public T Wait()
     {
-        ResetEvent.WaitOne();
-        return Value;
+        _resetEvent.WaitOne();
+        return _value;
     }
 
     /// <summary>
@@ -64,12 +66,9 @@ public sealed class ConditionVariable<T> : IDisposable
     [return: MaybeNull]
     public T Wait(int millisecondsTimeout)
     {
-        if (ResetEvent.WaitOne(millisecondsTimeout))
-        {
-            return Value;
-        }
-
-        throw new TimeoutException("Unable to wait for variable. The operation timed out.");
+        return _resetEvent.WaitOne(millisecondsTimeout)
+            ? _value
+            : throw new TimeoutException("Unable to wait for variable. The operation timed out.");
     }
 
     /// <summary>
@@ -80,12 +79,9 @@ public sealed class ConditionVariable<T> : IDisposable
     [return: MaybeNull]
     public T Wait(TimeSpan timeout)
     {
-        if (ResetEvent.WaitOne(timeout))
-        {
-            return Value;
-        }
-
-        throw new TimeoutException("Unable to wait for variable. The operation timed out.");
+        return _resetEvent.WaitOne(timeout)
+            ? _value
+            : throw new TimeoutException("Unable to wait for variable. The operation timed out.");
     }
 
     /// <summary>
@@ -95,8 +91,8 @@ public sealed class ConditionVariable<T> : IDisposable
     /// <exception cref="TimeoutException">The operation timed out.</exception>
     public async Task<T?> WaitAsync(CancellationToken cancellationToken = default)
     {
-        await ResetEvent.WaitOneAsync(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
-        return Value!;
+        await _resetEvent.WaitOneAsync(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
+        return _value!;
     }
 
     /// <summary>
@@ -107,12 +103,9 @@ public sealed class ConditionVariable<T> : IDisposable
     /// <exception cref="TimeoutException">The operation timed out.</exception>
     public async Task<T?> WaitAsync(int millisecondsTimeout, CancellationToken cancellationToken = default)
     {
-        if (await ResetEvent.WaitOneAsync(millisecondsTimeout, cancellationToken).ConfigureAwait(false))
-        {
-            return Value;
-        }
-
-        throw new TimeoutException("Unable to wait for variable. The operation timed out.");
+        return await _resetEvent.WaitOneAsync(millisecondsTimeout, cancellationToken).ConfigureAwait(false)
+            ? _value
+            : throw new TimeoutException("Unable to wait for variable. The operation timed out.");
     }
 
     /// <summary>
@@ -123,12 +116,9 @@ public sealed class ConditionVariable<T> : IDisposable
     /// <exception cref="TimeoutException">The operation timed out.</exception>
     public async Task<T?> WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        if (await ResetEvent.WaitOneAsync(timeout, cancellationToken).ConfigureAwait(false))
-        {
-            return Value;
-        }
-
-        throw new TimeoutException("Unable to wait for variable. The operation timed out.");
+        return await _resetEvent.WaitOneAsync(timeout, cancellationToken).ConfigureAwait(false)
+            ? _value
+            : throw new TimeoutException("Unable to wait for variable. The operation timed out.");
     }
 
     /// <summary>
@@ -140,14 +130,14 @@ public sealed class ConditionVariable<T> : IDisposable
     {
         lock (SyncRoot)
         {
-            if (IsSet)
+            if (_isSet)
             {
                 throw new InvalidOperationException("The variable has already been set.");
             }
 
-            Value = value;
-            ResetEvent.Set();
-            IsSet = true;
+            _value = value;
+            _resetEvent.Set();
+            _isSet = true;
         }
     }
 
@@ -158,9 +148,9 @@ public sealed class ConditionVariable<T> : IDisposable
     {
         lock (SyncRoot)
         {
-            Value = default;
-            ResetEvent.Reset();
-            IsSet = false;
+            _value = default;
+            _resetEvent.Reset();
+            _isSet = false;
         }
     }
 }

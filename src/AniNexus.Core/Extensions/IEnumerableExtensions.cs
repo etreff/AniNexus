@@ -11,6 +11,7 @@ public static partial class CollectionExtensions
     /// <param name="collection">The collection.</param>
     /// <param name="degreeOfParallelism">The number of elements to operate on at once.</param>
     /// <param name="action">The action to perform.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public static Task ForEachParallelAsync<T>(this IEnumerable<T> collection, int degreeOfParallelism, Func<T, CancellationToken, Task> action, CancellationToken cancellationToken = default)
     {
         Guard.IsNotNull(collection, nameof(collection));

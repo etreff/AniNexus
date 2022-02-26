@@ -3,7 +3,7 @@
 /// <summary>
 /// Age ratings for manga.
 /// </summary>
-public enum EMangaAgeRating
+public enum EMangaAgeRating : byte
 {
     /// <summary>
     /// There is no age restriction of the manga.

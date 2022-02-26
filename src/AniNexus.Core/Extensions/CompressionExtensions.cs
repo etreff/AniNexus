@@ -5,9 +5,12 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// Compression-related extensions.
+/// </summary>
 public static class CompressionExtensions
 {
-    private static readonly string[] DefaultPattern = new[] { "*.*" };
+    private static readonly string[] _defaultPattern = new[] { "*.*" };
 
     /// <summary>
     /// Compresses the contents of <paramref name="file"/> into the archive.
@@ -92,7 +95,7 @@ public static class CompressionExtensions
                                           CompressionLevel compressionLevel = CompressionLevel.Optimal)
     {
         currentDirectory ??= directory;
-        patterns ??= DefaultPattern;
+        patterns ??= _defaultPattern;
 
         foreach (var subdirectory in currentDirectory.GetDirectories())
         {

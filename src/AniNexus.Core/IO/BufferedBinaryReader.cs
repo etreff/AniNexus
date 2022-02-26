@@ -29,37 +29,50 @@ public ref struct BufferedBinaryReader
     /// <summary>
     /// The number of unread buffered bytes.
     /// </summary>
-    public int BytesAvailable => Math.Max(0, NumBufferedBytes - CurrentBufferOffset);
+    public int BytesAvailable => Math.Max(0, _numBufferedBytes - _currentBufferOffset);
 
-    private readonly Stream Stream;
-    private readonly Span<byte> Buffer;
+    private readonly Stream _stream;
+    private readonly Span<byte> _buffer;
 
-    private int CurrentBufferOffset;
-    private int NumBufferedBytes;
+    private int _currentBufferOffset;
+    private int _numBufferedBytes;
 
+    /// <summary>
+    /// Creates a new <see cref="BufferedBinaryReader"/> instance.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
     public BufferedBinaryReader(Stream stream)
         : this(stream, DefaultBufferSize)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="BufferedBinaryReader"/> instance.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="bufferSize">The buffer size.</param>
     public BufferedBinaryReader(Stream stream, int bufferSize)
         : this(stream, new byte[bufferSize])
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="BufferedBinaryReader"/> instance.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="buffer">The buffer.</param>
     public BufferedBinaryReader(Stream stream, Span<byte> buffer)
     {
         Guard.IsNotNull(stream, nameof(stream));
         Guard.CanSeek(stream, nameof(stream));
         Guard.IsGreaterThan(buffer.Length, 0, nameof(buffer));
 
-        Stream = stream;
-        Buffer = buffer;
-        BufferSize = Buffer.Length;
-        CurrentBufferOffset = BufferSize;
-        NumBufferedBytes = 0;
+        _stream = stream;
+        _buffer = buffer;
+        BufferSize = _buffer.Length;
+        _currentBufferOffset = BufferSize;
+        _numBufferedBytes = 0;
     }
-
 
     /// <summary>
     /// Fills the internal buffer.
@@ -67,11 +80,11 @@ public ref struct BufferedBinaryReader
     /// <returns><see langword="true"/> if new bytes are available, <see langword="false"/> otherwise.</returns>
     private bool FillBuffer()
     {
-        int numUnreadBytes = BufferSize - CurrentBufferOffset;
+        int numUnreadBytes = BufferSize - _currentBufferOffset;
         int numBytesToRead = BufferSize - numUnreadBytes;
 
-        CurrentBufferOffset = 0;
-        NumBufferedBytes = numUnreadBytes;
+        _currentBufferOffset = 0;
+        _numBufferedBytes = numUnreadBytes;
 
         // If we still have some leftover unread bytes, shift those over to 0 index.
         if (numUnreadBytes > 0)
@@ -82,25 +95,30 @@ public ref struct BufferedBinaryReader
         bool firstRead = true;
         while (numBytesToRead > 0)
         {
-            int numBytesRead = Stream.Read(Buffer.Slice(numUnreadBytes, numBytesToRead));
+            int numBytesRead = _stream.Read(_buffer.Slice(numUnreadBytes, numBytesToRead));
             if (numBytesRead == 0)
             {
                 return !firstRead;
             }
 
             firstRead = false;
-            NumBufferedBytes += numBytesRead;
+            _numBufferedBytes += numBytesRead;
             numBytesToRead -= numBytesRead;
             numUnreadBytes += numBytesRead;
         }
         return true;
     }
 
+    /// <summary>
+    /// Seems to the specified offset.
+    /// </summary>
+    /// <param name="offset">The offset.</param>
+    /// <param name="origin">The origin of the offset.</param>
     public void Seek(long offset, SeekOrigin origin)
     {
-        Stream.Seek(offset, origin);
-        CurrentBufferOffset = BufferSize;
-        NumBufferedBytes = 0;
+        _stream.Seek(offset, origin);
+        _currentBufferOffset = BufferSize;
+        _numBufferedBytes = 0;
     }
 
     /// <summary>
@@ -118,15 +136,18 @@ public ref struct BufferedBinaryReader
             }
         }
 
-        return Buffer[CurrentBufferOffset];
+        return _buffer[_currentBufferOffset];
     }
 
+    /// <summary>
+    /// Reads a boolean from the buffer.
+    /// </summary>
     public bool ReadBoolean()
     {
         int size = CheckAndFillBuffer<bool>();
 
-        byte result = Buffer[CurrentBufferOffset];
-        CurrentBufferOffset += size;
+        byte result = _buffer[_currentBufferOffset];
+        _currentBufferOffset += size;
 
         // Same logic as native BinaryReader.
         return result != 0;
@@ -254,6 +275,7 @@ public ref struct BufferedBinaryReader
     /// <summary>
     /// Reads bytes from the underlying buffer to fill <paramref name="buffer"/>.
     /// </summary>
+    /// <param name="reader">The reader.</param>
     /// <param name="buffer">The buffer to fill.</param>
     /// <remarks>
     /// This needs to be static. https://github.com/dotnet/roslyn/issues/23433
@@ -263,9 +285,9 @@ public ref struct BufferedBinaryReader
     {
         int count = reader.CheckAndFillBuffer(buffer.Length);
 
-        reader.CopyBuffer(reader.CurrentBufferOffset, buffer);
+        reader.CopyBuffer(reader._currentBufferOffset, buffer);
 
-        reader.CurrentBufferOffset += count;
+        reader._currentBufferOffset += count;
     }
 
     /// <summary>
@@ -280,9 +302,9 @@ public ref struct BufferedBinaryReader
 
         CheckAndFillBuffer<byte[]>(count);
 
-        CopyBuffer(CurrentBufferOffset, buffer, offset, count);
+        CopyBuffer(_currentBufferOffset, buffer, offset, count);
 
-        CurrentBufferOffset += count;
+        _currentBufferOffset += count;
     }
 
     /// <summary>
@@ -295,9 +317,9 @@ public ref struct BufferedBinaryReader
 
         byte[] result = new byte[count];
 
-        CopyBuffer(CurrentBufferOffset, result);
+        CopyBuffer(_currentBufferOffset, result);
 
-        CurrentBufferOffset += count;
+        _currentBufferOffset += count;
         return result;
     }
 
@@ -311,7 +333,7 @@ public ref struct BufferedBinaryReader
 
         if (count < BytesAvailable)
         {
-            CurrentBufferOffset += count;
+            _currentBufferOffset += count;
         }
         else
         {
@@ -325,8 +347,8 @@ public ref struct BufferedBinaryReader
     {
         int size = CheckAndFillBuffer<T>();
 
-        var result = MemoryMarshal.Read<T>(Buffer.Slice(CurrentBufferOffset, size));
-        CurrentBufferOffset += size;
+        var result = MemoryMarshal.Read<T>(_buffer.Slice(_currentBufferOffset, size));
+        _currentBufferOffset += size;
 
         return result;
     }
@@ -372,8 +394,8 @@ public ref struct BufferedBinaryReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void CopyBuffer(int srcOffset, int dstOffset, int count)
     {
-        var source = Buffer[srcOffset..];
-        var dest = Buffer.Slice(dstOffset, count);
+        var source = _buffer[srcOffset..];
+        var dest = _buffer.Slice(dstOffset, count);
 
         source.CopyTo(dest);
     }
@@ -381,14 +403,14 @@ public ref struct BufferedBinaryReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void CopyBuffer(int srcOffset, Span<byte> dest)
     {
-        var source = Buffer.Slice(srcOffset, dest.Length);
+        var source = _buffer.Slice(srcOffset, dest.Length);
         source.CopyTo(dest);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void CopyBuffer(int srcOffset, Span<byte> dest, int dstOffset, int count)
     {
-        var source = Buffer[srcOffset..];
+        var source = _buffer[srcOffset..];
         source.CopyTo(dest.Slice(dstOffset, count));
     }
 }

@@ -42,31 +42,28 @@ public static class EqualityComparer
 
     private class CustomEqualityComparer<T> : IEqualityComparer<T>
     {
-        private static readonly IEqualityComparer<T?> DefaultComparer = EqualityComparer<T?>.Default;
-        private static readonly Func<T, int> DefaultComparerHashCode = DefaultComparer.GetHashCode!;
+        private static readonly IEqualityComparer<T?> _defaultComparer = EqualityComparer<T?>.Default;
+        private static readonly Func<T, int> _defaultComparerHashCode = _defaultComparer.GetHashCode!;
 
-        [NotNull]
-        private Equality<T> Comparison { get; }
-
-        [NotNull]
-        private Func<T, int> HashCode { get; }
+        private readonly Equality<T> _comparison;
+        private readonly Func<T, int> _hashCode;
 
         public CustomEqualityComparer(Equality<T?>? comparison, Func<T, int>? hashCode)
         {
-            Comparison = comparison ?? new Equality<T>(DefaultComparer.Equals);
-            HashCode = hashCode ?? DefaultComparerHashCode;
+            _comparison = comparison ?? new Equality<T>(_defaultComparer.Equals);
+            _hashCode = hashCode ?? _defaultComparerHashCode;
         }
 
         /// <inheritdoc />
         public bool Equals(T? x, T? y)
         {
-            return Comparison(x, y);
+            return _comparison(x, y);
         }
 
         /// <inheritdoc />
         public int GetHashCode(T? obj)
         {
-            return obj is not null ? HashCode(obj) : 0;
+            return obj is not null ? _hashCode(obj) : 0;
         }
     }
 }

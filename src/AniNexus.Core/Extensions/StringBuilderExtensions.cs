@@ -4,6 +4,9 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="StringBuilder"/> extensions.
+/// </summary>
 public static class StringBuilderExtensions
 {
     /// <summary>

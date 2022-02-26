@@ -4,14 +4,14 @@ using Microsoft.Toolkit.Diagnostics;
 namespace AniNexus.Components;
 
 /// <summary>
-/// An <see cref="IDescriptor"/> for a <see cref="PropertyInfo"/>.
+/// A descriptor for a <see cref="PropertyInfo"/>.
 /// </summary>
 public class PropertyDescriptor : IEquatable<PropertyDescriptor>
 {
-    private static readonly Dictionary<PropertyInfo, AttributeDescriptorCache[]> AttributeCache = new Dictionary<PropertyInfo, AttributeDescriptorCache[]>();
+    private static readonly Dictionary<PropertyInfo, AttributeDescriptorCache[]> _attributeCache = new();
 
     /// <summary>
-    /// The <see cref="Framework.TypeDescriptor"/> associated with this
+    /// The <see cref="Components.TypeDescriptor"/> associated with this
     /// <see cref="PropertyDescriptor"/>.
     /// </summary>
     public TypeDescriptor TypeDescriptor { get; }
@@ -21,8 +21,11 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
     /// </summary>
     public PropertyInfo Property { get; }
 
-    private readonly AttributeDescriptorCache[] Attributes;
+    private readonly AttributeDescriptorCache[] _attributes;
 
+    /// <summary>
+    /// Creates a new <see cref="PropertyDescriptor"/> instance.
+    /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/></exception>
     /// <exception cref="TypeLoadException">A custom attribute type could not be loaded.</exception>
     /// <exception cref="InvalidCastException">An element in the sequence cannot be cast to type <see cref="Attribute"/>.</exception>
@@ -34,17 +37,17 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
         Property = property;
         TypeDescriptor = type;
 
-        if (AttributeCache.TryGetValue(Property, out var attributeCache))
+        if (_attributeCache.TryGetValue(Property, out var attributeCache))
         {
-            Attributes = attributeCache;
+            _attributes = attributeCache;
         }
         else
         {
-            lock (AttributeCache)
+            lock (_attributeCache)
             {
-                if (AttributeCache.TryGetValue(Property, out attributeCache))
+                if (_attributeCache.TryGetValue(Property, out attributeCache))
                 {
-                    Attributes = attributeCache;
+                    _attributes = attributeCache;
                 }
                 else
                 {
@@ -62,17 +65,22 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
                         IsInherited = true
                     }));
 
-                    Attributes = aCache.ToArray();
-                    AttributeCache.Add(Property, Attributes);
+                    _attributes = aCache.ToArray();
+                    _attributeCache.Add(Property, _attributes);
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Creates a new <see cref="PropertyDescriptor"/> instance.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/></exception>
+    /// <exception cref="TypeLoadException">A custom attribute type could not be loaded.</exception>
+    /// <exception cref="InvalidCastException">An element in the sequence cannot be cast to type <see cref="Attribute"/>.</exception>
     public PropertyDescriptor(PropertyInfo property, Type type)
         : this(property, new TypeDescriptor(type))
     {
-
     }
 
     /// <summary>
@@ -95,7 +103,7 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -131,7 +139,7 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -168,7 +176,7 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
         Guard.IsNotNull(attributeType, nameof(attributeType));
         GuardEx.IsTypeOf<Attribute>(attributeType, nameof(attributeType));
 
-        foreach (var attribute in Attributes)
+        foreach (var attribute in _attributes)
         {
             if (!inherit && attribute.IsInherited)
             {
@@ -185,39 +193,30 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
     /// <inheritdoc />
     public bool Equals(PropertyDescriptor? other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return ReferenceEquals(this, other) || Property.Equals(other.Property);
+        return other is not null && (ReferenceEquals(this, other) || Property.Equals(other.Property));
     }
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj.GetType() == GetType() && Equals((PropertyDescriptor)obj);
+        return obj is not null && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((PropertyDescriptor)obj)));
     }
 
     /// <inheritdoc />
     public override int GetHashCode()
         => Property.GetHashCode();
 
+    /// <summary>
+    /// Checks two instances for equality.
+    /// </summary>
     public static bool operator ==(PropertyDescriptor? left, PropertyDescriptor? right)
     {
         return Equals(left, right);
     }
 
+    /// <summary>
+    /// Checks two instances for in inequality.
+    /// </summary>
     public static bool operator !=(PropertyDescriptor? left, PropertyDescriptor? right)
     {
         return !Equals(left, right);
@@ -233,7 +232,6 @@ public class PropertyDescriptor : IEquatable<PropertyDescriptor>
 /// <summary>
 /// Checks the equality of two <see cref="PropertyDescriptor"/>s.
 /// </summary>
-
 public class PropertyDescriptorEqualityComparer : IEqualityComparer<PropertyDescriptor>
 {
     /// <inheritdoc />

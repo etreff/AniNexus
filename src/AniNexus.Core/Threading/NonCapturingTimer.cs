@@ -12,6 +12,7 @@ namespace AniNexus.Threading;
 /// </remarks>
 public static class NonCapturingTimer
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public static Timer Create(TimerCallback callback, int dueTime)
         => Create(callback, dueTime, Timeout.Infinite);
 
@@ -78,5 +79,6 @@ public static class NonCapturingTimer
             }
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
 

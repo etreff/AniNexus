@@ -97,6 +97,7 @@ public static partial class CollectionExtensions
     /// <summary>
     /// Gets the value associated with the specified key.
     /// </summary>
+    /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="dictionary"></param>
     /// <param name="key">The key whose value to get.</param>
@@ -151,6 +152,7 @@ public static partial class CollectionExtensions
     /// <summary>
     /// Gets the value associated with the specified key. <paramref name="dictionary"/> may be <see langword="null"/>.
     /// </summary>
+    /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="dictionary"></param>
     /// <param name="key">The key whose value to get.</param>

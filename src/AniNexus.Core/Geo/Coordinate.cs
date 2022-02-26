@@ -14,8 +14,8 @@ public class Coordinate : IEquatable<Coordinate>
     /// The radius of the Earth in kilometers. This is the average of the
     /// authalic and approximation radii.
     /// </summary>
-    private const double EarthRadius = 6371.9;
-    private const double PiOver180 = Math.PI / 180;
+    private const double _earthRadius = 6371.9;
+    private const double _piOver180 = Math.PI / 180;
 
     /// <summary>
     /// The latitude.
@@ -23,9 +23,9 @@ public class Coordinate : IEquatable<Coordinate>
     public double Latitude
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => LatitudeField;
+        get => _latitudeField;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => LatitudeField = WrapLatitude(value);
+        set => _latitudeField = WrapLatitude(value);
     }
 
     /// <summary>
@@ -34,13 +34,13 @@ public class Coordinate : IEquatable<Coordinate>
     public double Longitude
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => LongitudeField;
+        get => _longitudeField;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => LongitudeField = WrapLongitude(value);
+        set => _longitudeField = WrapLongitude(value);
     }
 
-    private double LatitudeField;
-    private double LongitudeField;
+    private double _latitudeField;
+    private double _longitudeField;
 
     /// <summary>
     /// Creates a new <see cref="Coordinate"/> object.
@@ -146,17 +146,17 @@ public class Coordinate : IEquatable<Coordinate>
     /// </summary>
     public static double GetHaversineDistance(double latitudeA, double longitudeA, double latitudeB, double longitudeB)
     {
-        double latA = latitudeA * PiOver180;
-        double latB = latitudeB * PiOver180;
-        double deltaLat = (latitudeB - latitudeA) * PiOver180;
-        double deltaLong = (longitudeB - longitudeA) * PiOver180;
+        double latA = latitudeA * _piOver180;
+        double latB = latitudeB * _piOver180;
+        double deltaLat = (latitudeB - latitudeA) * _piOver180;
+        double deltaLong = (longitudeB - longitudeA) * _piOver180;
 
         double a = Math.Sin(deltaLat / 2) * Math.Sin(deltaLat / 2) +
                    Math.Cos(latA) * Math.Cos(latB) *
                    Math.Sin(deltaLong / 2) * Math.Sin(deltaLong / 2);
         double c = Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a)) * 2;
 
-        return c * EarthRadius;
+        return c * _earthRadius;
     }
 
     /// <summary>
@@ -201,42 +201,26 @@ public class Coordinate : IEquatable<Coordinate>
     /// <inheritdoc />
     public bool Equals(Coordinate? other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        return Latitude.Equals(other.Latitude) &&
-               Longitude.Equals(other.Longitude);
+        return other is not null && (ReferenceEquals(this, other) || (Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude)));
     }
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj.GetType() == GetType() &&
-               Equals((Coordinate)obj);
+        return obj is not null && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((Coordinate)obj)));
     }
 
+    /// <summary>
+    /// Checks two instances for equality.
+    /// </summary>
     public static bool operator ==(Coordinate? left, Coordinate? right)
     {
         return Equals(left, right);
     }
 
+    /// <summary>
+    /// Checks two instances for inequality.
+    /// </summary>
     public static bool operator !=(Coordinate? left, Coordinate? right)
     {
         return !Equals(left, right);

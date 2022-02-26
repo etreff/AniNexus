@@ -166,13 +166,17 @@ dotnet_naming_rule.enum_should_be_begins_with_e.severity = error
 dotnet_naming_rule.enum_should_be_begins_with_e.symbols = enum
 dotnet_naming_rule.enum_should_be_begins_with_e.style = begins_with_e
 
-dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.severity = error
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
 
-dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
-dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+dotnet_naming_rule.private_field_should_be_begins_with_underscore.severity = error
+dotnet_naming_rule.private_field_should_be_begins_with_underscore.symbols = private_field
+dotnet_naming_rule.private_field_should_be_begins_with_underscore.style = begins_with_underscore
+
+dotnet_naming_rule.private_static_field_should_be_begins_with_underscore.severity = error
+dotnet_naming_rule.private_static_field_should_be_begins_with_underscore.symbols = private_static_field
+dotnet_naming_rule.private_static_field_should_be_begins_with_underscore.style = begins_with_underscore
 
 # Symbol specifications
 
@@ -196,6 +200,15 @@ dotnet_naming_symbols.private_fields_and_properties.applicable_kinds = property,
 dotnet_naming_symbols.private_fields_and_properties.applicable_accessibilities = private
 dotnet_naming_symbols.private_fields_and_properties.required_modifiers = 
 
+dotnet_naming_symbols.private_field.applicable_kinds = field
+dotnet_naming_symbols.private_field.applicable_accessibilities = private
+dotnet_naming_symbols.private_field.required_modifiers =
+
+dotnet_naming_symbols.private_static_field.applicable_kinds = field, property
+dotnet_naming_symbols.private_static_field.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_field.required_modifiers = static
+
+
 # Naming styles
 
 dotnet_naming_style.pascal_case.required_prefix = 
@@ -212,6 +225,11 @@ dotnet_naming_style.begins_with_e.required_prefix = E
 dotnet_naming_style.begins_with_e.required_suffix = 
 dotnet_naming_style.begins_with_e.word_separator = 
 dotnet_naming_style.begins_with_e.capitalization = pascal_case
+
+dotnet_naming_style.begins_with_underscore.required_prefix = _
+dotnet_naming_style.begins_with_underscore.required_suffix = 
+dotnet_naming_style.begins_with_underscore.word_separator = 
+dotnet_naming_style.begins_with_underscore.capitalization = camel_case
 
 # Rules
 
@@ -231,7 +249,7 @@ dotnet_diagnostic.RCS1225.severity = warning
 dotnet_diagnostic.RCS1037.severity = error
 
 # RCS1036: Remove redundant empty line.
-dotnet_diagnostic.RCS1036.severity = suggestion
+dotnet_diagnostic.RCS1036.severity = error
 
 # RCS1170: Use read-only auto-implemented property.
 dotnet_diagnostic.RCS1170.severity = none
@@ -336,7 +354,7 @@ dotnet_diagnostic.RCS1209.severity = error
 dotnet_diagnostic.S4200.severity = suggestion
 
 # IDE1006: Naming Styles
-dotnet_diagnostic.IDE1006.severity = warning
+dotnet_diagnostic.IDE1006.severity = error
 
 # RS1026: Enable concurrent execution
 dotnet_diagnostic.RS1026.severity = none
@@ -409,3 +427,18 @@ dotnet_diagnostic.HAA0601.severity = silent
 
 # IDE0057: Use range operator
 dotnet_diagnostic.IDE0057.severity = silent
+
+# CA1816: Dispose methods should call SuppressFinalize
+dotnet_diagnostic.CA1816.severity = error
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = error
+
+# CS1591: Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS1591.severity = error
+
+# CS1587: XML comment is not placed on a valid language element
+dotnet_diagnostic.CS1587.severity = none
+
+# CS8631: The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match constraint type.
+dotnet_diagnostic.CS8631.severity = error

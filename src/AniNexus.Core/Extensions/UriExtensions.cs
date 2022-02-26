@@ -5,6 +5,9 @@ using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="Uri"/> extensions.
+/// </summary>
 public static class UriExtensions
 {
     /// <summary>

@@ -17,6 +17,10 @@ public readonly struct MimeType : IEquatable<MimeType>
         ContentType = type;
     }
 
+    /// <summary>
+    /// Returns whether this <see cref="MimeType"/> instance represents
+    /// a JSON type.
+    /// </summary>
     public bool IsJson()
     {
         return this == Application.ProblemJson ||
@@ -46,6 +50,7 @@ public readonly struct MimeType : IEquatable<MimeType>
         return ContentType;
     }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public static implicit operator string(MimeType mimeType)
     {
         return mimeType.ToString();
@@ -207,5 +212,6 @@ public readonly struct MimeType : IEquatable<MimeType>
         public static MimeType Quicktime { get; } = new MimeType("video/quicktime");
         public static MimeType Webm { get; } = new MimeType("video/webm");
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
 

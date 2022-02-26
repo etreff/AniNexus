@@ -12,16 +12,19 @@ public static class Utf8JsonReaderExtensions
     /// <summary>
     /// In the worst case, an ASCII character represented as a single utf-8 byte could expand 6x when escaped.
     /// For example: '+' becomes '\u0043'
-    /// Escaping surrogate pairs (represented by 3 or 4 utf-8 bytes) would expand to 12 bytes (which is still <= 6x).
+    /// Escaping surrogate pairs (represented by 3 or 4 utf-8 bytes) would expand to 12 bytes (which is still &lt;= 6x).
     /// The same factor applies to utf-16 characters.
     /// </summary>
     public const int MaxExpansionFactorWhileEscaping = 6;
 
     /// <summary>
-    /// default (i.e. 'D'), 8 + 4 + 4 + 4 + 12 + 4 for the hyphens (e.g. 094ffa0a-0442-494d-b452-04003fa755cc)
+    /// Default (i.e. 'D'), 8 + 4 + 4 + 4 + 12 + 4 for the hyphens (e.g. 094ffa0a-0442-494d-b452-04003fa755cc)
     /// </summary>
     public const int MaximumFormatGuidLength = 36;
 
+    /// <summary>
+    /// The maximum length of an escaped GUID.
+    /// </summary>
     public const int MaximumEscapedGuidLength = MaxExpansionFactorWhileEscaping * MaximumFormatGuidLength;
 
     /// <summary>

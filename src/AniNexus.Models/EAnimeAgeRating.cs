@@ -3,8 +3,13 @@
 /// <summary>
 /// Age ratings for anime.
 /// </summary>
-public enum EAnimeAgeRating
+public enum EAnimeAgeRating : byte
 {
+    [EnumMetadata("MinAge", 0)]
+    [EnumMetadata("Abbreviation", "N/A")]
+    [EnumMetadata("Description", "The age restriction is unknown.")]
+    Unknown = 0,
+
     /// <summary>
     /// There is no age restriction of the anime.
     /// </summary>

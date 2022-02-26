@@ -1,11 +1,57 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="Expression"/> extensions.
+/// </summary>
 public static class ExpressionExtensions
 {
+    private static readonly Regex _propertyNameRegex = new(@"^[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*$");
+
+    /// <summary>
+    /// Attempts to get the member name from an expression.
+    /// </summary>
+    /// <param name="expression">The expression.</param>
+    /// <param name="memberName">The name of the member on success.</param>
+    /// <returns><see langword="true"/> if the member name was successfully extracted, <see langword="false"/> otherwise.</returns>
+    public static bool TryGetMemberName(this Expression expression, [NotNullWhen(true)] out string? memberName)
+    {
+        Guard.IsTrue(expression.NodeType == ExpressionType.MemberAccess, "Expression must be a member access expression.");
+
+        return TryFixMemberAccessName(expression.ToString(), out memberName);
+    }
+
+    private static bool TryFixMemberAccessName(ReadOnlySpan<char> body, [NotNullWhen(true)] out string? memberName)
+    {
+        int qualifierIndex = body.IndexOf('.');
+        if (qualifierIndex >= 0)
+        {
+            body = body.Slice(qualifierIndex + 1);
+        }
+
+        qualifierIndex = body.IndexOf('(');
+        if (qualifierIndex >= 0)
+        {
+            body = body.Slice(qualifierIndex + 1);
+        }
+
+        qualifierIndex = body.IndexOf(')');
+        if (qualifierIndex >= 0)
+        {
+            body = body.Slice(0, qualifierIndex);
+        }
+
+        string name = new(body);
+        bool result = _propertyNameRegex.IsMatch(name);
+        memberName = result ? name : null;
+
+        return result;
+    }
+
     /// <summary>
     /// Gets the body of an expression as text.
     /// </summary>

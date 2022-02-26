@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using AniNexus.Numerics.Random;
 using Microsoft.Toolkit.Diagnostics;
 
@@ -12,7 +13,7 @@ public static partial class CollectionExtensions
     /// <summary>
     /// A random number generator to use for extension methods.
     /// </summary>
-    private static readonly IRandomNumberProvider RandomNumberGenerator = new MersenneTwisterRandom();
+    private static readonly IRandomNumberProvider _randomNumberGenerator = new MersenneTwisterRandom();
 
     /// <summary>
     /// Adds a collection of elements to the collection.

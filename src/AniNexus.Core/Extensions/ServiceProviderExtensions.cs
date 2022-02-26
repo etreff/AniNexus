@@ -26,13 +26,12 @@ namespace AniNexus
         /// Instantiate a type with constructor arguments provided directly and/or from an <see cref="IServiceProvider"/>.
         /// </summary>
         /// <param name="services">The service provider used to resolve dependencies.</param>
-        /// <param name="type">The type of the object to activate. Must be assignable to type <typeparamref name="T"/>.</param>
+        /// <param name="type">The type of the object to activate.</param>
         /// <param name="args">Constructor arguments not provided by the provider.</param>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="services"/> is <see langword="null"/> -or-
         ///     <paramref name="type"/> is <see langword="null"/>.
         /// </exception>
-        /// <exception cref="InvalidCastException"><paramref name="type"/> is not assignable to type <typeparamref name="T"/>.</exception>
         public static object CreateService(this IServiceProvider services, Type type, params object[] args)
         {
             Guard.IsNotNull(services, nameof(services));

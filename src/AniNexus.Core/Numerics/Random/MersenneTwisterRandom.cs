@@ -50,42 +50,42 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
     /// <summary>
     /// Static system RNG for default seeding only.
     /// </summary>
-    private static readonly System.Random Random = new System.Random();
+    private static readonly System.Random _random = new();
 
-    private const int N = 624;
-    private const int M = 397;
+    private const int _n = 624;
+    private const int _m = 397;
 
     /// <summary>
     /// Constant vector A.
     /// </summary>
-    private const uint MATRIX_A = 0x9908b0dfu;
+    private const uint _matrixA = 0x9908b0dfu;
 
     /// <summary>
     /// Most significant w-r bytes.
     /// </summary>
-    private const uint UPPER_MASK = 0x80000000u;
+    private const uint _upperMask = 0x80000000u;
 
     /// <summary>
     /// Least significant r bytes.
     /// </summary>
-    private const uint LOWER_MASK = 0x7fffffffu;
+    private const uint _lowerMask = 0x7fffffffu;
 
     /// <summary>
     /// The array for the state vector.
     /// </summary>
-    private readonly ulong[] _TwisterBytes = new ulong[N];
+    private readonly ulong[] _twisterBytes = new ulong[_n];
 
     /// <summary>
-    /// <see cref="_TwisterBytesIndex"/> == <see cref="N"/> + 1 indicates that
-    /// <see cref="_TwisterBytes"/>[<see cref="N"/>] has not been initialized.
+    /// <see cref="_twisterBytesIndex"/> == <see cref="_n"/> + 1 indicates that
+    /// <see cref="_twisterBytes"/>[<see cref="_n"/>] has not been initialized.
     /// </summary>
-    private int _TwisterBytesIndex = N + 1;
+    private int _twisterBytesIndex = _n + 1;
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public MersenneTwisterRandom()
-        : this((ulong)(Random.NextDouble() * ulong.MaxValue))
+        : this((ulong)(_random.NextDouble() * ulong.MaxValue))
     {
     }
 
@@ -111,34 +111,34 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
 
     private void SeedTwister(ulong seed)
     {
-        lock (Random)
+        lock (_random)
         {
-            _TwisterBytes[0] = seed & 0xffffffffUL;
-            for (_TwisterBytesIndex = 1; _TwisterBytesIndex < N; ++_TwisterBytesIndex)
+            _twisterBytes[0] = seed & 0xffffffffUL;
+            for (_twisterBytesIndex = 1; _twisterBytesIndex < _n; ++_twisterBytesIndex)
             {
-                _TwisterBytes[_TwisterBytesIndex] = 1812433253UL * (_TwisterBytes[_TwisterBytesIndex - 1] ^ (_TwisterBytes[_TwisterBytesIndex - 1] >> 30)) + (ulong)_TwisterBytesIndex;
-                _TwisterBytes[_TwisterBytesIndex] &= 0xffffffffUL;
+                _twisterBytes[_twisterBytesIndex] = 1812433253UL * (_twisterBytes[_twisterBytesIndex - 1] ^ (_twisterBytes[_twisterBytesIndex - 1] >> 30)) + (ulong)_twisterBytesIndex;
+                _twisterBytes[_twisterBytesIndex] &= 0xffffffffUL;
             }
         }
     }
 
     private void SeedTwister(ulong[] seed)
     {
-        lock (Random)
+        lock (_random)
         {
             SeedTwister(19650218UL);
             int i = 1;
             int j = 0;
-            int k = N > seed.Length ? N : seed.Length;
+            int k = _n > seed.Length ? _n : seed.Length;
             for (; k != 0; k--)
             {
-                _TwisterBytes[i] = (_TwisterBytes[i] ^ ((_TwisterBytes[i - 1] ^ (_TwisterBytes[i - 1] >> 30)) * 1664525UL)) + seed[j] + (ulong)j; /* non linear */
-                _TwisterBytes[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
+                _twisterBytes[i] = (_twisterBytes[i] ^ ((_twisterBytes[i - 1] ^ (_twisterBytes[i - 1] >> 30)) * 1664525UL)) + seed[j] + (ulong)j; /* non linear */
+                _twisterBytes[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
                 i++;
                 j++;
-                if (i >= N)
+                if (i >= _n)
                 {
-                    _TwisterBytes[0] = _TwisterBytes[N - 1];
+                    _twisterBytes[0] = _twisterBytes[_n - 1];
                     i = 1;
                 }
 
@@ -148,19 +148,19 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
                 }
             }
 
-            for (k = N - 1; k != 0; k--)
+            for (k = _n - 1; k != 0; k--)
             {
-                _TwisterBytes[i] = (_TwisterBytes[i] ^ ((_TwisterBytes[i - 1] ^ (_TwisterBytes[i - 1] >> 30)) * 1566083941UL)) - (ulong)i; // non linear
-                _TwisterBytes[i] &= 0xffffffffUL; // for WORDSIZE > 32 machines
+                _twisterBytes[i] = (_twisterBytes[i] ^ ((_twisterBytes[i - 1] ^ (_twisterBytes[i - 1] >> 30)) * 1566083941UL)) - (ulong)i; // non linear
+                _twisterBytes[i] &= 0xffffffffUL; // for WORDSIZE > 32 machines
                 i++;
-                if (i >= N)
+                if (i >= _n)
                 {
-                    _TwisterBytes[0] = _TwisterBytes[N - 1];
+                    _twisterBytes[0] = _twisterBytes[_n - 1];
                     i = 1;
                 }
             }
 
-            _TwisterBytes[0] = 0x80000000UL; // MSB is 1; assuring non-zero initial array 
+            _twisterBytes[0] = 0x80000000UL; // MSB is 1; assuring non-zero initial array 
         }
     }
 
@@ -170,33 +170,33 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
     /// <returns>A random uint.</returns>
     public uint NextUInt32()
     {
-        lock (Random)
+        lock (_random)
         {
-            ulong[] mag01 = { 0x0UL, MATRIX_A };
+            ulong[] mag01 = { 0x0UL, _matrixA };
             ulong y;
             // mag01[x] = x * MATRIX_A  for x=0,1
-            if (_TwisterBytesIndex >= N)
+            if (_twisterBytesIndex >= _n)
             {   // generate N words at one time
                 int kk;
-                if (_TwisterBytesIndex == N + 1)
+                if (_twisterBytesIndex == _n + 1)
                 {           // if init_genrand() has not been called,
-                    SeedTwister((ulong)(Random.NextDouble() * ulong.MaxValue)); // a default initial seed is used
+                    SeedTwister((ulong)(_random.NextDouble() * ulong.MaxValue)); // a default initial seed is used
                 }
-                for (kk = 0; kk < N - M; kk++)
+                for (kk = 0; kk < _n - _m; kk++)
                 {
-                    y = (_TwisterBytes[kk] & UPPER_MASK) | (_TwisterBytes[kk + 1] & LOWER_MASK);
-                    _TwisterBytes[kk] = _TwisterBytes[kk + M] ^ (y >> 1) ^ mag01[y & 0x1UL];
+                    y = (_twisterBytes[kk] & _upperMask) | (_twisterBytes[kk + 1] & _lowerMask);
+                    _twisterBytes[kk] = _twisterBytes[kk + _m] ^ (y >> 1) ^ mag01[y & 0x1UL];
                 }
-                for (; kk < N - 1; kk++)
+                for (; kk < _n - 1; kk++)
                 {
-                    y = (_TwisterBytes[kk] & UPPER_MASK) | (_TwisterBytes[kk + 1] & LOWER_MASK);
-                    _TwisterBytes[kk] = _TwisterBytes[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
+                    y = (_twisterBytes[kk] & _upperMask) | (_twisterBytes[kk + 1] & _lowerMask);
+                    _twisterBytes[kk] = _twisterBytes[kk + (_m - _n)] ^ (y >> 1) ^ mag01[y & 0x1UL];
                 }
-                y = (_TwisterBytes[N - 1] & UPPER_MASK) | (_TwisterBytes[0] & LOWER_MASK);
-                _TwisterBytes[N - 1] = _TwisterBytes[M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-                _TwisterBytesIndex = 0;
+                y = (_twisterBytes[_n - 1] & _upperMask) | (_twisterBytes[0] & _lowerMask);
+                _twisterBytes[_n - 1] = _twisterBytes[_m - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
+                _twisterBytesIndex = 0;
             }
-            y = _TwisterBytes[_TwisterBytesIndex++];
+            y = _twisterBytes[_twisterBytesIndex++];
             // Tempering
             y ^= y >> 11;
             y ^= (y << 7) & 0x9d2c5680UL;
@@ -209,33 +209,33 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
     /// <inheritdoc />
     public ulong NextUInt64()
     {
-        lock (Random)
+        lock (_random)
         {
-            ulong[] mag01 = { 0x0UL, MATRIX_A };
+            ulong[] mag01 = { 0x0UL, _matrixA };
             ulong y;
             // mag01[x] = x * MATRIX_A  for x=0,1
-            if (_TwisterBytesIndex >= N)
+            if (_twisterBytesIndex >= _n)
             {   // generate N words at one time
                 int kk;
-                if (_TwisterBytesIndex == N + 1)
+                if (_twisterBytesIndex == _n + 1)
                 {           // if init_genrand() has not been called,
-                    SeedTwister((ulong)(Random.NextDouble() * ulong.MaxValue)); // a default initial seed is used
+                    SeedTwister((ulong)(_random.NextDouble() * ulong.MaxValue)); // a default initial seed is used
                 }
-                for (kk = 0; kk < N - M; kk++)
+                for (kk = 0; kk < _n - _m; kk++)
                 {
-                    y = (_TwisterBytes[kk] & UPPER_MASK) | (_TwisterBytes[kk + 1] & LOWER_MASK);
-                    _TwisterBytes[kk] = _TwisterBytes[kk + M] ^ (y >> 1) ^ mag01[y & 0x1UL];
+                    y = (_twisterBytes[kk] & _upperMask) | (_twisterBytes[kk + 1] & _lowerMask);
+                    _twisterBytes[kk] = _twisterBytes[kk + _m] ^ (y >> 1) ^ mag01[y & 0x1UL];
                 }
-                for (; kk < N - 1; kk++)
+                for (; kk < _n - 1; kk++)
                 {
-                    y = (_TwisterBytes[kk] & UPPER_MASK) | (_TwisterBytes[kk + 1] & LOWER_MASK);
-                    _TwisterBytes[kk] = _TwisterBytes[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
+                    y = (_twisterBytes[kk] & _upperMask) | (_twisterBytes[kk + 1] & _lowerMask);
+                    _twisterBytes[kk] = _twisterBytes[kk + (_m - _n)] ^ (y >> 1) ^ mag01[y & 0x1UL];
                 }
-                y = (_TwisterBytes[N - 1] & UPPER_MASK) | (_TwisterBytes[0] & LOWER_MASK);
-                _TwisterBytes[N - 1] = _TwisterBytes[M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-                _TwisterBytesIndex = 0;
+                y = (_twisterBytes[_n - 1] & _upperMask) | (_twisterBytes[0] & _lowerMask);
+                _twisterBytes[_n - 1] = _twisterBytes[_m - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
+                _twisterBytesIndex = 0;
             }
-            y = _TwisterBytes[_TwisterBytesIndex++];
+            y = _twisterBytes[_twisterBytesIndex++];
             // Tempering
             y ^= y >> 11;
             y ^= (y << 7) & 0x9d2c5680UL;
@@ -354,7 +354,7 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
     /// <returns>The random bytes.</returns>
     public byte[] NextBytes(long size)
     {
-        lock (Random)
+        lock (_random)
         {
             byte[] data = new byte[size];
             for (long i = 0; i < data.LongLength; ++i)
@@ -371,7 +371,7 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
     /// <param name="buffer">The buffer to fill.</param>
     public void NextBytes(Span<byte> buffer)
     {
-        lock (Random)
+        lock (_random)
         {
             for (int i = 0; i < buffer.Length; ++i)
             {

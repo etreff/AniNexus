@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-/**
+/***
  * NOTE
  *
  * This class has a lot of duplication of code. This is intentional due a trade-off
@@ -21,9 +21,9 @@ namespace AniNexus;
 /// </summary>
 public static partial class MemoryExtensions
 {
-    private const ulong XorPowerOfTwoToHighByte = (0x07ul | 0x06ul << 8 | 0x05ul << 16 | 0x04ul << 24 | 0x03ul << 32 | 0x02ul << 40 | 0x01ul << 48) + 1;
+    private const ulong _xorPowerOfTwoToHighByte = (0x07ul | 0x06ul << 8 | 0x05ul << 16 | 0x04ul << 24 | 0x03ul << 32 | 0x02ul << 40 | 0x01ul << 48) + 1;
 
-    private const byte WhiteSpaceByte = (byte)' ';
+    private const byte _whiteSpaceByte = (byte)' ';
 
     /// <summary>
     /// Returns the index of the first byte(s) that match the value specified in <paramref name="value"/>.
@@ -629,7 +629,7 @@ public static partial class MemoryExtensions
     }
 
     /// <summary>
-    /// Returns the index of the first byte(s) that are greater than the value specified in <paramref name="lessThan"/>.
+    /// Returns the index of the first byte(s) that are greater than the value specified in <paramref name="greaterThan"/>.
     /// </summary>
     /// <param name="data">The data to search.</param>
     /// <param name="greaterThan">The lower exclusive valid value.</param>
@@ -1288,7 +1288,7 @@ public static partial class MemoryExtensions
     }
 
     /// <summary>
-    /// Returns the index of the first byte(s) that equal <paramref name="value"/> or are greater than the value
+    /// Returns the index of the first byte(s) that equal <paramref name="valueA"/> or <paramref name="valueB"/> or are greater than the value
     /// specified in <paramref name="greaterThan"/>.
     /// </summary>
     /// <param name="data">The data to search.</param>
@@ -1793,7 +1793,7 @@ public static partial class MemoryExtensions
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOfWhiteSpace(this in ReadOnlySpan<byte> data)
-        => IndexOf(data, WhiteSpaceByte);
+        => IndexOf(data, _whiteSpaceByte);
 
     /// <summary>
     /// Returns the index of the first non-whitespace byte found in the sequence.
@@ -1809,8 +1809,8 @@ public static partial class MemoryExtensions
     public static int IndexOfNotWhiteSpace(this in ReadOnlySpan<byte> data, bool tabIsWhiteSpace = true)
     {
         return tabIsWhiteSpace
-            ? IndexOfNot(data, WhiteSpaceByte, '\t')
-            : IndexOfNot(data, WhiteSpaceByte);
+            ? IndexOfNot(data, _whiteSpaceByte, '\t')
+            : IndexOfNot(data, _whiteSpaceByte);
     }
 
     // Vector sub-search adapted from https://github.com/aspnet/KestrelHttpServer/pull/1138
@@ -1842,7 +1842,7 @@ public static partial class MemoryExtensions
         ulong powerOfTwoFlag = match ^ (match - 1);
 
         // Shift all powers of two into the high byte and extract
-        return (int)((powerOfTwoFlag * XorPowerOfTwoToHighByte) >> 57);
+        return (int)((powerOfTwoFlag * _xorPowerOfTwoToHighByte) >> 57);
     }
 }
 

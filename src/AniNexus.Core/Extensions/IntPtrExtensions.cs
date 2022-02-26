@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="IntPtr"/> extensions.
+/// </summary>
 public static class IntPtrExtensions
 {
     /// <summary>

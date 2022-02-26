@@ -5,9 +5,11 @@ using AniNexus.Helpers;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="ReadOnlySpan{T}"/> extensions.
+/// </summary>
 public static class ReadOnlySpanExtensions
 {
-
     /// <summary>
     /// Splits the contents of <paramref name="span"/> on whitespace characters.
     /// </summary>
@@ -23,7 +25,7 @@ public static class ReadOnlySpanExtensions
     /// <param name="separator">The character to split on.</param>
     /// <param name="stringSplitOptions">The split options.</param>
     public static SpanSplitEnumerator<char> Split(this ReadOnlySpan<char> span, char separator, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
-        => new SpanSplitEnumerator<char>(span, separator, stringSplitOptions);
+        => new(span, separator, stringSplitOptions);
 
     /// <summary>
     /// Splits the contents of <paramref name="span"/> on the specified separator.
@@ -32,10 +34,10 @@ public static class ReadOnlySpanExtensions
     /// <param name="separator">The consecutive characters (string) to split on.</param>
     /// <param name="stringSplitOptions">The split options.</param>
     public static SpanSplitSequenceEnumerator<char> Split(this ReadOnlySpan<char> span, ReadOnlySpan<char> separator, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
-        => new SpanSplitSequenceEnumerator<char>(span, separator, stringSplitOptions);
+        => new(span, separator, stringSplitOptions);
 
     /// <summary>
-    /// Returns the similarity percentage of two <see cref="ReadOnlySpan{char}"/>.
+    /// Returns the similarity percentage of two <see cref="ReadOnlySpan{T}"/>.
     /// </summary>
     /// <param name="span">The first text instance.</param>
     /// <param name="other">The second text instance.</param>
@@ -47,16 +49,13 @@ public static class ReadOnlySpanExtensions
     /// </remarks>
     public static double SimilarityTo(this ReadOnlySpan<char> span, string? other, StringComparison comparison = StringComparison.Ordinal)
     {
-        if (other is null)
-        {
-            return 0;
-        }
-
-        return SimilarityTo(span, other.AsSpan(), comparison);
+        return other is not null
+            ? SimilarityTo(span, other.AsSpan(), comparison)
+            : 0;
     }
 
     /// <summary>
-    /// Returns the similarity percentage of two <see cref="ReadOnlySpan{char}"/>.
+    /// Returns the similarity percentage of two <see cref="ReadOnlySpan{T}"/>.
     /// </summary>
     /// <param name="span">The first text instance.</param>
     /// <param name="other">The second text instance.</param>
@@ -103,25 +102,31 @@ public static class ReadOnlySpanExtensions
         }
     }
 
+    /// <summary>
+    /// An enumerator for splitting spans.
+    /// </summary>
     /// <remarks>https://gist.github.com/bbartels/87c7daae28d4905c60ae77724a401b20</remarks>
     public ref struct SpanSplitEnumerator<T>
         where T : IEquatable<T>
     {
-        public ReadOnlySpan<T> Current => Sequence.Slice(StartIndex, Offset);
+        /// <summary>
+        /// The current element in the enumerator.
+        /// </summary>
+        public ReadOnlySpan<T> Current => _sequence.Slice(_startIndex, _offset);
 
-        private readonly ReadOnlySpan<T> Sequence;
-        private readonly StringSplitOptions SplitOptions;
-        private readonly StackList<int> SeparatorIndices;
+        private readonly ReadOnlySpan<T> _sequence;
+        private readonly StringSplitOptions _splitOptions;
+        private readonly StackList<int> _separatorIndices;
 
-        private int Index;
-        private int SeparatorIndex;
-        private int StartIndex;
-        private int Offset;
+        private int _index;
+        private int _separatorIndex;
+        private int _startIndex;
+        private int _offset;
 
         internal SpanSplitEnumerator(ReadOnlySpan<T> span, [MaybeNull] T separator, StringSplitOptions stringSplitOptions)
         {
-            Sequence = span;
-            SplitOptions = stringSplitOptions;
+            _sequence = span;
+            _splitOptions = stringSplitOptions;
 
             var separatorIndices = new StackList<int>(2);
             for (int i = 0; i < span.Length; ++i)
@@ -131,110 +136,128 @@ public static class ReadOnlySpanExtensions
                     separatorIndices.Append(i);
                 }
             }
-            SeparatorIndices = separatorIndices;
+            _separatorIndices = separatorIndices;
 
-            Index = 0;
-            SeparatorIndex = 0;
-            StartIndex = 0;
-            Offset = 0;
+            _index = 0;
+            _separatorIndex = 0;
+            _startIndex = 0;
+            _offset = 0;
         }
 
+        /// <summary>
+        /// Returns the enumerator.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanSplitEnumerator<T> GetEnumerator()
             => this;
 
+        /// <summary>
+        /// Moves the enumerator to the next element in the sequence.
+        /// </summary>
         public bool MoveNext()
         {
-            if (Index >= Sequence.Length)
+            if (_index >= _sequence.Length)
             {
                 return false;
             }
 
-            if (SplitOptions == StringSplitOptions.RemoveEmptyEntries)
+            if (_splitOptions == StringSplitOptions.RemoveEmptyEntries)
             {
-                while (SeparatorIndex < SeparatorIndices.Length && Index == SeparatorIndices[SeparatorIndex])
+                while (_separatorIndex < _separatorIndices.Length && _index == _separatorIndices[_separatorIndex])
                 {
-                    Index = SeparatorIndices[SeparatorIndex] + 1;
-                    ++SeparatorIndex;
+                    _index = _separatorIndices[_separatorIndex] + 1;
+                    ++_separatorIndex;
                 }
             }
 
-            StartIndex = Index;
-            Offset = SeparatorIndex < SeparatorIndices.Length ? SeparatorIndices[SeparatorIndex] - Index : Sequence.Length - StartIndex;
+            _startIndex = _index;
+            _offset = _separatorIndex < _separatorIndices.Length ? _separatorIndices[_separatorIndex] - _index : _sequence.Length - _startIndex;
 
-            Index = SeparatorIndex < SeparatorIndices.Length ? SeparatorIndices[SeparatorIndex] + 1 : Sequence.Length;
-            ++SeparatorIndex;
+            _index = _separatorIndex < _separatorIndices.Length ? _separatorIndices[_separatorIndex] + 1 : _sequence.Length;
+            ++_separatorIndex;
 
             return true;
         }
     }
 
+    /// <summary>
+    /// An enumerator for splitting spans.
+    /// </summary>
     /// <remarks>https://gist.github.com/bbartels/87c7daae28d4905c60ae77724a401b20</remarks>
     public ref struct SpanSplitSequenceEnumerator<T>
         where T : IEquatable<T>
     {
-        public ReadOnlySpan<T> Current => Sequence.Slice(StartIndex, Offset);
+        /// <summary>
+        /// The current element in the enumerator.
+        /// </summary>
+        public ReadOnlySpan<T> Current => _sequence.Slice(_startIndex, _offset);
 
-        private readonly ReadOnlySpan<T> Sequence;
-        private readonly StringSplitOptions SplitOptions;
-        private readonly StackList<int> SeparatorIndices;
+        private readonly ReadOnlySpan<T> _sequence;
+        private readonly StringSplitOptions _splitOptions;
+        private readonly StackList<int> _separatorIndices;
+        private readonly int _separatorLength;
 
-        private int Index;
-        private int SeparatorIndex;
-        private int StartIndex;
-        private int Offset;
-        private int SeparatorLength;
+        private int _index;
+        private int _separatorIndex;
+        private int _startIndex;
+        private int _offset;
 
         internal SpanSplitSequenceEnumerator(ReadOnlySpan<T> span, ReadOnlySpan<T> separator, StringSplitOptions stringSplitOptions)
         {
-            Sequence = span;
-            SplitOptions = stringSplitOptions;
+            _sequence = span;
+            _splitOptions = stringSplitOptions;
 
             var separatorIndices = new StackList<int>(2);
-            SeparatorLength = separator.Length;
+            _separatorLength = separator.Length;
 
             //https://github.com/dotnet/runtime/blob/master/src/libraries/System.Private.CoreLib/src/System/String.Manipulation.cs#L1579
             for (int i = 0; i < span.Length; ++i)
             {
-                if (span[i].Equals(separator[0]) && SeparatorLength <= span.Length - i)
+                if (span[i].Equals(separator[0]) && _separatorLength <= span.Length - i)
                 {
-                    if (SeparatorLength == 1 || span.Slice(i, SeparatorLength).SequenceEqual(separator))
+                    if (_separatorLength == 1 || span.Slice(i, _separatorLength).SequenceEqual(separator))
                     {
                         separatorIndices.Append(i);
-                        i += SeparatorLength - 1;
+                        i += _separatorLength - 1;
                     }
                 }
             }
-            SeparatorIndices = separatorIndices;
+            _separatorIndices = separatorIndices;
 
-            Index = 0;
-            SeparatorIndex = 0;
-            StartIndex = 0;
-            Offset = 0;
+            _index = 0;
+            _separatorIndex = 0;
+            _startIndex = 0;
+            _offset = 0;
         }
 
+        /// <summary>
+        /// Returns the enumerator.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanSplitSequenceEnumerator<T> GetEnumerator()
             => this;
 
+        /// <summary>
+        /// Moves the enumerator to the next element in the sequence.
+        /// </summary>
         public bool MoveNext()
         {
-            if (Index >= Sequence.Length) { return false; }
+            if (_index >= _sequence.Length) { return false; }
 
-            if (SplitOptions == StringSplitOptions.RemoveEmptyEntries)
+            if (_splitOptions == StringSplitOptions.RemoveEmptyEntries)
             {
-                while (SeparatorIndex < SeparatorIndices.Length && Index == SeparatorIndices[SeparatorIndex])
+                while (_separatorIndex < _separatorIndices.Length && _index == _separatorIndices[_separatorIndex])
                 {
-                    Index = SeparatorIndices[SeparatorIndex] + SeparatorLength;
-                    ++SeparatorIndex;
+                    _index = _separatorIndices[_separatorIndex] + _separatorLength;
+                    ++_separatorIndex;
                 }
             }
 
-            StartIndex = Index;
-            Offset = SeparatorIndex < SeparatorIndices.Length ? SeparatorIndices[SeparatorIndex] - Index : Sequence.Length - StartIndex;
+            _startIndex = _index;
+            _offset = _separatorIndex < _separatorIndices.Length ? _separatorIndices[_separatorIndex] - _index : _sequence.Length - _startIndex;
 
-            Index = SeparatorIndex < SeparatorIndices.Length ? SeparatorIndices[SeparatorIndex] + SeparatorLength : Sequence.Length;
-            ++SeparatorIndex;
+            _index = _separatorIndex < _separatorIndices.Length ? _separatorIndices[_separatorIndex] + _separatorLength : _sequence.Length;
+            ++_separatorIndex;
 
             return true;
         }

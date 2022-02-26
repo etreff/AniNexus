@@ -47,7 +47,7 @@ public class TextWriterStream : Stream
     public override long Length
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => BytesWritten;
+        get => _bytesWritten;
     }
 
     /// <summary>
@@ -58,25 +58,34 @@ public class TextWriterStream : Stream
     public override long Position
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => BytesWritten;
+        get => _bytesWritten;
         set => throw new NotSupportedException();
     }
 
-    private readonly TextWriter Writer;
-    private readonly Encoding Encoding;
-    private long BytesWritten;
+    private readonly TextWriter _writer;
+    private readonly Encoding _encoding;
+    private long _bytesWritten;
 
+    /// <summary>
+    /// Creates a new <see cref="TextWriterStream"/> instance.
+    /// </summary>
+    /// <param name="writer">The text writer.</param>
     public TextWriterStream(TextWriter writer)
         : this(writer, null)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="TextWriterStream"/> instance.
+    /// </summary>
+    /// <param name="writer">The text writer.</param>
+    /// <param name="encoding">The encoding.</param>
     public TextWriterStream(TextWriter writer, Encoding? encoding)
     {
         Guard.IsNotNull(writer, nameof(writer));
 
-        Writer = writer;
-        Encoding = encoding ?? writer.Encoding;
+        _writer = writer;
+        _encoding = encoding ?? writer.Encoding;
     }
 
     /// <summary>
@@ -85,7 +94,7 @@ public class TextWriterStream : Stream
     /// <exception cref="IOException">An I/O error occurs.</exception>
     public override void Flush()
     {
-        Writer.Flush();
+        _writer.Flush();
     }
 
     /// <summary>
@@ -134,10 +143,10 @@ public class TextWriterStream : Stream
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
     public override void Write(byte[] buffer, int offset, int count)
     {
-        char[] chars = Encoding.GetChars(buffer, offset, count);
+        char[] chars = _encoding.GetChars(buffer, offset, count);
 
-        Writer.Write(chars);
-        BytesWritten += count;
+        _writer.Write(chars);
+        _bytesWritten += count;
     }
 }
 

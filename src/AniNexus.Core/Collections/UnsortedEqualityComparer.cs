@@ -39,18 +39,22 @@ public class UnsortedEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
     /// </summary>
     public static UnsortedEqualityComparer<T?> Default { get; } = new UnsortedEqualityComparer<T?>(EqualityComparer<T?>.Default);
 
-    private readonly IEqualityComparer<T?> Comparer;
+    private readonly IEqualityComparer<T?> _comparer;
 
+    /// <summary>
+    /// Creates a new <see cref="UnsortedEqualityComparer{T}"/> instance.
+    /// </summary>
+    /// <param name="comparer">The comparer to use.</param>
     public UnsortedEqualityComparer(IEqualityComparer<T?>? comparer = null)
     {
-        Comparer = comparer ?? EqualityComparer<T?>.Default;
+        _comparer = comparer ?? EqualityComparer<T?>.Default;
     }
 
     /// <summary>
     /// Determines whether the specified objects are equal.
     /// </summary>
-    /// <param name="x">The first object of type <paramref name="T" /> to compare.</param>
-    /// <param name="y">The second object of type <paramref name="T" /> to compare.</param>
+    /// <param name="x">The first object of type <typeparamref name="T"/> to compare.</param>
+    /// <param name="y">The second object of type <typeparamref name="T"/> to compare.</param>
     /// <returns>
     /// <see langword="true" /> if the specified objects are equal; otherwise, <see langword="false" />.
     /// </returns>
@@ -120,12 +124,12 @@ public class UnsortedEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
                         while (e.MoveNext())
                         {
                             var result = e.Current;
-                            if (Comparer.Equals(result.Key, kvp.Key))
+                            if (_comparer.Equals(result.Key, kvp.Key))
                             {
                                 bool dupFound = false;
                                 while (e.MoveNext())
                                 {
-                                    if (Comparer.Equals(e.Current.Key, kvp.Key))
+                                    if (_comparer.Equals(e.Current.Key, kvp.Key))
                                     {
                                         dupFound = true;
                                         break;
@@ -170,7 +174,7 @@ public class UnsortedEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
 #pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
     private Dictionary<T, int> GetElementCounts(IEnumerable<T?> enumerable, out int nullCount)
     {
-        var dictionary = new Dictionary<T, int>(Comparer);
+        var dictionary = new Dictionary<T, int>(_comparer);
         nullCount = 0;
 
         foreach (var element in enumerable)
@@ -191,15 +195,19 @@ public class UnsortedEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
     }
 #pragma warning restore CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 
-    public int GetHashCode(IEnumerable<T?>? obj)
+    /// <summary>
+    /// Returns the hash code of the enumerable.
+    /// </summary>
+    /// <param name="enumerable">The enumerable.</param>
+    public int GetHashCode(IEnumerable<T?>? enumerable)
     {
-        if (obj is null)
+        if (enumerable is null)
         {
             return 0;
         }
 
         var hashCode = new HashCode();
-        foreach (var element in obj.OrderBy(FuncProvider<T?>.ReturnSelf))
+        foreach (var element in enumerable.OrderBy(FuncProvider<T?>.ReturnSelf))
         {
             hashCode.Add(element);
         }

@@ -24,7 +24,7 @@ public static partial class Linq
             {
                 ThrowHelper.ThrowEmptyCollectionError();
             }
-            return list[LinqRandom.NextInt32(0, list.Count - 1)];
+            return list[_linqRandom.NextInt32(0, list.Count - 1)];
         }
 
         var c = collection.ToArray();
@@ -33,7 +33,7 @@ public static partial class Linq
             ThrowHelper.ThrowEmptyCollectionError();
         }
 
-        return c[LinqRandom.NextInt32(0, c.Length - 1)];
+        return c[_linqRandom.NextInt32(0, c.Length - 1)];
     }
 }
 

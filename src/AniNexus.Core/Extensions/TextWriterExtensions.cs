@@ -2,6 +2,9 @@
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="TextWriter"/> extensions.
+/// </summary>
 public static class TextWriterExtensions
 {
     /// <summary>

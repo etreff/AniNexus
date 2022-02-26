@@ -2,6 +2,9 @@
 
 namespace AniNexus;
 
+/// <summary>
+/// Number extensions.
+/// </summary>
 public static partial class NumericExtensions
 {
     /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace AniNexus;
 
@@ -155,8 +156,9 @@ public static class Enums
     /// Returns whether this enum value has every flag defined in <paramref name="flags"/> set.
     /// </summary>
     /// <param name="value">The enum value to check the flags of.</param>
+    /// <param name="flags">The flags to check for.</param>
     /// <remarks>
-    /// This is equivalent to ((<paramref name="value"/> & <paramref name="flags"/>) == <paramref name="flags"/>),
+    /// This is equivalent to ((<paramref name="value"/> &amp; <paramref name="flags"/>) == <paramref name="flags"/>),
     /// but has support for enum types that do not support bit manipulation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -175,8 +177,9 @@ public static class Enums
     /// Returns whether this enum value has any flag defined in <paramref name="flags"/> set.
     /// </summary>
     /// <param name="value">The enum value to check the flags of.</param>
+    /// <param name="flags">The flags to check for.</param>
     /// <remarks>
-    /// This is equivalent to ((<paramref name="value"/> & <paramref name="flags"/>) != 0),
+    /// This is equivalent to ((<paramref name="value"/> &amp; <paramref name="flags"/>) != 0),
     /// but has support for enum types that do not support bit manipulation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -212,7 +215,7 @@ public static class Enums
     /// </summary>
     /// <param name="value">The value to parse.</param>
     /// <param name="ignoreCase">Whether to ignore casing when parsing the value.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"./></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException"><paramref name="value"/> is not a member of type <typeparamref name="TEnum"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TEnum Parse<TEnum>(string value, bool ignoreCase = false)
@@ -235,7 +238,7 @@ public static class Enums
     /// <param name="value">The value to parse.</param>
     /// <param name="ignoreCase">Whether to ignore casing when parsing the value.</param>
     /// <param name="delimiter">The delimiter that acts as a separator for the individual flag components.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"./></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException"><paramref name="value"/> is not a member of type <typeparamref name="TEnum"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase = false, string? delimiter = null)

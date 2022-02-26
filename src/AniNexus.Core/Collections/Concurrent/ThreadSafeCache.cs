@@ -14,30 +14,39 @@ public class ThreadSafeCache<TKey, TValue>
     /// <summary>
     /// The keys of the elements in this cache.
     /// </summary>
-    public ICollection<TKey> Keys => Cache.Keys;
+    public ICollection<TKey> Keys => _cache.Keys;
 
     /// <summary>
     /// The values of the elements in this cache.
     /// </summary>
-    public ICollection<TValue> Values => Cache.Values;
+    public ICollection<TValue> Values => _cache.Values;
 
-    private readonly ConcurrentDictionary<TKey, TValue> Cache;
-    private readonly Func<TKey, TValue> ValueFactory;
+    private readonly ConcurrentDictionary<TKey, TValue> _cache;
+    private readonly Func<TKey, TValue> _valueFactory;
 
+    /// <summary>
+    /// Creates a new <see cref="ThreadSafeCache{TKey, TValue}"/> instance.
+    /// </summary>
+    /// <param name="valueFactory">The factory for creating a value if it doesn't exist in the cache.</param>
     public ThreadSafeCache(Func<TKey, TValue> valueFactory)
     {
         Guard.IsNotNull(valueFactory, nameof(valueFactory));
 
-        Cache = new ConcurrentDictionary<TKey, TValue>();
-        ValueFactory = valueFactory;
+        _cache = new ConcurrentDictionary<TKey, TValue>();
+        _valueFactory = valueFactory;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="ThreadSafeCache{TKey, TValue}"/> instance.
+    /// </summary>
+    /// <param name="valueFactory">The factory for creating a value if it doesn't exist in the cache.</param>
+    /// <param name="keyComparer">The key comparer.</param>
     public ThreadSafeCache(Func<TKey, TValue> valueFactory, IEqualityComparer<TKey>? keyComparer)
     {
         Guard.IsNotNull(valueFactory, nameof(valueFactory));
 
-        Cache = new ConcurrentDictionary<TKey, TValue>(keyComparer);
-        ValueFactory = valueFactory;
+        _cache = new ConcurrentDictionary<TKey, TValue>(keyComparer);
+        _valueFactory = valueFactory;
     }
 
     /// <summary>
@@ -48,7 +57,7 @@ public class ThreadSafeCache<TKey, TValue>
     /// <param name="key">The key to get the value of.</param>
     public TValue Get([DisallowNull] TKey key)
     {
-        return Cache.GetOrAdd(key, ValueFactory);
+        return _cache.GetOrAdd(key, _valueFactory);
     }
 
     /// <summary>
@@ -61,7 +70,7 @@ public class ThreadSafeCache<TKey, TValue>
     /// failed.</param>
     public bool TryGetValue([DisallowNull] TKey key, [MaybeNull] out TValue value)
     {
-        return Cache.TryGetValue(key, out value);
+        return _cache.TryGetValue(key, out value);
     }
 }
 

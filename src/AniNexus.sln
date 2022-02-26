@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Domain", "AniNexus.Domain\AniNexus.Domain.csproj", "{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.DomainLayer", "AniNexus.DomainLayer\AniNexus.DomainLayer.csproj", "{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Core", "AniNexus.Core\AniNexus.Core.csproj", "{86CBD996-F731-4034-A09F-FBFBD639BB2E}"
 EndProject

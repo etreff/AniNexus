@@ -79,7 +79,7 @@ public static class FuncProvider<T>
 public static class FuncProvider<TArg, TResult>
 {
     /// <summary>
-    /// A <see cref="Func{TArg, TResult}"/> that accepts no arguments and always returns the default value of <typeparamref name="T"/>.
+    /// A <see cref="Func{TArg, TResult}"/> that accepts no arguments and always returns the default value of <typeparamref name="TResult"/>.
     /// </summary>
     public static Func<TArg, TResult> Null { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; } = new(static _ => default!);
 
@@ -95,7 +95,7 @@ public static class FuncProvider<TArg, TResult>
 public static class FuncProvider<TArg1, TArg2, TResult>
 {
     /// <summary>
-    /// A <see cref="Func{TArg, TResult}"/> that accepts no arguments and always returns the default value of <typeparamref name="T"/>.
+    /// A <see cref="Func{TArg, TResult}"/> that accepts no arguments and always returns the default value of <typeparamref name="TResult"/>.
     /// </summary>
     public static Func<TArg1, TArg2, TResult> Null { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; } = new(static (_, __) => default!);
 }
@@ -162,17 +162,16 @@ public static class Delegates
     /// </summary>
     public static class String<T>
     {
-        private static readonly Lazy<Func<T, string>> LazyToString = new(() => new(static v => v?.ToString()!), LazyThreadSafetyMode.PublicationOnly);
-        private static readonly Lazy<Func<T, string>> LazyToStringFormattableInvariant = new(static () => new Func<T, string>(v => (v as IFormattable)?.ToString(null, CultureInfo.InvariantCulture)!), LazyThreadSafetyMode.PublicationOnly);
+        private static readonly Lazy<Func<T, string>> _lazyToString = new(() => new(static v => v?.ToString()!), LazyThreadSafetyMode.PublicationOnly);
+        private static readonly Lazy<Func<T, string>> _lazyToStringFormattableInvariant = new(static () => new Func<T, string>(v => (v as IFormattable)?.ToString(null, CultureInfo.InvariantCulture)!), LazyThreadSafetyMode.PublicationOnly);
 
-        private static readonly Lazy<Func<T, string>> ToStringInvariantLazy = typeof(T).GetInterfaces().Contains(typeof(IFormattable))
-            ? LazyToStringFormattableInvariant
-            : LazyToString;
+        private static readonly Lazy<Func<T, string>> _toStringInvariantLazy = typeof(T).GetInterfaces().Contains(typeof(IFormattable))
+            ? _lazyToStringFormattableInvariant
+            : _lazyToString;
 
         /// <summary>
-        /// A delegate that calls <see cref="object.ToString"/> on an object. If <typeparamref name="T"/> implements
-        /// <see cref="IFormattable"/>, <see cref="Cultures.Invariant"/> will be used to format the result.
+        /// A delegate that calls <see cref="object.ToString"/> on an object.
         /// </summary>
-        public static Func<T, string> ToStringInvariant => ToStringInvariantLazy.Value;
+        public static Func<T, string> ToStringInvariant => _toStringInvariantLazy.Value;
     }
 }

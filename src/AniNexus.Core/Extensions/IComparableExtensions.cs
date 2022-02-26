@@ -2,6 +2,9 @@
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="IComparable{T}"/> extensions.
+/// </summary>
 public static class IComparableExtensions
 {
     /// <summary>

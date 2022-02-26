@@ -75,7 +75,6 @@ public static class Number
     /// Returns the next power of 2.
     /// </summary>
     /// <param name="v">The number.</param>
-
     public static int NextPowerOfTwo(int v)
     {
         --v;
@@ -91,12 +90,16 @@ public static class Number
     /// Returns whether this number is a power of 2.
     /// </summary>
     /// <param name="v">The number.</param>
-
     public static bool IsPowerOfTwo(int v)
     {
         return (v & (v - 1)) == 0;
     }
 
+    /// <summary>
+    /// Returns the number of bits set in the integer.
+    /// </summary>
+    /// <param name="v">The integer.</param>
+    /// <returns>The number of set bits.</returns>
     public static int BitCount(int v)
     {
         v -= (v >> 1) & 0x55555555;
@@ -104,6 +107,11 @@ public static class Number
         return ((v + (v >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
     }
 
+    /// <summary>
+    /// Returns the number of bits set in the long.
+    /// </summary>
+    /// <param name="v">The long.</param>
+    /// <returns>The number of set bits.</returns>
     public static int BitCount(long v)
     {
         v -= (v >> 1) & 0x5555555555555555;
@@ -111,37 +119,79 @@ public static class Number
         return (int)(((v + (v >> 4) & 0xF0F0F0F0F0F0F0F) * 0x101010101010101) >> 56);
     }
 
+    /// <summary>
+    /// Returns whether the object is a numeric type.
+    /// </summary>
+    /// <param name="obj">The object to check.</param>
     public static bool IsNumericType(object? obj)
         => IsNumericType(obj?.GetType());
 
+    /// <summary>
+    /// Returns whether the type is a numeric type.
+    /// </summary>
+    /// <typeparam name="T">The type to check.</typeparam>
     public static bool IsNumericType<T>()
         => IsNumericType(typeof(T));
 
+    /// <summary>
+    /// Returns whether the type is a numeric type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
     public static bool IsNumericType(Type? type)
     {
-        return !(type is null) && NumericTypes.Contains(type);
+        return type is not null && NumericTypes.Contains(type);
     }
 
+    /// <summary>
+    /// Returns whether the object is an integer type and not a floating
+    /// point type.
+    /// </summary>
+    /// <param name="obj">The object to check.</param>
     public static bool IsIntegerType(object? obj)
         => IsIntegerType(obj?.GetType());
 
+    /// <summary>
+    /// Returns whether the type is an integer type and not a floating
+    /// point type.
+    /// </summary>
+    /// <typeparam name="T">The type to check.</typeparam>
     public static bool IsIntegerType<T>()
         => IsIntegerType(typeof(T));
 
+    /// <summary>
+    /// Returns whether the type is an integer type and not a floating
+    /// point type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
     public static bool IsIntegerType(Type? type)
     {
-        return !(type is null) && IntegerTypes.Contains(type);
+        return type is not null && IntegerTypes.Contains(type);
     }
 
+    /// <summary>
+    /// Returns whether the object is a floating point type and not an integer
+    /// type.
+    /// </summary>
+    /// <param name="obj">The object to check.</param>
     public static bool IsFloatingPointType(object? obj)
         => IsFloatingPointType(obj?.GetType());
 
+    /// <summary>
+    /// Returns whether the type is a floating point type and not an integer
+    /// type.
+    /// </summary>
+    /// <typeparam name="T">The type to check.</typeparam>
     public static bool IsFloatingPointType<T>()
         => IsFloatingPointType(typeof(T));
 
+    /// <summary>
+    /// Returns whether the type is a floating point type and not an integer
+    /// type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
     public static bool IsFloatingPointType(Type? type)
     {
-        return !(type is null) && FloatingPointTypes.Contains(type);
+        return type is not null && FloatingPointTypes.Contains(type);
     }
 
     /// <summary>
@@ -304,12 +354,20 @@ public static class Number
         return (n & 1) == 1;
     }
 
+    /// <summary>
+    /// Returns the least signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int LeastSigBitSet(this int value)
     {
         return value & -value;
     }
 
+    /// <summary>
+    /// Returns the index of the least signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     public static int LeastSigBitSetIndex(this int value)
     {
         int x = value.LeastSigBitSet();
@@ -323,6 +381,10 @@ public static class Number
         return index;
     }
 
+    /// <summary>
+    /// Returns the most signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     public static int MostSigBitSet(this int value)
     {
         value |= value >> 1;
@@ -334,6 +396,10 @@ public static class Number
         return value & ~(value >> 1);
     }
 
+    /// <summary>
+    /// Returns the index of the most signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     public static int MostSigBitSetIndex(this int value)
     {
         int x = value.MostSigBitSet();
@@ -347,12 +413,20 @@ public static class Number
         return index;
     }
 
+    /// <summary>
+    /// Returns the least signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint LeastSigBitSet(this uint value)
     {
         return value & 0u - value;
     }
 
+    /// <summary>
+    /// Returns the index of the least signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     public static uint LeastSigBitSetIndex(this uint value)
     {
         uint x = value.LeastSigBitSet();
@@ -366,6 +440,10 @@ public static class Number
         return index - 1;
     }
 
+    /// <summary>
+    /// Returns the most signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     public static uint MostSigBitSet(this uint value)
     {
         value |= value >> 1;
@@ -377,6 +455,10 @@ public static class Number
         return value & ~(value >> 1);
     }
 
+    /// <summary>
+    /// Returns the index of the most signficant set bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
     public static uint MostSigBitSetIndex(this uint value)
     {
         uint x = value.MostSigBitSet();
@@ -455,7 +537,7 @@ public static class Number
     }
 
     /// <summary>
-    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="number"/>.
+    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="multiple"/>.
     /// </summary>
     /// <param name="value">The value to round.</param>
     /// <param name="multiple">The nearest multiple to round to.</param>
@@ -467,7 +549,7 @@ public static class Number
     }
 
     /// <summary>
-    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="number"/>.
+    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="multiple"/>.
     /// </summary>
     /// <param name="value">The value to round.</param>
     /// <param name="multiple">The nearest multiple to round to.</param>
@@ -479,7 +561,7 @@ public static class Number
     }
 
     /// <summary>
-    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="number"/>.
+    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="multiple"/>.
     /// </summary>
     /// <param name="value">The value to round.</param>
     /// <param name="multiple">The nearest multiple to round to.</param>
@@ -491,7 +573,7 @@ public static class Number
     }
 
     /// <summary>
-    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="number"/>.
+    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="multiple"/>.
     /// </summary>
     /// <param name="value">The value to round.</param>
     /// <param name="multiple">The nearest multiple to round to.</param>
@@ -503,7 +585,7 @@ public static class Number
     }
 
     /// <summary>
-    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="number"/>.
+    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="multiple"/>.
     /// </summary>
     /// <param name="value">The value to round.</param>
     /// <param name="multiple">The nearest multiple to round to.</param>
@@ -515,7 +597,7 @@ public static class Number
     }
 
     /// <summary>
-    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="number"/>.
+    /// Rounds <paramref name="value"/> to the nearest multiple defined in <paramref name="multiple"/>.
     /// </summary>
     /// <param name="value">The value to round.</param>
     /// <param name="multiple">The nearest multiple to round to.</param>

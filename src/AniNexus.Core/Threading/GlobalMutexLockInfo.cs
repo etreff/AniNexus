@@ -8,23 +8,30 @@ public sealed class GlobalMutexLockInfo : IDisposable
     /// <summary>
     /// A <see cref="GlobalMutexLockInfo"/> instance that did not acquire a lock.
     /// </summary>
-    public static GlobalMutexLockInfo Failed => new GlobalMutexLockInfo(false, Disposable.Empty);
+    public static GlobalMutexLockInfo Failed => new(false, Disposable.Empty);
 
     /// <summary>
     /// Whether the lock was successfully acquired.
     /// </summary>
     public bool AcquiredLock { get; }
 
-    private readonly IDisposable LockFree;
+    private readonly IDisposable _lockFree;
+    private bool _disposed;
 
-    private bool Disposed;
+    internal GlobalMutexLockInfo(IDisposable lockFree)
+    {
+        _lockFree = lockFree;
+    }
 
     internal GlobalMutexLockInfo(bool acquiredLock, IDisposable lockFree)
     {
         AcquiredLock = acquiredLock;
-        LockFree = lockFree;
+        _lockFree = lockFree;
     }
 
+    /// <summary>
+    /// Disposes the instance.
+    /// </summary>
     ~GlobalMutexLockInfo()
     {
         DoDispose();
@@ -39,6 +46,9 @@ public sealed class GlobalMutexLockInfo : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Releases the mutex.
+    /// </summary>
     public void ReleaseMutex()
     {
         Dispose();
@@ -46,15 +56,15 @@ public sealed class GlobalMutexLockInfo : IDisposable
 
     private void DoDispose()
     {
-        lock (LockFree)
+        lock (_lockFree)
         {
-            if (Disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            LockFree.Dispose();
-            Disposed = true;
+            _lockFree.Dispose();
+            _disposed = true;
         }
     }
 }

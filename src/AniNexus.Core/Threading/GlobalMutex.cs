@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Diagnostics;
@@ -6,7 +7,7 @@ using Microsoft.Toolkit.Diagnostics;
 namespace AniNexus.Threading;
 
 /// <summary>
-/// A global <see cref="System.Threading.Mutex"/> class that applies
+/// A global <see cref="Mutex"/> class that applies
 /// cross-application.
 /// </summary>
 [DebuggerDisplay("{" + nameof(Name) + "}")]
@@ -17,8 +18,8 @@ public sealed class GlobalMutex : IDisposable
     /// </summary>
     public string Name { get; }
 
-    private readonly Mutex Mutex;
-    private readonly object Lock = new object();
+    private readonly Mutex _mutex;
+    private readonly object _lock = new();
 
     /// <summary>
     /// Creates a <see cref="GlobalMutex"/> using the entry assembly's <see cref="GuidAttribute"/>
@@ -46,7 +47,7 @@ public sealed class GlobalMutex : IDisposable
         Guard.IsNotNullOrWhiteSpace(mutexName, nameof(mutexName));
 
         Name = mutexName.Replace("\\", "");
-        Mutex = new Mutex(false, $"Global\\{Name}");
+        _mutex = new Mutex(false, $"Global\\{Name}");
     }
 
     /// <inheritdoc />
@@ -58,7 +59,7 @@ public sealed class GlobalMutex : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        lock (Lock)
+        lock (_lock)
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -67,11 +68,11 @@ public sealed class GlobalMutex : IDisposable
 
     private void Dispose(bool disposing)
     {
-        lock (Lock)
+        lock (_lock)
         {
             if (disposing)
             {
-                Mutex?.Dispose();
+                _mutex?.Dispose();
             }
         }
     }
@@ -92,8 +93,8 @@ public sealed class GlobalMutex : IDisposable
     {
         try
         {
-            bool hasAcquiredMutex = Mutex.WaitOne(timeout, cancellationToken);
-            return new GlobalMutexLockInfo(hasAcquiredMutex, hasAcquiredMutex ? Disposable.Create(new Action(Mutex.ReleaseMutex)) : Disposable.Empty);
+            bool hasAcquiredMutex = _mutex.WaitOne(timeout, cancellationToken);
+            return new GlobalMutexLockInfo(hasAcquiredMutex, hasAcquiredMutex ? Disposable.Create(new Action(_mutex.ReleaseMutex)) : Disposable.Empty);
         }
         catch (TaskCanceledException)
         {
@@ -102,7 +103,7 @@ public sealed class GlobalMutex : IDisposable
         catch (AbandonedMutexException)
         {
             // Abandoned mutexes are still acquired.
-            return new GlobalMutexLockInfo(true, Disposable.Create(new Action(Mutex.ReleaseMutex)));
+            return new GlobalMutexLockInfo(true, Disposable.Create(new Action(_mutex.ReleaseMutex)));
         }
     }
 
@@ -118,8 +119,6 @@ public sealed class GlobalMutex : IDisposable
     /// </summary>
     /// <param name="timeout">The timeout.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    [SuppressMessage("Performance", "HAA0301:Closure Allocation Source", Justification = "Intentional capture.")]
-    [SuppressMessage("Performance", "HAA0302:Display class allocation to capture closure", Justification = "Intentional capture.")]
     public async Task<GlobalMutexLockInfo> TryAcquireAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
     {
         bool acquiredMutex = false;
@@ -135,7 +134,7 @@ public sealed class GlobalMutex : IDisposable
         {
             try
             {
-                acquiredMutex = Mutex.WaitOne(timeout, cancellationToken);
+                acquiredMutex = _mutex.WaitOne(timeout, cancellationToken);
             }
             catch (TaskCanceledException)
             {
@@ -162,7 +161,7 @@ public sealed class GlobalMutex : IDisposable
                     mre.Wait();
                 try
                 {
-                    Mutex.ReleaseMutex();
+                    _mutex.ReleaseMutex();
                 }
                 catch
                 {
@@ -198,21 +197,18 @@ public sealed class GlobalMutex : IDisposable
     private static string GetAppGuid()
     {
         var guidAttr = Assembly.GetEntryAssembly()?.GetCustomAttribute<GuidAttribute>();
-        if (guidAttr is null)
-        {
-            throw new InvalidOperationException($"Assembly is missing a {nameof(GuidAttribute)}.");
-        }
-
-        return Guid.Parse(guidAttr.Value).ToString("B");
+        return guidAttr is not null
+            ? Guid.Parse(guidAttr.Value).ToString("B")
+            : throw new InvalidOperationException($"Assembly is missing a {nameof(GuidAttribute)}.");
     }
 
     private sealed class GlobalMutexLockFree : IDisposable
     {
-        private ManualResetEventSlim ResetEvent { get; }
+        private readonly ManualResetEventSlim _resetEvent;
 
         public GlobalMutexLockFree(ManualResetEventSlim resetEvent)
         {
-            ResetEvent = resetEvent;
+            _resetEvent = resetEvent;
         }
 
         ~GlobalMutexLockFree()
@@ -222,8 +218,10 @@ public sealed class GlobalMutex : IDisposable
 
         public void Dispose()
         {
-            ResetEvent.Set();
-            ResetEvent.Dispose();
+            _resetEvent.Set();
+            _resetEvent.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }

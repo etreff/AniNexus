@@ -70,7 +70,7 @@ public static partial class CollectionExtensions
         for (int i = count - 1; i > 0; --i)
         {
             // We use i instead of i-1 since our RNG interface dictates an inclusive upper.
-            int randomIndex = RandomNumberGenerator.NextInt32(i);
+            int randomIndex = _randomNumberGenerator.NextInt32(i);
             var temp = collection[randomIndex];
             collection[randomIndex] = collection[i];
             collection[i] = temp;

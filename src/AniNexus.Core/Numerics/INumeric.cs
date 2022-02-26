@@ -25,9 +25,14 @@ using System.Globalization;
 
 namespace AniNexus;
 
+/// <summary>
+/// Represents a numerical entity.
+/// </summary>
+/// <typeparam name="T">The type of the number.</typeparam>
 public interface INumeric<T>
     where T : struct, IComparable<T>, IEquatable<T>
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     bool LessThan(T left, T right);
 
     T And(T left, T right);
@@ -79,5 +84,6 @@ public interface INumeric<T>
     long ToInt64(T value);
 
     ulong ToUInt64(T value);
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
 

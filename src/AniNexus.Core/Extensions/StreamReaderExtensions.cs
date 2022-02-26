@@ -3,6 +3,9 @@ using System.IO;
 
 namespace AniNexus;
 
+/// <summary>
+/// <see cref="StreamReader"/> extensions.
+/// </summary>
 public static class StreamReaderExtensions
 {
     /// <summary>

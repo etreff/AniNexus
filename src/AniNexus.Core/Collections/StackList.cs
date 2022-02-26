@@ -14,21 +14,33 @@ public ref struct StackList<T>
     /// </summary>
     public int Length { get; private set; }
 
-    private Span<T> Span;
-    private T[]? ArrayFromPool;
+    private Span<T> _span;
+    private T[]? _arrayFromPool;
 
-    public ref T this[int index] => ref Span[index];
+    /// <summary>
+    /// Returns the element at the specified index.
+    /// </summary>
+    /// <param name="index">The index of the element to retrieve.</param>
+    public ref T this[int index] => ref _span[index];
 
+    /// <summary>
+    /// Creates a new <see cref="StackList{T}"/> instance.
+    /// </summary>
+    /// <param name="initialSize">The initial buffer size.</param>
     public StackList(int initialSize)
     {
-        Span = ArrayFromPool = ArrayPool<T>.Shared.Rent(initialSize);
+        _span = _arrayFromPool = ArrayPool<T>.Shared.Rent(initialSize);
         Length = 0;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="StackList{T}"/> instance.
+    /// </summary>
+    /// <param name="initialSpan">The initial buffer to use.</param>
     public StackList(Span<T> initialSpan)
     {
-        Span = initialSpan;
-        ArrayFromPool = null;
+        _span = initialSpan;
+        _arrayFromPool = null;
         Length = 0;
     }
 
@@ -38,10 +50,10 @@ public ref struct StackList<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Dispose()
     {
-        if (ArrayFromPool is not null)
+        if (_arrayFromPool is not null)
         {
-            ArrayPool<T>.Shared.Return(ArrayFromPool);
-            ArrayFromPool = null;
+            ArrayPool<T>.Shared.Return(_arrayFromPool);
+            _arrayFromPool = null;
         }
     }
 
@@ -53,12 +65,12 @@ public ref struct StackList<T>
     public void Append(T item)
     {
         int pos = Length;
-        if (pos >= Span.Length)
+        if (pos >= _span.Length)
         {
             Grow();
         }
 
-        Span[pos] = item;
+        _span[pos] = item;
         Length = pos + 1;
     }
 
@@ -68,19 +80,19 @@ public ref struct StackList<T>
     /// </summary>
     public ReadOnlySpan<T> AsSpan()
     {
-        return Span.Length == Length ? Span : Span.Slice(0, Length);
+        return _span.Length == Length ? _span : _span.Slice(0, Length);
     }
 
     private void Grow()
     {
-        var array = ArrayPool<T>.Shared.Rent(Span.Length * 2);
-        if (!Span.TryCopyTo(array))
+        var array = ArrayPool<T>.Shared.Rent(_span.Length * 2);
+        if (!_span.TryCopyTo(array))
         {
             throw new InvalidOperationException("Unable to copy span to grown ArrayPool array.");
         }
 
-        var toReturn = ArrayFromPool;
-        Span = ArrayFromPool = array;
+        var toReturn = _arrayFromPool;
+        _span = _arrayFromPool = array;
         if (toReturn is not null)
         {
             ArrayPool<T>.Shared.Return(toReturn);

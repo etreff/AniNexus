@@ -3,6 +3,9 @@ using System.IO;
 
 namespace AniNexus;
 
+/// <summary>
+/// File and directory extensions.
+/// </summary>
 public static partial class FileSystemInfoExtensions
 {
     /// <summary>
