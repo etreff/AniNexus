@@ -122,6 +122,11 @@ public sealed class UserEntity : Entity<UserEntity>, IHasRowVersion, IHasSoftDel
     /// </summary>
     public IList<AnimeUserReviewEntity> AnimeReviews { get; set; } = default!;
 
+    /// <summary>
+    /// The animes this user has favorited.
+    /// </summary>
+    public IList<AnimeFavoriteMapEntity> AnimeFavorites { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<UserEntity> builder)
     {

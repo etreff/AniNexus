@@ -8,6 +8,16 @@ namespace AniNexus;
 public readonly struct Date : IEquatable<Date>, IComparable<Date>
 {
     /// <summary>
+    /// The minimum supported <see cref="Date"/> value.
+    /// </summary>
+    public static Date MinValue => new(0, 1, 0);
+
+    /// <summary>
+    /// The maximum supported <see cref="Date"/> value.
+    /// </summary>
+    public static Date MaxValue => new(int.MaxValue, 12, 31);
+
+    /// <summary>
     /// The year component.
     /// </summary>
     public readonly int Year { get; }

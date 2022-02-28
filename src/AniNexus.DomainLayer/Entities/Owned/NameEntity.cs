@@ -1,19 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AniNexus.Domain.Validation;
-using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus.Domain.Entities;
 
 /// <summary>
 /// Models a name of an entity.
 /// </summary>
-public sealed class NameEntity : IOwnedEntity<NameEntity>
+public sealed class NameEntity : OwnedEntity<NameEntity>
 {
-    /// <summary>
-    /// The Id of the owner of this entity.
-    /// </summary>
-    public Guid OwnerId { get; set; }
-
     /// <summary>
     /// The name in the native language.
     /// </summary>
@@ -29,13 +23,26 @@ public sealed class NameEntity : IOwnedEntity<NameEntity>
     /// </summary>
     public string? EnglishName { get; set; }
 
-    /// <summary>
-    /// Whether the name is the primary name.
-    /// </summary>
-    public bool IsPrimary { get; set; }
+    /// <inheritdoc/>
+    protected override string GetTableName(Type ownerType, string ownerEntityTableName)
+    {
+        // Generally we will have an entity with a primary name and aliases. The primary name
+        // will be stored inline with the entity and have a list of name entities as aliases.
+        // We will account for the more common case here, and any models that deviate from this
+        // pattern will need to explicitly specify the table name during configuration.
+        return $"{ownerEntityTableName}NameAlias";
+    }
 
     /// <inheritdoc/>
-    public void Validate(ValidationBuilder<NameEntity> validator)
+    protected override void ConfigureEntity<TOwnerEntity>(OwnedNavigationBuilder<TOwnerEntity, NameEntity> builder)
+    {
+        builder.Property(m => m.NativeName).HasComment("The native name.").HasColumnName(nameof(NativeName));
+        builder.Property(m => m.RomajiName).HasComment("The romanization of the native name.").HasColumnName(nameof(RomajiName));
+        builder.Property(m => m.EnglishName).HasComment("The name in English.").HasColumnName(nameof(EnglishName));
+    }
+
+    /// <inheritdoc/>
+    public override void Validate(ValidationBuilder<NameEntity> validator)
     {
         validator.AddValidationRule((b, e) =>
         {
@@ -60,42 +67,5 @@ public sealed class NameEntity : IOwnedEntity<NameEntity>
                 b.AddValidationResult(new ValidationResult("Value cannot be an empty string or whitespace.", b.GetPropertyPathArray(nameof(EnglishName))));
             }
         });
-    }
-}
-
-/// <summary>
-/// <see cref="OwnedNavigationBuilder"/> extensions.
-/// </summary>
-public static partial class OwnedNavigationBuilderExtensions
-{
-    /// <summary>
-    /// Configures the <see cref="NameEntity"/> owned type for this entity.
-    /// </summary>
-    /// <typeparam name="TEntity">The owning type.</typeparam>
-    /// <param name="builder">The owned type builder.</param>
-    /// <param name="createTable">Whether to create table.</param>
-    /// <param name="tableName">The table name to use. If left <see langword="null"/>, <see cref="Entity.GetDefaultTableName{TEntity}"/> will be used.</param>
-    public static OwnedNavigationBuilder<TEntity, NameEntity> ConfigureNameEntity<TEntity>(this OwnedNavigationBuilder<TEntity, NameEntity> builder, bool createTable = true, string? tableName = null)
-        where TEntity : class
-    {
-        Guard.IsNotNull(builder, nameof(builder));
-
-        if (createTable)
-        {
-            if (string.IsNullOrWhiteSpace(tableName))
-            {
-                tableName = Entity.GetDefaultTableName<TEntity>();
-            }
-            builder.ToTable($"{tableName}Name");
-        }
-
-        builder.WithOwner().HasForeignKey(m => m.OwnerId);
-
-        builder.Property(m => m.NativeName).HasComment("The native name.").HasColumnName(nameof(NameEntity.NativeName));
-        builder.Property(m => m.RomajiName).HasComment("The romanization of the native name.").HasColumnName(nameof(NameEntity.RomajiName));
-        builder.Property(m => m.EnglishName).HasComment("The name in English.").HasColumnName(nameof(NameEntity.EnglishName));
-        builder.Property(m => m.IsPrimary).HasComment("Whether this name is the primary name of the series.").HasColumnName(nameof(NameEntity.IsPrimary));
-
-        return builder;
     }
 }

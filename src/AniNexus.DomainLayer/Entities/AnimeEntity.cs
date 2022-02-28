@@ -73,6 +73,11 @@ public sealed class AnimeEntity : FranchiseMediaEntity<AnimeEntity>
     /// </summary>
     public IList<AnimeUserReviewEntity> UserReviews { get; set; } = default!;
 
+    /// <summary>
+    /// The characters in this anime.
+    /// </summary>
+    public IList<AnimeCharacterMapEntity> Characters { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<AnimeEntity> builder)
     {

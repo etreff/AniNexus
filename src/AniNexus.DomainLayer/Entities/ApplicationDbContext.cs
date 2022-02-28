@@ -10,6 +10,16 @@ public partial class ApplicationDbContext
     public DbSet<AnimeEntity> Anime => Set<AnimeEntity>();
 
     /// <summary>
+    /// A collection of mappings to characters and the anime they appear in.
+    /// </summary>
+    public DbSet<AnimeCharacterMapEntity> AnimeCharacterMap => Set<AnimeCharacterMapEntity>();
+
+    /// <summary>
+    /// A collection of anime episodes.
+    /// </summary>
+    public DbSet<AnimeEpisodeEntity> AnimeEpisodes => Set<AnimeEpisodeEntity>();
+
+    /// <summary>
     /// A collection of users who have favorited an anime.
     /// </summary>
     public DbSet<AnimeFavoriteMapEntity> AnimeFavoriteMap => Set<AnimeFavoriteMapEntity>();
@@ -33,6 +43,11 @@ public partial class ApplicationDbContext
     /// A collection of anime that is airing.
     /// </summary>
     public DbSet<AnimeReleaseAiringEntity> AnimeAiring => Set<AnimeReleaseAiringEntity>();
+
+    /// <summary>
+    /// A collection of anime release mappings to the people who worked on them.
+    /// </summary>
+    public DbSet<AnimeReleasePersonMapEntity> AnimeReleasePersonMap => Set<AnimeReleasePersonMapEntity>();
 
     /// <summary>
     /// A collection of anime releases.
@@ -96,6 +111,11 @@ public partial class ApplicationDbContext
     public DbSet<AppResourceEntity> AppResources => Set<AppResourceEntity>();
 
     /// <summary>
+    /// A collection of characters.
+    /// </summary>
+    public DbSet<CharacterEntity> Characters => Set<CharacterEntity>();
+
+    /// <summary>
     /// A collection of user claims.
     /// </summary>
     public DbSet<ClaimEntity> Claims => Set<ClaimEntity>();
@@ -139,6 +159,16 @@ public partial class ApplicationDbContext
     /// A collection of NSFW content types per region.
     /// </summary>
     public DbSet<OffensiveNsfwContentTypeEntity> OffensiveNsfwContentTypes => Set<OffensiveNsfwContentTypeEntity>();
+
+    /// <summary>
+    /// A collection of real people.
+    /// </summary>
+    public DbSet<PersonEntity> People => Set<PersonEntity>();
+
+    /// <summary>
+    /// A collection of mappings to people and the characters they voiced.
+    /// </summary>
+    public DbSet<PersonVoiceActorMapEntity> PersonVoiceActorMap => Set<PersonVoiceActorMapEntity>();
 
     /// <summary>
     /// A collection of known regions.

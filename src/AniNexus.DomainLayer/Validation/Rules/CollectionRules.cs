@@ -66,6 +66,190 @@ public static partial class PropertyValidatorBuilderMethods
 
     /// <summary>
     /// <para>
+    /// Validates that a collection has less than <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has less than <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The maximum exclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> HasCountLessThan<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Count >= count)
+            {
+                context.AddValidationResult($"Collection must have less than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has less than <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has less than <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The maximum exclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, TProperty?[]?> HasCountLessThan<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, TProperty?[]?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Length >= count)
+            {
+                context.AddValidationResult($"Collection must have less than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has less than or equal to <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has less than or equal to <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The maximum inclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> HasCountLessThanOrEqualTo<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Count > count)
+            {
+                context.AddValidationResult($"Collection must have less than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has less than or equal to <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has less than or equal to <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The maximum inclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, TProperty?[]?> HasCountLessThanOrEqualTo<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, TProperty?[]?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Length > count)
+            {
+                context.AddValidationResult($"Collection must have less than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has greater than <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has greater than <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The minimum exclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> HasCountGreaterThan<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Count <= count)
+            {
+                context.AddValidationResult($"Collection must have greater than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has greater than <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has greater than <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The minimum exclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, TProperty?[]?> HasCountGreaterThan<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, TProperty?[]?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Length <= count)
+            {
+                context.AddValidationResult($"Collection must have greater than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has greater than or equal to <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has greater than or equal to <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The minimum inclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> HasCountGreaterThanOrEqualTo<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, IList<TProperty?>?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Count < count)
+            {
+                context.AddValidationResult($"Collection must have greater than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
+    /// Validates that a collection has greater than or equal to <paramref name="count"/> elements if the property is non-nullable.
+    /// </para>
+    /// <para>
+    /// Validates that a collection has greater than or equal to <paramref name="count"/> elements  if the property is nullable but set.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The property builder.</param>
+    /// <param name="count">The minimum inclusive length of the collection.</param>
+    /// <returns>This builder for chaining.</returns>
+    public static IPropertyValidatorBuilder<TEntity, TProperty?[]?> HasCountGreaterThanOrEqualTo<TEntity, TProperty>(this IPropertyValidatorBuilder<TEntity, TProperty?[]?> builder, int count)
+        where TEntity : class, IEntity
+    {
+        return builder.AddValidationRule(context =>
+        {
+            if (context.Value!.Length < count)
+            {
+                context.AddValidationResult($"Collection must have greater than {count} elements.");
+            }
+        });
+    }
+
+    /// <summary>
+    /// <para>
     /// Validates that a collection and its contents are not <see langword="null"/> or empty if the property is non-nullable.
     /// </para>
     /// <para>

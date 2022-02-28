@@ -1,5 +1,4 @@
-﻿using AniNexus.Domain.Models;
-using EntityFrameworkCore.Triggered;
+﻿using EntityFrameworkCore.Triggered;
 
 namespace AniNexus.Domain.Triggers;
 

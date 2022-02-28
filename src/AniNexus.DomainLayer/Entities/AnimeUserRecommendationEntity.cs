@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AniNexus.Domain.Validation;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace AniNexus.Domain.Entities;
 
 /// <summary>
 /// Models an anime recommendation made by a user.
 /// </summary>
-public sealed class AnimeUserRecommendationEntity : AuditableEntity<AnimeUserRecommendationEntity>, IHasSoftDelete
+public sealed class AnimeUserRecommendationEntity : AuditableEntity<AnimeUserRecommendationEntity>, IHasSoftDelete, IHasPublicId<Guid>
 {
     /// <summary>
     /// The public key of this recommendation.
@@ -74,7 +73,6 @@ public sealed class AnimeUserRecommendationEntity : AuditableEntity<AnimeUserRec
 
         // 1. Index specification
         builder.HasIndex(m => new { m.AnimeId, m.AnimeRecommendationId, m.UserId }).IsUnique();
-        builder.HasIndex(m => m.PublicId).IsUnique();
         builder.HasIndex(m => m.UserId);
         // 2. Navigation properties
         // Many third party trackers will keep user reviews when the user has been deleted,
@@ -87,7 +85,6 @@ public sealed class AnimeUserRecommendationEntity : AuditableEntity<AnimeUserRec
         builder.HasOne(m => m.Recommendation).WithMany().HasForeignKey(m => m.AnimeRecommendationId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         // 3. Propery specification
         builder.Property(m => m.AnimeRecommendationId).HasColumnName("AnimeRecId");
-        builder.Property(m => m.PublicId).HasValueGenerator<SequentialGuidValueGenerator>();
         builder.Property(m => m.Reason).HasComment("The reason why this user recommends the anime.").HasMaxLength(2500).IsUnicode();
         // 4. Other
     }

@@ -10,6 +10,11 @@ namespace AniNexus.Domain.Entities;
 public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowVersion, IHasSoftDelete, IHasImage
 {
     /// <summary>
+    /// The name of this franchise.
+    /// </summary>
+    public NameEntity Name { get; set; } = default!;
+
+    /// <summary>
     /// A synopsis of the series.
     /// </summary>
     public string? Synopsis { get; set; }
@@ -30,9 +35,9 @@ public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowV
     public bool IsSoftDeleted { get; set; }
 
     /// <summary>
-    /// The names of the series.
+    /// The aliases of the series.
     /// </summary>
-    public IList<NameEntity> Names { get; set; } = default!;
+    public IList<NameEntity> Aliases { get; set; } = default!;
 
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<FranchiseEntity> builder)
@@ -41,7 +46,8 @@ public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowV
 
         // 1. Index specification
         // 2. Navigation properties
-        builder.OwnsMany(m => m.Names, name => name.ConfigureNameEntity());
+        builder.OwnsOne(m => m.Name, static name => name.ConfigureOwnedEntity(false));
+        builder.OwnsMany(m => m.Aliases, static name => name.ConfigureOwnedEntity());
         // 3. Propery specification
         builder.Property(m => m.Synopsis).HasComment("A synopsis of the media series.").HasMaxLength(1250);
         // 4. Other
@@ -52,9 +58,7 @@ public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowV
     {
         base.Validate(validationContext, validator);
 
-        validator
-            .ValidateOwnedEntities(m => m.Names!)
-            .IsNotEmpty()
-            .Single(n => n?.IsPrimary == true, $"Exactly 1 name must have {nameof(NameEntity.IsPrimary)} set to true.");
+        validator.ValidateOwnedEntity(m => m.Name);
+        validator.ValidateOwnedEntities(m => m.Aliases!);
     }
 }

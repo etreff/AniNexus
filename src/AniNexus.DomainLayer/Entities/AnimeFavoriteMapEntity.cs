@@ -20,6 +20,11 @@ public class AnimeFavoriteMapEntity : Entity<AnimeFavoriteMapEntity, long>
     /// </summary>
     public AnimeEntity Anime { get; set; } = default!;
 
+    /// <summary>
+    /// The user that favorited the anime.
+    /// </summary>
+    public UserEntity User { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<AnimeFavoriteMapEntity> builder)
     {
@@ -28,7 +33,9 @@ public class AnimeFavoriteMapEntity : Entity<AnimeFavoriteMapEntity, long>
         builder.HasIndex(m => m.UserId);
         // 2. Navigation properties
         builder.HasOne(m => m.Anime).WithMany(m => m.Favorites).HasForeignKey(m => m.AnimeId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(m => m.User).WithMany(m => m.AnimeFavorites).HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         // 3. Propery specification
         // 4. Other
+        builder.HasQueryFilter(m => !m.Anime.IsSoftDeleted && !m.User.IsSoftDeleted);
     }
 }

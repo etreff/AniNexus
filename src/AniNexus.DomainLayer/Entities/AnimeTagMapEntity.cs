@@ -36,6 +36,7 @@ public class AnimeTagMapEntity : Entity<AnimeTagMapEntity>
         builder.HasOne(m => m.Tag).WithMany(m => m.Anime).HasForeignKey(m => m.TagId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         // 3. Propery specification
         // 4. Other
+        builder.HasQueryFilter(m => !m.Anime.IsSoftDeleted);
     }
 }
 

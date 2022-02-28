@@ -45,15 +45,17 @@ public abstract class TranslationEntity<TTranslationEntity, TReferenceEntity, TR
         // 1. Primary key specification (if not Entity<>)
         // 2. Index specification
         builder.HasIndex(m => new { m.ReferenceId, m.LanguageId }).IsUnique();
+        builder.HasIndex(m => m.LanguageId);
         // 3. Navigation properties
         builder.HasOne(m => m.Reference).WithMany(m => m.Translations).HasForeignKey(m => m.ReferenceId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         // 4. Propery specification
+        builder.Property(m => m.Translation).IsUnicode().HasComment("The translation.");
     }
 
     /// <inheritdoc/>
-    protected override void Validate(ValidationContext validationContext, TTranslationEntity entity, ValidationBuilder<TTranslationEntity> validator)
+    protected override void Validate(ValidationContext validationContext, ValidationBuilder<TTranslationEntity> validator)
     {
-        base.Validate(validationContext, entity, validator);
+        base.Validate(validationContext, validator);
 
         validator.Property(m => m.Translation).IsNotNullOrWhiteSpace();
     }

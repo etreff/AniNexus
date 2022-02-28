@@ -5,7 +5,7 @@ namespace AniNexus.Domain.Entities;
 /// <summary>
 /// Models a user's review of an anime.
 /// </summary>
-public sealed class AnimeUserReviewEntity : AuditableEntity<AnimeUserReviewEntity>, IHasSoftDelete
+public sealed class AnimeUserReviewEntity : AuditableEntity<AnimeUserReviewEntity>, IHasSoftDelete, IHasPublicId<Guid>
 {
     /// <summary>
     /// The public key of this recommendation.
@@ -60,7 +60,6 @@ public sealed class AnimeUserReviewEntity : AuditableEntity<AnimeUserReviewEntit
         // 1. Index specification
         builder.HasIndex(m => new[] { m.UserId, m.AnimeId }).IsUnique();
         builder.HasIndex(m => m.AnimeId);
-        builder.HasIndex(m => m.PublicId).IsUnique();
         // 2. Navigation properties
         builder.HasOne(m => m.User).WithMany(m => m.AnimeReviews).HasForeignKey(m => m.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(m => m.Anime).WithMany(m => m.UserReviews).HasForeignKey(m => m.AnimeId).IsRequired().OnDelete(DeleteBehavior.Cascade);

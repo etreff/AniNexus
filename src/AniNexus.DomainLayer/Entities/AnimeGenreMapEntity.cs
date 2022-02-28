@@ -36,5 +36,6 @@ public class AnimeGenreMapEntity : Entity<AnimeGenreMapEntity, int>
         builder.HasOne(m => m.Genre).WithMany(m => m.Anime).HasForeignKey(m => m.GenreId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         // 3. Propery specification
         // 4. Other
+        builder.HasQueryFilter(m => !m.Anime.IsSoftDeleted && !m.Genre.IsSoftDeleted);
     }
 }

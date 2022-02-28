@@ -7,7 +7,7 @@ namespace AniNexus.Domain.Entities;
 /// The base class for a piece of media belonging to a <see cref="FranchiseEntity"/>.
 /// </summary>
 /// <typeparam name="TEntity">The entity type.</typeparam>
-public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, IHasRowVersion, IHasSoftDelete
+public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, IHasRowVersion, IHasSoftDelete, IHasPublicId
     where TEntity : FranchiseMediaEntity<TEntity>
 {
     /// <summary>
@@ -70,23 +70,15 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
     {
         base.ConfigureEntity(builder);
 
-        string sequenceId = $"{GetTableName()}.{nameof(PublicId)}";
-
         // 1. Primary key specification (if not Entity<>)
         // 2. Index specification
-        builder.HasIndex(m => m.PublicId).IsUnique();
         // 3. Navigation properties
         // 4. Propery specification
         builder.Property(m => m.ActiveRating).HasComment("The user rating of the anime (Watching Only), from 0 to 100. Calculated by the system periodically.");
         builder.Property(m => m.Rating).HasComment("The user rating of the anime (Completed Only), from 0 to 100. Calculated by the system periodically.");
-        builder.Property(m => m.PublicId).HasDefaultValue($"NEXT VALUE FOR {sequenceId}").HasComment("The Id of the entity for use in public APIs and navigation URLs.");
         builder.Property(m => m.Synopsis).HasMaxLength(2000).HasComment("A synopsis or description of the anime.");
         builder.Property(m => m.Votes).HasComment("The number of votes that contributed to the rating. Calculated by the system periodically.").HasDefaultValue(0);
         builder.Property(m => m.WebsiteUrl).HasComment("The URL to the media's official website.");
-
-        var sequence = builder.Metadata.Model.AddSequence(sequenceId);
-        sequence.StartValue = 1;
-        sequence.IncrementBy = 1;
     }
 
     /// <inheritdoc/>

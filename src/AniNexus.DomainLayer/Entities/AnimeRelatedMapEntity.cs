@@ -56,6 +56,7 @@ public class AnimeRelatedMapEntity : Entity<AnimeRelatedMapEntity>
         builder.HasOne(m => m.RelationType).WithMany().HasForeignKey(m => m.RelatedAnimeId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         // 3. Propery specification
         // 4. Other
+        builder.HasQueryFilter(m => !m.Anime.IsSoftDeleted && !m.Related.IsSoftDeleted);
     }
 
     /// <inheritdoc/>
