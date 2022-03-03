@@ -71,4 +71,3 @@ public static class Utf8JsonWriterExtensions
         writer.WritePropertyName(serializedName);
     }
 }
-

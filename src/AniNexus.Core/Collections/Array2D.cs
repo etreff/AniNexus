@@ -47,4 +47,3 @@ public ref struct Array2D<T>
         set => _underlyingArray[y * Width + x] = value;
     }
 }
-

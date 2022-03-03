@@ -17,4 +17,3 @@ public static partial class Linq
         return collection.OrderBy(FuncProvider<T?>.ReturnSelf, new ComparerBridge<T?>(comparer));
     }
 }
-

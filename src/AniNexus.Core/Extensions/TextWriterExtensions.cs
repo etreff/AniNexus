@@ -31,4 +31,3 @@ public static class TextWriterExtensions
         return TextWriter.WriteLineAsync((value ?? string.Empty).AsMemory(), cancellationToken);
     }
 }
-

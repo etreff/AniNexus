@@ -5,6 +5,9 @@
 /// </summary>
 public enum EAnimeAgeRating : byte
 {
+    /// <summary>
+    /// The age restriction is unknown.
+    /// </summary>
     [EnumMetadata("MinAge", 0)]
     [EnumMetadata("Abbreviation", "N/A")]
     [EnumMetadata("Description", "The age restriction is unknown.")]

@@ -232,4 +232,3 @@ public static class IComparableExtensions
         throw new ArgumentException("The lower bound must be less than or equal to the upper bound.");
     }
 }
-

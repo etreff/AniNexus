@@ -19,4 +19,3 @@ public static partial class NumericExtensions
         return Unsafe.As<bool, byte>(ref b);
     }
 }
-

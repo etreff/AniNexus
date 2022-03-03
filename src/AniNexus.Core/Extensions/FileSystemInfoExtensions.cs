@@ -34,4 +34,3 @@ public static partial class FileSystemInfoExtensions
         }
     }
 }
-

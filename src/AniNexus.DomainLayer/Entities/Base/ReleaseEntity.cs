@@ -153,7 +153,7 @@ public abstract class ReleaseEntity<TReleaseEntity, TInstallmentEntity> : Audita
         builder.OwnsMany(m => m.Trailers, static owned => owned.ConfigureOwnedEntity());
         builder.OwnsOne(m => m.Name, static owned => owned.ConfigureOwnedEntity(false));
         // 3. Propery specification
-        builder.Property(m => m.Aliases).HasColumnType("nvarchar(500)").IsRequired(false).HasListConversion();
+        builder.Property(m => m.Aliases).HasListConversion().IsUnicode().IsRequired(false).HasComment("Alias names for this release.");
         builder.Property(m => m.ElementCount).HasComment("The number of episodes or chapters this release has or is expected to have.");
         builder.Property(m => m.EndDate).HasComment("The air date of the last episode in this locale.");
         builder.Property(m => m.IsPrimary).HasComment("Whether this is the primary release information for the anime.");

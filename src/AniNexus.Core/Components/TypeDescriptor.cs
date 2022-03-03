@@ -299,4 +299,3 @@ public class TypeDescriptorEqualityComparer : IEqualityComparer<TypeDescriptor>
         return obj.GetHashCode();
     }
 }
-

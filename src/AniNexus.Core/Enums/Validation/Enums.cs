@@ -474,4 +474,3 @@ internal static class Enums<TEnum>
 {
     public static IEnumInfo<TEnum> Info { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; } = Enums.CreateEnumInfo<TEnum>();
 }
-

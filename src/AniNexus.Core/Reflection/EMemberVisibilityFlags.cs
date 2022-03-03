@@ -36,4 +36,3 @@ public enum EMemberVisibilityFlags : byte
     /// </summary>
     All = Public | Internal | Protected | Private
 }
-

@@ -5,6 +5,16 @@ namespace AniNexus.Domain;
 public partial class ApplicationDbContext
 {
     /// <summary>
+    /// A collection of mappings to albums and the regions they are legally available in.
+    /// </summary>
+    public DbSet<AlbumRegionMapEntity> AlbumRegions => Set<AlbumRegionMapEntity>();
+
+    /// <summary>
+    /// A collection of audio albums.
+    /// </summary>
+    public DbSet<AlbumEntity> Albums => Set<AlbumEntity>();
+
+    /// <summary>
     /// A collection of anime entries.
     /// </summary>
     public DbSet<AnimeEntity> Anime => Set<AnimeEntity>();
@@ -121,19 +131,19 @@ public partial class ApplicationDbContext
     public DbSet<ClaimEntity> Claims => Set<ClaimEntity>();
 
     /// <summary>
+    /// A collection of companies.
+    /// </summary>
+    public DbSet<CompanyEntity> Companies => Set<CompanyEntity>();
+
+    /// <summary>
+    /// A collection of mappings to anime that companies are associated with.
+    /// </summary>
+    public DbSet<CompanyAnimeMapEntity> CompanyAnimeMap => Set<CompanyAnimeMapEntity>();
+
+    /// <summary>
     /// A collection of franchises/IPs.
     /// </summary>
     public DbSet<FranchiseEntity> Franchises => Set<FranchiseEntity>();
-
-    /// <summary>
-    /// A collection of genres.
-    /// </summary>
-    public DbSet<GenreEntity> Genres => Set<GenreEntity>();
-
-    /// <summary>
-    /// A collection of genre translations.
-    /// </summary>
-    public DbSet<GenreTranslationEntity> GenreTranslations => Set<GenreTranslationEntity>();
 
     /// <summary>
     /// A collection of known languages.
@@ -166,9 +176,19 @@ public partial class ApplicationDbContext
     public DbSet<PersonEntity> People => Set<PersonEntity>();
 
     /// <summary>
+    /// A collection of mappings to people and albums they worked on.
+    /// </summary>
+    public DbSet<PersonAlbumMapEntity> PersonAlbumMap => Set<PersonAlbumMapEntity>();
+
+    /// <summary>
     /// A collection of mappings to people and the characters they voiced.
     /// </summary>
     public DbSet<PersonVoiceActorMapEntity> PersonVoiceActorMap => Set<PersonVoiceActorMapEntity>();
+
+    /// <summary>
+    /// A collection of mappings to people and the characters they portrayed live.
+    /// </summary>
+    public DbSet<PersonLiveActorMapEntity> PersonLiveActorMap => Set<PersonLiveActorMapEntity>();
 
     /// <summary>
     /// A collection of known regions.
@@ -179,6 +199,31 @@ public partial class ApplicationDbContext
     /// A collection of social media entities.
     /// </summary>
     public DbSet<SocialMediaEntity> SocialMedia => Set<SocialMediaEntity>();
+
+    /// <summary>
+    /// A collection of mappings to a band/group and the albums they created.
+    /// </summary>
+    public DbSet<SongArtistAlbumMapEntity> SongArtistAlbumMap => Set<SongArtistAlbumMapEntity>();
+
+    /// <summary>
+    /// A collection of mappings to a band/group and the members.
+    /// </summary>
+    public DbSet<SongArtistPersonMapEntity> SongArtistPersonMap => Set<SongArtistPersonMapEntity>();
+
+    /// <summary>
+    /// A collection of mappings to a band/group and the songs they created.
+    /// </summary>
+    public DbSet<SongArtistSongMapEntity> SongArtistSongMap => Set<SongArtistSongMapEntity>();
+
+    /// <summary>
+    /// A collection of song artists/groups/bands.
+    /// </summary>
+    public DbSet<SongArtistEntity> SongArtists => Set<SongArtistEntity>();
+
+    /// <summary>
+    /// A collection of songs.
+    /// </summary>
+    public DbSet<SongEntity> Songs => Set<SongEntity>();
 
     /// <summary>
     /// A collection of themes.
@@ -249,4 +294,14 @@ public partial class ApplicationDbContext
     /// A collection of translations for user-generated tags.
     /// </summary>
     public DbSet<UserTagTranslationEntity> UserTagTranslations => Set<UserTagTranslationEntity>();
+
+    /// <summary>
+    /// A collection of video genres.
+    /// </summary>
+    public DbSet<VideoGenreEntity> VideoGenres => Set<VideoGenreEntity>();
+
+    /// <summary>
+    /// A collection of video genre translations.
+    /// </summary>
+    public DbSet<VideoGenreTranslationEntity> VideoGenreTranslations => Set<VideoGenreTranslationEntity>();
 }

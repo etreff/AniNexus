@@ -1845,4 +1845,3 @@ public static partial class MemoryExtensions
         return (int)((powerOfTwoFlag * _xorPowerOfTwoToHighByte) >> 57);
     }
 }
-

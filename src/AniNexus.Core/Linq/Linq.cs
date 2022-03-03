@@ -32,4 +32,3 @@ public static partial class Linq
         _linqRandom = new MersenneTwisterRandom(seed);
     }
 }
-

@@ -196,4 +196,3 @@ public sealed class CryptoRandom : IRandomNumberProvider
         RandomNumberGenerator.Fill(buffer);
     }
 }
-

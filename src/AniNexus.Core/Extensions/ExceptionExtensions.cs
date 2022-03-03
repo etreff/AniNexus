@@ -244,4 +244,3 @@ public static class ExceptionExtensions
     public static Exception RestoreInnermostAndRethrow(this AggregateException e, bool flatten)
         => RestoreAndThrow(e, -1, flatten);
 }
-

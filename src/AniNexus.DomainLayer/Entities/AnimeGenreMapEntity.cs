@@ -23,7 +23,7 @@ public class AnimeGenreMapEntity : Entity<AnimeGenreMapEntity, int>
     /// <summary>
     /// The genre to apply to the anime.
     /// </summary>
-    public GenreEntity Genre { get; set; } = default!;
+    public VideoGenreEntity Genre { get; set; } = default!;
 
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<AnimeGenreMapEntity> builder)

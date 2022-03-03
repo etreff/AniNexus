@@ -19,4 +19,3 @@ internal static class EnumErrors<TEnum>
         return $"{value} is not a valid flag mask for the enum type {_enumType}.";
     }
 }
-

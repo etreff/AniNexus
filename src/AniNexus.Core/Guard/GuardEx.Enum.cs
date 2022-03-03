@@ -61,4 +61,3 @@ public static partial class GuardEx
         ThrowHelperEx.ThrowArgumentExceptionForIsValidForEnum(value, name);
     }
 }
-

@@ -24,4 +24,3 @@ public static partial class NumericExtensions
         return Math.Abs(d - other) < epsilon;
     }
 }
-

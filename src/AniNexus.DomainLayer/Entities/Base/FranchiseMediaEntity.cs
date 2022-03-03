@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using AniNexus.Domain.Validation;
 
 namespace AniNexus.Domain.Entities;
@@ -14,6 +15,11 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
     /// The public Id of the entity, used for navigation URLs.
     /// </summary>
     public int PublicId { get; set; }
+
+    /// <summary>
+    /// The Id of the franchise this entity belongs to.
+    /// </summary>
+    public Guid FranchiseId { get; set; }
 
     /// <summary>
     /// The official website of this media entity.
@@ -65,6 +71,11 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
     /// </summary>
     public bool IsSoftDeleted { get; set; }
 
+    /// <summary>
+    /// The franchise this entity belongs to.
+    /// </summary>
+    public FranchiseEntity Franchise { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<TEntity> builder)
     {
@@ -72,7 +83,11 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
 
         // 1. Primary key specification (if not Entity<>)
         // 2. Index specification
+        builder.HasIndex(m => m.FranchiseId);
         // 3. Navigation properties
+        // Deleting a franchise is super bad as it deletes potentially a lot of work. If a franchise is going to be deleted it needs to have all children
+        // explicitly deleted from it first.
+        builder.HasOne(m => m.Franchise).WithMany(GetFranchisePropertyExpression()).HasForeignKey(m => m.FranchiseId).IsRequired().OnDelete(DeleteBehavior.Restrict);
         // 4. Propery specification
         builder.Property(m => m.ActiveRating).HasComment("The user rating of the anime (Watching Only), from 0 to 100. Calculated by the system periodically.");
         builder.Property(m => m.Rating).HasComment("The user rating of the anime (Completed Only), from 0 to 100. Calculated by the system periodically.");
@@ -91,4 +106,9 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
         validator.Property(m => m.Votes).IsGreaterThan(0);
         validator.Property(m => m.WebsiteUrl).IsValidUrl();
     }
+
+    /// <summary>
+    /// Gets the property on the <see cref="FranchiseEntity"/> that contains a collection of this entity.
+    /// </summary>
+    protected abstract Expression<Func<FranchiseEntity, IEnumerable<TEntity>?>>? GetFranchisePropertyExpression();
 }

@@ -26,7 +26,6 @@
 //        serviceCollection.AddPooledDbContextFactory<TContext>(optionsAction);
 //        serviceCollection.Replace(ServiceDescriptor.Describe(typeof(IDbContextPool<TContext>), typeof(DbContextPoolExtended<TContext>), ServiceLifetime.Singleton));
 
-
 //        return serviceCollection;
 //    }
 

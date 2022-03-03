@@ -36,4 +36,3 @@ public static partial class Linq
         return c[_linqRandom.NextInt32(0, c.Length - 1)];
     }
 }
-

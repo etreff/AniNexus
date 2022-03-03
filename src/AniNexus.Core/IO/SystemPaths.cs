@@ -60,4 +60,3 @@ public static class SystemPaths
         return new FileInfo(Path.Combine(p.ToArray()));
     }
 }
-

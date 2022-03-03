@@ -86,4 +86,3 @@ public interface INumeric<T>
     ulong ToUInt64(T value);
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
-

@@ -15,4 +15,3 @@ public enum EInclusivity : byte
     /// </summary>
     Exclusive
 }
-

@@ -78,4 +78,3 @@ public static partial class FileSystemInfoExtensions
         return new FileInfo(directory.FullName.EnsureEndsWith(Path.DirectorySeparatorChar) + Path.Combine(fragments));
     }
 }
-

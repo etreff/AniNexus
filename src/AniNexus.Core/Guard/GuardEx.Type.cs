@@ -41,4 +41,3 @@ public static partial class GuardEx
         ThrowHelperEx.ThrowArgumentExceptionForIsTypeOf(value, typeOf, name);
     }
 }
-

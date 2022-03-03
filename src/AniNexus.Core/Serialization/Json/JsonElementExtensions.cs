@@ -108,4 +108,3 @@ public static class JsonElementExtensions
         return await JsonSerializer.DeserializeAsync(ms, targetType, options, cancellationToken).ConfigureAwait(false);
     }
 }
-

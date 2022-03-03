@@ -248,4 +248,3 @@ public static partial class CollectionExtensions
         return false;
     }
 }
-

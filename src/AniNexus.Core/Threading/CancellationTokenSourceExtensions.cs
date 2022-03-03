@@ -122,4 +122,3 @@ public static class CancellationTokenSourceExtensions
         return cancellationTokenSource.Token.IsNotCancelledAfterAsync(duration);
     }
 }
-

@@ -126,4 +126,3 @@ public static class CompressionExtensions
         }
     }
 }
-

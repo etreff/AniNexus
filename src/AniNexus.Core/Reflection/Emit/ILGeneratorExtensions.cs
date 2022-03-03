@@ -145,4 +145,3 @@ public static class ILGeneratorExtensions
         il.Emit(OpCodes.Ret);
     }
 }
-

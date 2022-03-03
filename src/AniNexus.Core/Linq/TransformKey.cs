@@ -42,4 +42,3 @@ public static partial class Linq
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
-

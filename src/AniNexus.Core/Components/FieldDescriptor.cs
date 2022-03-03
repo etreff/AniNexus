@@ -245,4 +245,3 @@ public class FieldDescriptorEqualityComparer : IEqualityComparer<FieldDescriptor
         return obj.GetHashCode();
     }
 }
-

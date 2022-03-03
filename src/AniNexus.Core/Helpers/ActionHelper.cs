@@ -93,4 +93,3 @@ public static class ActionHelper
         return GetFuncOrActionType(paramTypes?.Length ?? 0, returnType).MakeGenericType((paramTypes ?? Array.Empty<Type>()).Concat(new[] { returnType }).ToArray());
     }
 }
-

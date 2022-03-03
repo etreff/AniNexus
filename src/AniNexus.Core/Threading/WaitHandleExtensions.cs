@@ -384,4 +384,3 @@ public static class WaitHandleExtensions
     public static Task<bool> WaitOneAsync(this WaitHandle handle, TimeSpan timeout, CancellationToken cancellationToken)
         => ToTask(handle, timeout, cancellationToken);
 }
-

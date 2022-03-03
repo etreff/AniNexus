@@ -608,4 +608,3 @@ public static class Number
         return (value - a > b - value) ? b : a;
     }
 }
-

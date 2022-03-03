@@ -15,4 +15,3 @@ public enum EEnumMemberSelection : byte
     /// </summary>
     Distinct = 1
 }
-

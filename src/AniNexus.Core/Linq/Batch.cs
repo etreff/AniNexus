@@ -91,4 +91,3 @@ public static partial class Linq
             => Batch(collection, count, FuncProvider<IEnumerable<T?>>.ReturnSelf, returnRemainder);
 #pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 }
-

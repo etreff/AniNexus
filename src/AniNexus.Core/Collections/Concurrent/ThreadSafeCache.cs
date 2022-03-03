@@ -73,4 +73,3 @@ public class ThreadSafeCache<TKey, TValue>
         return _cache.TryGetValue(key, out value);
     }
 }
-

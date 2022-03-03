@@ -16,9 +16,19 @@ public sealed class AnimeReleaseEntity : ReleaseEntity<AnimeReleaseEntity, Anime
     public IList<AnimeReleasePersonMapEntity> People { get; set; } = default!;
 
     /// <summary>
-    /// The voice actors who voice this character.
+    /// The people who voiced characters in this release.
     /// </summary>
     public IList<PersonVoiceActorMapEntity> VoiceActors { get; set; } = default!;
+
+    /// <summary>
+    /// The people who portrayed the characters live in this release.
+    /// </summary>
+    public IList<PersonLiveActorMapEntity> LiveActors { get; set; } = default!;
+
+    /// <summary>
+    /// Companies that were involved in the creation of this release.
+    /// </summary>
+    public IList<CompanyAnimeMapEntity> Companies { get; set; } = default!;
 
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<AnimeReleaseEntity> builder)

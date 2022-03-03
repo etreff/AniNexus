@@ -414,4 +414,3 @@ public ref struct BufferedBinaryReader
         source.CopyTo(dest.Slice(dstOffset, count));
     }
 }
-

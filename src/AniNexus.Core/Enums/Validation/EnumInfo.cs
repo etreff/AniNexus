@@ -1214,4 +1214,3 @@ internal sealed class EnumInfo<TEnum, TNumeric, TNumericProvider> : IEnumInfo<TE
         return true;
     }
 }
-

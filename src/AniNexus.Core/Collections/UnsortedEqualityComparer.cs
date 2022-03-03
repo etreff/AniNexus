@@ -215,4 +215,3 @@ public class UnsortedEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
         return hashCode.ToHashCode();
     }
 }
-

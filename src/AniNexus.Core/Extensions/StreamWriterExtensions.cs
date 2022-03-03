@@ -31,4 +31,3 @@ public static class StreamWriterExtensions
         return streamWriter.WriteLineAsync((value ?? string.Empty).AsMemory(), cancellationToken);
     }
 }
-

@@ -8,6 +8,11 @@ namespace AniNexus.Domain;
 /// </summary>
 public sealed class AppResource
 {
+    /// <summary>
+    /// The subdirectory that art assets are located in.
+    /// </summary>
+    public const string CoverArtDirectory = "assets/coverart";
+
     internal static IImmutableDictionary<string, string> Resources { get; }
 
     /// <summary>
@@ -18,37 +23,41 @@ public sealed class AppResource
     /// <summary>
     /// The key for the resource that contains the path format for anime cover art.
     /// </summary>
-    public static AppResource AnimeCoverArtPathKey { get; } = new AppResource("AnimeCoverArtPath", "assets/coverart/anime/{0}.jpg");
+    public static AppResource AnimeCoverArtPathKey { get; } = new AppResource("AnimeCoverArtPath", CoverArtDirectory + "/anime/{0}.jpg");
 
     /// <summary>
     /// The key for the resource that contains the path format for manga cover art.
     /// </summary>
-    public static AppResource MangaCoverArtPathKey { get; } = new AppResource("MangaCoverArtPath", "assets/coverart/manga/{0}.jpg");
+    public static AppResource MangaCoverArtPathKey { get; } = new AppResource("MangaCoverArtPath", CoverArtDirectory + "/manga/{0}.jpg");
 
     /// <summary>
     /// The key for the resource that contains the path format for game cover art.
     /// </summary>
-    public static AppResource GameCoverArtPathKey { get; } = new AppResource("GameCoverArtPath", "assets/coverart/game/{0}.jpg");
+    public static AppResource GameCoverArtPathKey { get; } = new AppResource("GameCoverArtPath", CoverArtDirectory + "/game/{0}.jpg");
 
     /// <summary>
     /// The key for the resource that contains the path format for media series cover art.
     /// </summary>
-    public static AppResource MediaSeriesCoverArtPathKey { get; } = new AppResource("MediaSeriesCoverArtPath", "assets/coverart/franchise/{0}.jpg");
+    public static AppResource MediaSeriesCoverArtPathKey { get; } = new AppResource("MediaSeriesCoverArtPath", CoverArtDirectory + "/franchise/{0}.jpg");
 
     /// <summary>
     /// The key for the resource that contains the path format for OST album art.
     /// </summary>
-    public static AppResource SoundTrackAlbumArtPathKey { get; } = new AppResource("SoundTrackAlbumArtPath", "assets/coverart/ost/{0}.jpg");
+    public static AppResource SoundTrackAlbumArtPathKey { get; } = new AppResource("SoundTrackAlbumArtPath", CoverArtDirectory + "/album/{0}.jpg");
 
     /// <summary>
     /// The key for the resource that contains the path format for a character's picture.
     /// </summary>
-    public static AppResource CharacterPicturePathkey { get; } = new AppResource("CharacterPicturePath", "assets/coverart/character/{0}.jpg");
+    public static AppResource CharacterPicturePathkey { get; } = new AppResource("CharacterPicturePath", CoverArtDirectory + "/character/{0}.jpg");
+    /// <summary>
+    /// The key for the resource that contains the path format for a person's profile picture.
+    /// </summary>
+    public static AppResource RegionPicturePathkey { get; } = new AppResource("PersonPicturePath", CoverArtDirectory + "/region/{0}.jpg");
 
     /// <summary>
     /// The key for the resource that contains the path format for a person's profile picture.
     /// </summary>
-    public static AppResource PersonPicturePathkey { get; } = new AppResource("PersonPicturePath", "assets/coverart/person/{0}.jpg");
+    public static AppResource PersonPicturePathkey { get; } = new AppResource("PersonPicturePath", CoverArtDirectory + "/person/{0}.jpg");
 
     /// <summary>
     /// The key of the app resource.

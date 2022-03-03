@@ -51,4 +51,3 @@ public static class TaskProvider<T>
     /// </summary>
     public static Task<T> CancelledTask { get; } = Task.FromCanceled<T>(new CancellationToken(true));
 }
-

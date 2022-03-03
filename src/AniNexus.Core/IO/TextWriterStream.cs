@@ -149,4 +149,3 @@ public class TextWriterStream : Stream
         _bytesWritten += count;
     }
 }
-

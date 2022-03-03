@@ -225,4 +225,3 @@ public sealed class GlobalMutex : IDisposable
         }
     }
 }
-

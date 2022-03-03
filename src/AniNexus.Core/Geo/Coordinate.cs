@@ -232,4 +232,3 @@ public class Coordinate : IEquatable<Coordinate>
         return HashCode.Combine(Latitude, Longitude);
     }
 }
-

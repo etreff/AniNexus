@@ -139,4 +139,3 @@ public static class Utf8JsonReaderExtensions
         throw new FormatException("The JSON value is not in a supported Guid format.");
     }
 }
-

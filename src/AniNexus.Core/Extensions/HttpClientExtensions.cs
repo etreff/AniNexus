@@ -107,4 +107,3 @@ public static class HttpClientExtensions
         return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
     }
 }
-

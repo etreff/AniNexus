@@ -246,4 +246,3 @@ public class PropertyDescriptorEqualityComparer : IEqualityComparer<PropertyDesc
         return obj.GetHashCode();
     }
 }
-

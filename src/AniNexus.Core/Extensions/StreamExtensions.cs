@@ -296,4 +296,3 @@ public static class StreamExtensions
         return await streamReader.ReadToEndAsync().ConfigureAwait(false);
     }
 }
-

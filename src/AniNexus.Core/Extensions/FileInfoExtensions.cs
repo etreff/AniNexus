@@ -480,4 +480,3 @@ public static partial class FileSystemInfoExtensions
         return new FileInfo(Path.Combine(directoryName, Path.GetFileNameWithoutExtension(fileInfo.Name) + extension.EnsureStartsWith('.')));
     }
 }
-

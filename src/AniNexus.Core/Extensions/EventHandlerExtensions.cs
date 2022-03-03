@@ -86,4 +86,3 @@ public static class EventHandlerExtensions
         copy?.Invoke(sender, e);
     }
 }
-

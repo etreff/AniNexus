@@ -112,4 +112,3 @@ public static partial class CollectionExtensions
         }
     }
 }
-

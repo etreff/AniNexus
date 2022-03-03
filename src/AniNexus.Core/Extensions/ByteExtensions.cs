@@ -355,4 +355,3 @@ public static partial class CollectionExtensions
         return defaultResult;
     }
 }
-

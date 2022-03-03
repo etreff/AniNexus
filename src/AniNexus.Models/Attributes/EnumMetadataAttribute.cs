@@ -22,12 +22,22 @@ public class EnumMetadataAttribute : Attribute
     /// </summary>
     public string Value { get; }
 
+    /// <summary>
+    /// Creates a new <see cref="EnumMetadataAttribute"/> instance.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
     public EnumMetadataAttribute(string key, string value)
     {
         Key = key;
         Value = value;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="EnumMetadataAttribute"/> instance.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
     public EnumMetadataAttribute(string key, int value)
     {
         Key = key;

@@ -68,9 +68,19 @@ public class PersonEntity : AuditableEntity<PersonEntity>, IHasRowVersion, IHasS
     public IList<AnimeReleasePersonMapEntity> AnimeRoles { get; set; } = default!;
 
     /// <summary>
-    /// The voice actors who voice this character.
+    /// The characters this person has voice acted.
     /// </summary>
     public IList<PersonVoiceActorMapEntity> VoiceActedCharacters { get; set; } = default!;
+
+    /// <summary>
+    /// The characters this person has played in a live action adaptation.
+    /// </summary>
+    public IList<PersonLiveActorMapEntity> LiveActedCharacters { get; set; } = default!;
+
+    /// <summary>
+    /// Albums that this person is associated with.
+    /// </summary>
+    public IList<PersonAlbumMapEntity> Albums { get; set; } = default!;
 
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<PersonEntity> builder)

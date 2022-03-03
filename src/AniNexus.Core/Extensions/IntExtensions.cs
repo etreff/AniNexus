@@ -47,4 +47,3 @@ public static partial class NumericExtensions
         bytesWritten = maxBytes;
     }
 }
-

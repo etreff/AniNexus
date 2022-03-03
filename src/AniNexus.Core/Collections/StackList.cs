@@ -99,4 +99,3 @@ public ref struct StackList<T>
         }
     }
 }
-

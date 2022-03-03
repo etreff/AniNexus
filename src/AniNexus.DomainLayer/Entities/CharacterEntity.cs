@@ -69,7 +69,7 @@ public class CharacterEntity : AuditableEntity<CharacterEntity>, IHasRowVersion,
     /// <summary>
     /// The live-action actors who portray this character.
     /// </summary>
-    public IList<PersonLiveActorMapModel> LiveActors { get; set; } = default!;
+    public IList<PersonLiveActorMapEntity> LiveActors { get; set; } = default!;
 
     /// <summary>
     /// The age of the character, in years.

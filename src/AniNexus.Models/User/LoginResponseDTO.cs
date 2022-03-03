@@ -5,11 +5,34 @@
 /// </summary>
 public enum ELoginResult : byte
 {
+    /// <summary>
+    /// The login failed with a generic failure.
+    /// </summary>
     GenericFailure,
+
+    /// <summary>
+    /// The login was successful.
+    /// </summary>
     Success,
+
+    /// <summary>
+    /// The logic failed due to invalid credentials.
+    /// </summary>
     InvalidCredentials,
+
+    /// <summary>
+    /// The login failed because the user is banned.
+    /// </summary>
     UserBanned,
+
+    /// <summary>
+    /// The login failed because a MFA code is required.
+    /// </summary>
     MFACodeRequired,
+
+    /// <summary>
+    /// The login failed because the MFA code provided is incorrect.
+    /// </summary>
     InvalidMFACode
 }
 

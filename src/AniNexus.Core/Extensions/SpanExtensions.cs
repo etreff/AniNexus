@@ -20,4 +20,3 @@ public static partial class MemoryExtensions
         }
     }
 }
-

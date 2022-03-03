@@ -181,4 +181,3 @@ public static partial class CollectionExtensions
         return dictionary.TryGetValue(key, out value);
     }
 }
-

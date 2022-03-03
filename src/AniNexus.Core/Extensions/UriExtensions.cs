@@ -65,4 +65,3 @@ public static class UriExtensions
         return new Uri(baseUri, sb.ToString());
     }
 }
-

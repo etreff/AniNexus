@@ -768,4 +768,3 @@ public static class StringExtensions
         return result.ToString();
     }
 }
-

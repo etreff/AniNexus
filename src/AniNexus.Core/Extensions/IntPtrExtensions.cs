@@ -58,4 +58,3 @@ public static class IntPtrExtensions
         return areEqual == 0;
     }
 }
-

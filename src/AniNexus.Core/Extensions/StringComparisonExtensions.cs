@@ -59,4 +59,3 @@ public static class StringComparisonExtensions
         throw new NotSupportedException("Unsupported comparer type.");
     }
 }
-

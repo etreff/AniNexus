@@ -61,4 +61,3 @@ internal class EnumMember<TEnum, TNumeric, TNumericProvider> : EnumMember<TEnum>
         return EnumInfo<TEnum, TNumeric, TNumericProvider>.ToEnum((TNumeric)value);
     }
 }
-

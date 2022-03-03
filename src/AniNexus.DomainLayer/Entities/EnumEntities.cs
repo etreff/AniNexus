@@ -71,6 +71,12 @@
     public sealed class CompanyRoleTypeEntity : EnumEntity<ECompanyRole, CompanyRoleTypeEntity, byte> { }
 
     /// <summary>
+    /// Models a company type.
+    /// </summary>
+    /// <seealso cref="ECompanyType"/>
+    public sealed class CompanyTypeEntity : EnumEntity<ECompanyType, CompanyTypeEntity, byte> { }
+
+    /// <summary>
     /// Models a category that a game falls under.
     /// </summary>
     /// <seealso cref="EGameCategory"/>
@@ -188,6 +194,11 @@ namespace AniNexus.Domain
         /// A collection of roles a company can play in the production of a piece of media.
         /// </summary>
         public DbSet<CompanyRoleTypeEntity> CompanyRoleTypes => Set<CompanyRoleTypeEntity>();
+
+        /// <summary>
+        /// A collection of company types.
+        /// </summary>
+        public DbSet<CompanyTypeEntity> CompanyTypes => Set<CompanyTypeEntity>();
 
         /// <summary>
         /// A collection of categories that a game can fall under.

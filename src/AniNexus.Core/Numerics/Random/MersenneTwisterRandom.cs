@@ -380,4 +380,3 @@ public sealed class MersenneTwisterRandom : IRandomNumberProvider
         }
     }
 }
-

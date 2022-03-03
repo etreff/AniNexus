@@ -92,4 +92,3 @@ public interface IRandomNumberProvider
     /// <param name="buffer">The buffer to fill.</param>
     void NextBytes(Span<byte> buffer);
 }
-
