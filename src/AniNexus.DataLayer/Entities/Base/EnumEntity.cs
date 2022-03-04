@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using AniNexus.Models;
 
 namespace AniNexus.Data.Entities;
 

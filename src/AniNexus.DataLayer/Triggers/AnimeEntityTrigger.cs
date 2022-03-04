@@ -1,5 +1,4 @@
 ﻿using AniNexus.Data.Entities;
-using EFCore.BulkExtensions;
 using EntityFrameworkCore.Triggered;
 
 namespace AniNexus.Data.Triggers;
@@ -26,9 +25,11 @@ public sealed class AnimeEntityTrigger : BeforeSaveTrigger<AnimeEntity>
         {
             await using var dbContext = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
-            await dbContext.AnimeSystemRecommendations.Where(r => r.AnimeId == context.Entity.Id || r.AnimeRecommendationId == context.Entity.Id).BatchDeleteAsync(cancellationToken);
-            await dbContext.AnimeUserRecommendations.Where(r => r.AnimeId == context.Entity.Id || r.AnimeRecommendationId == context.Entity.Id).BatchDeleteAsync(cancellationToken);
-            await dbContext.AnimeRelatedMap.Where(a => a.AnimeId == context.Entity.Id || a.RelatedAnimeId == context.Entity.Id).BatchDeleteAsync(cancellationToken);
+            await DeleteAsync(dbContext.AnimeSystemRecommendations, r => r.AnimeId == context.Entity.Id || r.AnimeRecommendationId == context.Entity.Id, cancellationToken);
+            await DeleteAsync(dbContext.AnimeUserRecommendations, r => r.AnimeId == context.Entity.Id || r.AnimeRecommendationId == context.Entity.Id, cancellationToken);
+            await DeleteAsync(dbContext.AnimeRelatedMap, a => a.AnimeId == context.Entity.Id || a.RelatedAnimeId == context.Entity.Id, cancellationToken);
+
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

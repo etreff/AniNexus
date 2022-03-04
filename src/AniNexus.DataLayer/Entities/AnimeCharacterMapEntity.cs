@@ -1,4 +1,6 @@
-﻿namespace AniNexus.Data.Entities;
+﻿using AniNexus.Models;
+
+namespace AniNexus.Data.Entities;
 
 /// <summary>
 /// Models a mapping between a character and the anime they star in.

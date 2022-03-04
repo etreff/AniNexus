@@ -144,9 +144,9 @@ public sealed class UserTagRejectedEntity : Entity<UserTagRejectedEntity, int>
     }
 
     /// <inheritdoc/>
-    protected override void Validate(ValidationContext validationContext, UserTagRejectedEntity entity, ValidationBuilder<UserTagRejectedEntity> validator)
+    protected override void Validate(ValidationContext validationContext, ValidationBuilder<UserTagRejectedEntity> validator)
     {
-        base.Validate(validationContext, entity, validator);
+        base.Validate(validationContext, validator);
 
         validator.Property(m => m.Name).IsNotNullOrWhiteSpace();
         validator.Property(m => m.SubmissionDate).IsNotDefault();
@@ -193,9 +193,9 @@ public sealed class UserTagTranslationEntity : TranslationEntity<UserTagTranslat
     }
 
     /// <inheritdoc/>
-    protected override void Validate(ValidationContext validationContext, UserTagTranslationEntity entity, ValidationBuilder<UserTagTranslationEntity> validator)
+    protected override void Validate(ValidationContext validationContext, ValidationBuilder<UserTagTranslationEntity> validator)
     {
-        base.Validate(validationContext, entity, validator);
+        base.Validate(validationContext, validator);
 
         validator.Property(m => m.SubmissionDate).IsNotDefault();
     }
@@ -261,9 +261,9 @@ public sealed class UserTagPendingTranslationEntity : Entity<UserTagPendingTrans
     }
 
     /// <inheritdoc/>
-    protected override void Validate(ValidationContext validationContext, UserTagPendingTranslationEntity entity, ValidationBuilder<UserTagPendingTranslationEntity> validator)
+    protected override void Validate(ValidationContext validationContext, ValidationBuilder<UserTagPendingTranslationEntity> validator)
     {
-        base.Validate(validationContext, entity, validator);
+        base.Validate(validationContext, validator);
 
         validator.Property(m => m.Translation).IsNotNullOrWhiteSpace();
     }
@@ -335,9 +335,9 @@ public sealed class UserTagRejectedTranslationEntity : Entity<UserTagRejectedTra
     }
 
     /// <inheritdoc/>
-    protected override void Validate(ValidationContext validationContext, UserTagRejectedTranslationEntity entity, ValidationBuilder<UserTagRejectedTranslationEntity> validator)
+    protected override void Validate(ValidationContext validationContext, ValidationBuilder<UserTagRejectedTranslationEntity> validator)
     {
-        base.Validate(validationContext, entity, validator);
+        base.Validate(validationContext, validator);
 
         validator.Property(m => m.Translation).IsNotNullOrWhiteSpace();
         validator.Property(m => m.SubmissionDate).IsNotDefault();

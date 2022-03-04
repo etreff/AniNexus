@@ -39,6 +39,11 @@ public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowV
     /// </summary>
     public IList<NameEntity> Aliases { get; set; } = default!;
 
+    /// <summary>
+    /// Anime that are part of this series.
+    /// </summary>
+    public IList<AnimeEntity> Anime { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<FranchiseEntity> builder)
     {

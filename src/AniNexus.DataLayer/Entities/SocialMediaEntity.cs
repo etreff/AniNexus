@@ -26,7 +26,7 @@ public sealed class SocialMediaEntity : Entity<SocialMediaEntity>, IHasImage
     {
         // 1. Index specification
         // 2. Navigation properties
-        builder.OwnsOne(m => m.Name, name => name.ConfigureNameEntity());
+        builder.OwnsOne(m => m.Name, static name => name.ConfigureOwnedEntity());
         // 3. Propery specification
         // 4. Other
     }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
     <UserSecretsId>AniNexus.Web.Server-50940CD7-235F-48D7-984B-D18C2F2CABE8</UserSecretsId>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AniNexus.Domain\AniNexus.DomainLayer.csproj" />
-    <ProjectReference Include="..\..\AniNexus.Infrastructure\AniNexus.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\AniNexus.Infrastructure\AniNexus.RepositoryLayer.csproj" />
     <ProjectReference Include="..\Client\AniNexus.Web.Client.csproj" />
   </ItemGroup>
 

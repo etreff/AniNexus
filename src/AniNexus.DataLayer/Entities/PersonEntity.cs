@@ -82,6 +82,11 @@ public class PersonEntity : AuditableEntity<PersonEntity>, IHasRowVersion, IHasS
     /// </summary>
     public IList<PersonAlbumMapEntity> Albums { get; set; } = default!;
 
+    /// <summary>
+    /// Songs this person has composed.
+    /// </summary>
+    public IList<SongPersonComposerMapEntity> ComposedSongs { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<PersonEntity> builder)
     {

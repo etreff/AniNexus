@@ -8,11 +8,6 @@ namespace AniNexus.Data.Entities;
 public sealed class LanguageEntity : Entity<LanguageEntity, short>
 {
     /// <summary>
-    /// The native name of the language.
-    /// </summary>
-    public byte[] NativeName { get; set; } = default!;
-
-    /// <summary>
     /// The English name of the language.
     /// </summary>
     public string EnglishName { get; set; } = default!;
@@ -44,7 +39,6 @@ public sealed class LanguageEntity : Entity<LanguageEntity, short>
         builder.HasIndex(m => m.TwoLetterISOCode);
         // 2. Navigation properties
         // 3. Propery specification
-        builder.Property(m => m.NativeName).HasMaxLength(100).HasComment("The UTF8 bytes that make up the native name of the language.");
         builder.Property(m => m.EnglishName).HasComment("The English name of the language.");
         builder.Property(m => m.Code).HasComment("The languagecode2-country/regioncode2 code of the language.");
         builder.Property(m => m.ThreeLetterISOCode).IsFixedLength(3).HasComment("The three letter ISO code of the language.");
@@ -57,7 +51,6 @@ public sealed class LanguageEntity : Entity<LanguageEntity, short>
     {
         return CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(c => new LanguageEntity
         {
-            NativeName = ConvertToBytes(c.NativeName),
             EnglishName = c.EnglishName,
             Code = c.Name,
             ThreeLetterISOCode = c.ThreeLetterISOLanguageName,

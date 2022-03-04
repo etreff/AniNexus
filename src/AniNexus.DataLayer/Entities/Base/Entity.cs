@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text;
 using AniNexus.Data.Validation;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.Toolkit.Diagnostics;
@@ -14,11 +13,23 @@ public interface IEntity
 }
 
 /// <summary>
+/// Defines a database entity.
+/// </summary>
+public interface IEntity<TKey> : IEntity
+    where TKey : struct, IComparable<TKey>, IEquatable<TKey>
+{
+    /// <summary>
+    /// The Id of the entity.
+    /// </summary>
+    TKey Id { get; set; }
+}
+
+/// <summary>
 /// The base class that all database entities inherit from.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TKey">The type of the primary key.</typeparam>
-public abstract class Entity<TEntity, TKey> : IEntity, IEntityTypeConfiguration<TEntity>, IValidatableObject
+public abstract class Entity<TEntity, TKey> : IEntity<TKey>, IEntityTypeConfiguration<TEntity>, IValidatableObject
     where TEntity : Entity<TEntity, TKey>
     where TKey : struct, IComparable<TKey>, IEquatable<TKey>
 {
@@ -98,30 +109,6 @@ public abstract class Entity<TEntity, TKey> : IEntity, IEntityTypeConfiguration<
     protected virtual string GetTableName()
     {
         return Entity.GetDefaultTableName<TEntity>();
-    }
-
-    /// <summary>
-    /// Converts the byte representation of the value into a string.
-    /// </summary>
-    /// <param name="value">The byte array to convert.</param>
-    [return: NotNullIfNotNull("value")]
-    protected string? ConvertToString(byte[]? value)
-    {
-        return value is not null
-            ? Encoding.UTF8.GetString(value)
-            : null;
-    }
-
-    /// <summary>
-    /// Converts the string representation of the value into a byte array.
-    /// </summary>
-    /// <param name="value">The value to assign to <paramref name="value"/>.</param>
-    [return: NotNullIfNotNull("value")]
-    protected byte[]? ConvertToBytes(string? value)
-    {
-        return value is not null
-            ? Encoding.UTF8.GetBytes(value)
-            : null;
     }
 
     /// <summary>

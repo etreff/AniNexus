@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using System.Security.Cryptography;
+using AniNexus.Data;
+using AniNexus.Data.Models.User;
+using AniNexus.Data.Repository;
 using AniNexus.Models.User;
-using AniNexus.Repository;
 using Google.Authenticator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

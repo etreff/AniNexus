@@ -1,4 +1,5 @@
-﻿using AniNexus.Models;
+﻿using System.Linq.Expressions;
+using AniNexus.Models;
 
 namespace AniNexus.Data.Entities;
 
@@ -101,5 +102,11 @@ public sealed class AnimeEntity : FranchiseMediaEntity<AnimeEntity>
         builder.HasOne(m => m.Season).WithMany().HasForeignKey(m => m.SeasonId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
         // 3. Propery specification
         // 4. Other
+    }
+
+    /// <inheritdoc/>
+    protected override Expression<Func<FranchiseEntity, IEnumerable<AnimeEntity>?>>? GetFranchisePropertyExpression()
+    {
+        return m => m.Anime;
     }
 }

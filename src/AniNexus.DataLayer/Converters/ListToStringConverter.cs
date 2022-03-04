@@ -12,17 +12,12 @@ namespace AniNexus.Data.Converters
     public class ListToStringConverter<T> : ValueConverter<IList<T>, string?>
     {
         /// <summary>
-        /// Default string split options for transforming the string to a collection of elements.
-        /// </summary>
-        public const StringSplitOptions DefaultSplitOptions = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
-
-        /// <summary>
         /// Creates a new <see cref="ListToStringConverter{T}"/> instance.
         /// </summary>
         /// <param name="valueConverter">The converter to convert string to an element of type <typeparamref name="T"/>.</param>
         /// <param name="delimiter">The delimiter to use to separate elements in the collection.</param>
         public ListToStringConverter(Func<string, T> valueConverter, char delimiter = ListToStringConverter.DefaultDelimiter)
-            : base(l => l != null ? string.Join(delimiter, l) : null, s => s != null ? s.Split(delimiter, DefaultSplitOptions).Select(valueConverter).ToList() : new List<T>())
+            : base(l => l != null ? string.Join(delimiter, l) : null, s => s != null ? s.Split(delimiter, ListToStringConverter.DefaultSplitOptions).Select(valueConverter).ToList() : new List<T>())
         {
         }
 
@@ -39,6 +34,11 @@ namespace AniNexus.Data.Converters
     /// </summary>
     public class ListToStringConverter : ListToStringConverter<string>
     {
+        /// <summary>
+        /// Default string split options for transforming the string to a collection of elements.
+        /// </summary>
+        public const StringSplitOptions DefaultSplitOptions = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+
         /// <summary>
         /// The default delimiter to use.
         /// </summary>

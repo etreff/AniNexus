@@ -20,19 +20,19 @@ internal sealed class IsTranslationConvention : IPreConfigureEntityConvention
             var entityBuilder = builder.Entity(entityType.ClrType);
 
             entityBuilder
-                .HasOne(referenceType, nameof(IIsTranslation<object>.Reference))
+                .HasOne(referenceType, nameof(IIsTranslation<IEntity>.Reference))
                 .WithOne()
-                .HasForeignKey(entityType.ClrType, nameof(IIsTranslation<object>.ReferenceId))
+                .HasForeignKey(entityType.ClrType, nameof(IIsTranslation<IEntity>.ReferenceId))
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
             entityBuilder
-                .HasOne(referenceType, nameof(IIsTranslation<object>.Language))
+                .HasOne(referenceType, nameof(IIsTranslation<IEntity>.Language))
                 .WithMany()
-                .HasForeignKey(nameof(IIsTranslation<object>.LanguageId))
+                .HasForeignKey(nameof(IIsTranslation<IEntity>.LanguageId))
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            var translationProperty = entityType.FindProperty(nameof(IIsTranslation<object>.Translation))!;
+            var translationProperty = entityType.FindProperty(nameof(IIsTranslation<IEntity>.Translation))!;
             translationProperty.SetComment("The translation.");
             translationProperty.IsNullable = false;
             translationProperty.SetColumnType("nvarchar(1000)");

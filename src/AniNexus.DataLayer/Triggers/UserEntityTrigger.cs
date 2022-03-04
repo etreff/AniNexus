@@ -1,5 +1,4 @@
 ﻿using AniNexus.Data.Entities;
-using EFCore.BulkExtensions;
 using EntityFrameworkCore.Triggered;
 
 namespace AniNexus.Data.Triggers;
@@ -26,9 +25,9 @@ public sealed class UserEntityTrigger : BeforeSaveTrigger<UserEntity>
         {
             await using var dbContext = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
-            await dbContext.AnimeUserRecommendationVotes.Where(r => r.UserId == context.Entity.Id).BatchDeleteAsync(cancellationToken);
-            await dbContext.AnimeUserReviewVotes.Where(r => r.UserId == context.Entity.Id).BatchDeleteAsync(cancellationToken);
-            await dbContext.AnimeUserReviewsDeleted.Where(r => r.UserId == context.Entity.Id).BatchDeleteAsync(cancellationToken);
+            await DeleteAsync(dbContext.AnimeUserRecommendationVotes, r => r.UserId == context.Entity.Id, cancellationToken);
+            await DeleteAsync(dbContext.AnimeUserReviewVotes, r => r.UserId == context.Entity.Id, cancellationToken);
+            await DeleteAsync(dbContext.AnimeUserReviewsDeleted, r => r.UserId == context.Entity.Id, cancellationToken);
 
             foreach (var id in dbContext.AnimeUserReviewsDeleted.Where(r => r.DeletedByUserId == context.Entity.Id).Select(r => r.Id).ToArray())
             {
@@ -37,7 +36,7 @@ public sealed class UserEntityTrigger : BeforeSaveTrigger<UserEntity>
                 review.DeletedByUserId = null;
             }
 
-            await dbContext.BulkSaveChangesAsync(cancellationToken: cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

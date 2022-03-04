@@ -1,8 +1,9 @@
 using System.Security.Claims;
 using System.Text;
+using AniNexus.Data;
+using AniNexus.Data.Models.Configuration;
+using AniNexus.Data.Repository;
 using AniNexus.Domain;
-using AniNexus.Models.Configuration;
-using AniNexus.Repository;
 using AniNexus.Web.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

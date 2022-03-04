@@ -3,22 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.DataLayer", "AniNexus.DataLayer\AniNexus.DataLayer.csproj", "{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Core", "AniNexus.Core\AniNexus.Core.csproj", "{86CBD996-F731-4034-A09F-FBFBD639BB2E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.DataLayer", "AniNexus.DataLayer\AniNexus.DataLayer.csproj", "{1AC3FE38-0DCE-410D-B5D3-3EF7EC88912A}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Models", "AniNexus.Models\AniNexus.Models.csproj", "{6F132409-6933-4BE0-BC00-DC97EDF9E80F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.RepositoryLayer", "AniNexus.RepositoryLayer\AniNexus.RepositoryLayer.csproj", "{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Web.Client", "AniNexus.Web\Client\AniNexus.Web.Client.csproj", "{283177E6-AB53-4C61-BED3-F8B54020C0FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Web.Server", "AniNexus.Web\Server\AniNexus.Web.Server.csproj", "{8778CF05-373C-4C9B-B938-113D9A99A7EF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9ACA7132-4BAD-4819-8902-B44975A486D8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Infrastructure", "AniNexus.Infrastructure\AniNexus.Infrastructure.csproj", "{B45B35E5-EC93-4E0F-8AE8-F42BBEEA33DC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Web.Server", "AniNexus.Web\Server\AniNexus.Web.Server.csproj", "{8778CF05-373C-4C9B-B938-113D9A99A7EF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AniNexus.Web.Client", "AniNexus.Web\Client\AniNexus.Web.Client.csproj", "{283177E6-AB53-4C61-BED3-F8B54020C0FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

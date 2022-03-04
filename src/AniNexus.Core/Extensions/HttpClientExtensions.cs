@@ -1,6 +1,6 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Net.Http;
+using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus;
 
@@ -68,11 +68,11 @@ public static class HttpClientExtensions
 
         long? contentLength = response.Content.Headers.ContentLength;
 
-        using var download = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        using var download = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 
         if (progress is null || !contentLength.HasValue)
         {
-            await download.CopyToAsync(destination).ConfigureAwait(false);
+            await download.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
             return;
         }
 
@@ -91,7 +91,7 @@ public static class HttpClientExtensions
         Guard.IsNotNull(requestUri, nameof(requestUri));
 
         var response = await client.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
-        return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        return await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -104,6 +104,6 @@ public static class HttpClientExtensions
         Guard.IsNotNull(requestUri, nameof(requestUri));
 
         var response = await client.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
-        return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        return await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
     }
 }

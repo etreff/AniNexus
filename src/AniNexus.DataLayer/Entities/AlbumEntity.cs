@@ -58,7 +58,7 @@ public sealed class AlbumEntity : AuditableEntity<AlbumEntity>, IHasPublicId
     /// <summary>
     /// The songs in this album.
     /// </summary>
-    public IList<SongEntity> Songs { get; set; } = default!;
+    public IList<AlbumSongMapEntity> Songs { get; set; } = default!;
 
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<AlbumEntity> builder)

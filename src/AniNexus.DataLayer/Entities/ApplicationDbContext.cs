@@ -15,6 +15,11 @@ public partial class ApplicationDbContext
     public DbSet<AlbumEntity> Albums => Set<AlbumEntity>();
 
     /// <summary>
+    /// A collection of mappings to albums and their songs.
+    /// </summary>
+    public DbSet<AlbumSongMapEntity> AlbumSongMap => Set<AlbumSongMapEntity>();
+
+    /// <summary>
     /// A collection of anime entries.
     /// </summary>
     public DbSet<AnimeEntity> Anime => Set<AnimeEntity>();
@@ -151,6 +156,26 @@ public partial class ApplicationDbContext
     public DbSet<LanguageEntity> Languages => Set<LanguageEntity>();
 
     /// <summary>
+    /// A collection of music genres.
+    /// </summary>
+    public DbSet<MusicGenreEntity> MusicGenres => Set<MusicGenreEntity>();
+
+    /// <summary>
+    /// A collection of music genres translations.
+    /// </summary>
+    public DbSet<MusicGenreTranslationEntity> MusicGenreTranslations => Set<MusicGenreTranslationEntity>();
+
+    /// <summary>
+    /// A collection of music sub-genres.
+    /// </summary>
+    public DbSet<MusicSubGenreEntity> MusicSubGenres => Set<MusicSubGenreEntity>();
+
+    /// <summary>
+    /// A collection of music sub-genres translations.
+    /// </summary>
+    public DbSet<MusicSubGenreTranslationEntity> MusicSubGenreTranslations => Set<MusicSubGenreTranslationEntity>();
+
+    /// <summary>
     /// A collection of banned content types per region.
     /// </summary>
     public DbSet<OffensiveBannedContentTypeEntity> OffensiveBannedContentTypes => Set<OffensiveBannedContentTypeEntity>();
@@ -219,6 +244,11 @@ public partial class ApplicationDbContext
     /// A collection of song artists/groups/bands.
     /// </summary>
     public DbSet<SongArtistEntity> SongArtists => Set<SongArtistEntity>();
+
+    /// <summary>
+    /// A collection of songs and their composers.
+    /// </summary>
+    public DbSet<SongPersonComposerMapEntity> SongComposers => Set<SongPersonComposerMapEntity>();
 
     /// <summary>
     /// A collection of songs.
