@@ -1,13 +1,8 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using AniNexus;
 
 namespace Microsoft.Toolkit.Diagnostics;
 
-/// <summary>
-/// Helper methods not included in <see cref="Guard"/> to verify conditions when running code.
-/// </summary>
-[DebuggerStepThrough]
 public static partial class GuardEx
 {
     /// <summary>

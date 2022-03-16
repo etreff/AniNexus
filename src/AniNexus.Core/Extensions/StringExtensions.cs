@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Toolkit.Diagnostics;
 
@@ -188,7 +189,7 @@ public static class StringExtensions
             return value.ToString();
         }
 
-        if (element!.EndsWith(value.ToString()))
+        if (element!.EndsWith(value))
         {
             return element;
         }
@@ -208,29 +209,12 @@ public static class StringExtensions
             return value.ToString();
         }
 
-        if (element!.StartsWith(value.ToString()))
+        if (element!.StartsWith(value))
         {
             return element;
         }
 
         return value + element;
-    }
-
-    /// <summary>
-    /// Appends all elements in the <see cref="IEnumerable{T}"/> to one another using the specified <paramref name="glue"/>.
-    /// </summary>
-    /// <param name="elements">The elements to combine.</param>
-    /// <param name="glue">The glue.</param>
-    /// <returns>The elements glued together, or <see cref="string.Empty"/> if <paramref name="elements"/> is null or empty.</returns>
-    /// <remarks>
-    /// This is an alias of <see cref="string.Join(char, string[])"/>.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Implode(this IEnumerable<string> elements, string? glue = ",")
-    {
-        Guard.IsNotNull(elements, nameof(elements));
-
-        return string.Join(glue, elements);
     }
 
     /// <summary>
@@ -296,16 +280,40 @@ public static class StringExtensions
             return element;
         }
 
-        if (numExposed >= element!.Length)
+        if (numExposed >= element.Length)
         {
             return element;
         }
 
-        var builder = new StringBuilder(element.Length);
-        builder.Append(maskChar, element.Length - numExposed);
-        builder.Append(element.RemoveFirst(element.Length - numExposed));
+        var context = new
+        {
+            String = element,
+            MaskChar = maskChar,
+            NumExposed = numExposed
+        };
 
-        return builder.ToString();
+        return string.Create(element.Length, context, (span, str) =>
+        {
+            ref char sp0 = ref MemoryMarshal.GetReference(span);
+            ref char st0 = ref MemoryMarshal.GetReference(str.String.AsSpan());
+
+            int i;
+            for (i = 0; i <= str.NumExposed; ++i)
+            {
+                ref char spi = ref Unsafe.Add(ref sp0, i);
+
+                spi = '*';
+            }
+
+            int l = str.String.Length;
+            for (; i < l; ++i)
+            {
+                ref char sti = ref Unsafe.Add(ref st0, i);
+                ref char spi = ref Unsafe.Add(ref sp0, i);
+
+                spi = sti;
+            }
+        });
     }
 
     /// <summary>
@@ -664,7 +672,7 @@ public static class StringExtensions
             return element.Substring(startIndex, takeLength);
         }
 
-        return element.Substring(startIndex, takeLength) + trailingChars;
+        return string.Concat(element.AsSpan(startIndex, takeLength), trailingChars);
     }
 
     /// <summary>
@@ -729,7 +737,7 @@ public static class StringExtensions
             return element;
         }
 
-        var result = new StringBuilder();
+        var result = new StringBuilder(element.Length);
 
         // TextInfo.ToTitleCase has special checks for dutch - we will ignore these.
 

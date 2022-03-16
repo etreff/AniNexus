@@ -20,25 +20,12 @@ public static class IComparableExtensions
     /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/></exception>
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
     /// <exception cref="InvalidOperationException"></exception>
-    [return: NotNull]
-    public static T Clamp<T>([DisallowNull] this T element, [DisallowNull] T lowerBound, [DisallowNull] T upperBound)
+    public static T Clamp<T>(this T element, T lowerBound, T upperBound)
         where T : IComparable<T>
     {
-        if (element is null)
-        {
-            // No Guard - missing class constraint
-            ThrowHelper.ThrowArgumentNullException(nameof(element));
-        }
-        if (lowerBound is null)
-        {
-            // No Guard - missing class constraint
-            ThrowHelper.ThrowArgumentNullException(nameof(lowerBound));
-        }
-        if (upperBound is null)
-        {
-            // No Guard - missing class constraint
-            ThrowHelper.ThrowArgumentNullException(nameof(upperBound));
-        }
+        GuardEx.IsNotNull(element, nameof(element));
+        GuardEx.IsNotNull(lowerBound, nameof(lowerBound));
+        GuardEx.IsNotNull(upperBound, nameof(upperBound));
 
         if (lowerBound.CompareTo(upperBound) > 0)
         {
@@ -66,33 +53,20 @@ public static class IComparableExtensions
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="lowerBound"/> equals <paramref name="upperBound"/> when <paramref name="lowerInclusivity"/> does not equal <paramref name="upperInclusivity"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/></exception>
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-    public static bool IsBetween<T>([DisallowNull] this T element, [DisallowNull] T lowerBound, [DisallowNull] T upperBound,
+    public static bool IsBetween<T>(this T element, T lowerBound, T upperBound,
                                     EInclusivity lowerInclusivity = EInclusivity.Inclusive, EInclusivity upperInclusivity = EInclusivity.Inclusive)
         where T : IComparable<T>
     {
-        if (element is null)
-        {
-            // No Guard - missing class constraint
-            ThrowHelper.ThrowArgumentNullException(nameof(element));
-        }
-        if (lowerBound is null)
-        {
-            // No Guard - missing class constraint
-            ThrowHelper.ThrowArgumentNullException(nameof(lowerBound));
-        }
-        if (upperBound is null)
-        {
-            // No Guard - missing class constraint
-            ThrowHelper.ThrowArgumentNullException(nameof(upperBound));
-        }
+        GuardEx.IsNotNull(element, nameof(element));
+        GuardEx.IsNotNull(lowerBound, nameof(lowerBound));
+        GuardEx.IsNotNull(upperBound, nameof(upperBound));
+        GuardEx.IsValid(lowerInclusivity, nameof(lowerInclusivity));
+        GuardEx.IsValid(upperInclusivity, nameof(upperInclusivity));
 
         if (lowerBound.CompareTo(upperBound) > 0)
         {
             ThrowArgumentOrderException();
         }
-
-        GuardEx.IsValid(lowerInclusivity, nameof(lowerInclusivity));
-        GuardEx.IsValid(upperInclusivity, nameof(upperInclusivity));
 
         switch (lowerInclusivity)
         {

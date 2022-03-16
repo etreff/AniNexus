@@ -11,13 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise" Version="0.9.4.4" />
-    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.4.4" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.4.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0-rc.1.21452.15" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.1.21451.13" />
-    <PackageReference Include="Microsoft.Toolkit.Diagnostics" Version="7.1.0" />
+    <PackageReference Include="Blazorise" Version="1.0.1" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="1.0.1" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0-preview.2.22153.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0-preview.2.22153.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0-preview.2.22152.2" />
+    <PackageReference Include="Microsoft.Toolkit.Diagnostics" Version="7.1.2" />
   </ItemGroup>
 
   <ItemGroup>

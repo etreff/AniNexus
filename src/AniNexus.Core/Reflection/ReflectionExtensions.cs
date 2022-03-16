@@ -104,8 +104,7 @@ public static class ReflectionExtensions
     /// <param name="expression">The transform expression.</param>
     /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <see langword="null"/></exception>
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-    [return: MaybeNull]
-    public static TValue GetAttributeValue<TAttribute, TValue>(this Assembly assembly, Func<TAttribute, TValue> expression)
+    public static TValue? GetAttributeValue<TAttribute, TValue>(this Assembly assembly, Func<TAttribute, TValue> expression)
         where TAttribute : Attribute
     {
         Guard.IsNotNull(assembly, nameof(assembly));
@@ -124,8 +123,7 @@ public static class ReflectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <see langword="null"/></exception>
     /// <exception cref="TypeLoadException">A custom attribute type cannot be loaded.</exception>
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-    [return: MaybeNull]
-    public static TValue GetAttributeValue<TAttribute, TValue>(this Type type, Func<TAttribute, TValue> expression)
+    public static TValue? GetAttributeValue<TAttribute, TValue>(this Type type, Func<TAttribute, TValue> expression)
         where TAttribute : Attribute
     {
         Guard.IsNotNull(type, nameof(type));
@@ -381,8 +379,7 @@ public static class ReflectionExtensions
                where type.IsSealed && !type.IsGenericType && !type.IsNested
                from method in type.GetMethods(BindingFlags.Static
                    | BindingFlags.Public | BindingFlags.NonPublic)
-               where method.IsDefined(typeof(ExtensionAttribute), false)
-               where method.GetParameters()[0].ParameterType == forType
+               where method.IsDefined(typeof(ExtensionAttribute), false) && method.GetParameters()[0].ParameterType == forType
                select method;
     }
 

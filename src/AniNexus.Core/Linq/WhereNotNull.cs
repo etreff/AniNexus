@@ -13,7 +13,9 @@ public static partial class Linq
     {
         Guard.IsNotNull(collection, nameof(collection));
 
-        return _(); IEnumerable<T> _()
+        return _(collection);
+
+        static IEnumerable<T> _(IEnumerable<T?> collection)
         {
             foreach (var element in collection)
             {

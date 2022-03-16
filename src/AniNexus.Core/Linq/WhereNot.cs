@@ -15,7 +15,9 @@ public static partial class Linq
         Guard.IsNotNull(collection, nameof(collection));
         Guard.IsNotNull(predicate, nameof(predicate));
 
-        return _(); IEnumerable<T?> _()
+        return _(collection, predicate);
+
+        static IEnumerable<T?> _(IEnumerable<T?> collection, Func<T?, bool> predicate)
         {
             foreach (var element in collection)
             {

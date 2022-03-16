@@ -23,7 +23,6 @@ public static partial class CollectionExtensions
     /// <param name="elements">The elements to add to the collection.</param>
     /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/></exception>
     /// <exception cref="NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T>? elements)
     {
         Guard.IsNotNull(collection, nameof(collection));
@@ -49,7 +48,6 @@ public static partial class CollectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/></exception>
     /// <exception cref="NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T>? elements, Predicate<T> predicate)
     {
         Guard.IsNotNull(collection, nameof(collection));
@@ -112,7 +110,6 @@ public static partial class CollectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/> -or- <paramref name="equalityComparer"/> is <see langword="null" /></exception>
     /// <exception cref="NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int AddRangeUnique<T>(this ICollection<T> collection, IEnumerable<T>? values, IEqualityComparer<T>? equalityComparer)
     {
         Guard.IsNotNull(collection, nameof(collection));

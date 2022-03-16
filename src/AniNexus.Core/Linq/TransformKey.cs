@@ -18,7 +18,9 @@ public static partial class Linq
         Guard.IsNotNull(grouping, nameof(grouping));
         Guard.IsNotNull(reducer, nameof(reducer));
 
-        return _(); IEnumerable<IGrouping<TNewKey, TValue>> _()
+        return _(grouping, reducer);
+
+        static IEnumerable<IGrouping<TNewKey, TValue>> _(IEnumerable<IGrouping<TOldKey, TValue>> grouping, Func<TOldKey, TNewKey> reducer)
         {
             foreach (var group in grouping)
             {
@@ -27,7 +29,7 @@ public static partial class Linq
         }
     }
 
-    private class Grouping<TKey, TValue> : IGrouping<TKey, TValue>
+    private sealed class Grouping<TKey, TValue> : IGrouping<TKey, TValue>
     {
         public TKey Key { get; }
         private readonly IEnumerable<TValue> _value;

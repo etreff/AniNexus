@@ -11,11 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GoogleAuthenticator" Version="2.2.0" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.0-rc.11" />
-    <PackageReference Include="HotChocolate.Data" Version="12.0.0-rc.11" />
-    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.0.0-rc.11" />
-    <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.10" />
+    <PackageReference Include="GoogleAuthenticator" Version="2.4.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0-preview.15" />
+    <PackageReference Include="HotChocolate.Data" Version="13.0.0-preview.15" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.0.0-preview.15" />
+    <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.11" />
   </ItemGroup>
 
   <ItemGroup>

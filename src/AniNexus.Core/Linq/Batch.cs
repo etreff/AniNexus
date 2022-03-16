@@ -31,7 +31,9 @@ public static partial class Linq
         Guard.IsNotNull(selector, nameof(selector));
         Guard.IsGreaterThan(count, 0, nameof(count));
 
-        return _(); IEnumerable<TResult?> _()
+        return _(collection, count, selector, returnRemainder);
+
+        static IEnumerable<TResult?> _(IEnumerable<TSource?> collection, int count, Func<IEnumerable<TSource?>, TResult?> selector, bool returnRemainder)
         {
             TSource?[]? bucket = null;
             int bucketCount = 0;

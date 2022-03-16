@@ -35,7 +35,7 @@ public static class StringBuilderExtensions
         Guard.IsGreaterThanOrEqualTo(baseIndent, 0, nameof(baseIndent));
         Guard.IsGreaterThanOrEqualTo(indent, 0, nameof(indent));
 
-        return sb.Append(new string(' ', baseIndent + indent * 2)).Append(value).AppendLine();
+        return sb.Append(new string(' ', baseIndent + indent * 2)).AppendLine(value);
     }
 
     /// <summary>
