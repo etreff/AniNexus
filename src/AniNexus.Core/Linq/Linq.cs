@@ -1,6 +1,4 @@
-﻿using AniNexus.Numerics.Random;
-
-namespace AniNexus.Linq;
+﻿namespace AniNexus.Linq;
 
 /// <summary>
 /// <see cref="IEnumerable{T}"/> extensions.

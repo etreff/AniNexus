@@ -1,9 +1,8 @@
-﻿using System.IO;
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using AniNexus;
 using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System.IO.Compression;
 
 /// <summary>
 /// Compression-related extensions.

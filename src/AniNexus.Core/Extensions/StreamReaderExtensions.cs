@@ -1,7 +1,6 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-using System.IO;
+﻿using System.Runtime.CompilerServices;
 
-namespace AniNexus;
+namespace System.IO;
 
 /// <summary>
 /// <see cref="StreamReader"/> extensions.
@@ -30,15 +29,18 @@ public static class StreamReaderExtensions
     /// Reads all lines from a <see cref="StreamReader"/>.
     /// </summary>
     /// <param name="streamReader">The reader to read from.</param>
-    public static IAsyncEnumerable<string> ReadAllLinesAsync(this StreamReader streamReader)
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public static IAsyncEnumerable<string> ReadAllLinesAsync(this StreamReader streamReader, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(streamReader, nameof(streamReader));
 
-        return _(); async IAsyncEnumerable<string> _()
+        return _(cancellationToken); async IAsyncEnumerable<string> _([EnumeratorCancellation] CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             string? line;
             while ((line = await streamReader.ReadLineAsync().ConfigureAwait(false)) is not null)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 yield return line;
             }
         }

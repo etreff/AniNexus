@@ -1,6 +1,8 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
+using AniNexus.Helpers;
 
 /***
  * NOTE
@@ -14,7 +16,7 @@ using System.Runtime.InteropServices;
  * been tweaked for general/public use.
  */
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// <see cref="Span{T}"/>, <see cref="ReadOnlySpan{T}"/>, <see cref="Memory{T}"/>, and <see cref="ReadOnlyMemory{T}"/> extensions.
@@ -35,7 +37,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOf(this in ReadOnlySpan<byte> data, uint value)
+    public static unsafe int IndexOf(this ReadOnlySpan<byte> data, uint value)
     {
         if (data.Length == 0)
         {
@@ -53,7 +55,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -152,21 +154,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -182,7 +184,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOf(this in ReadOnlySpan<byte> data, uint valueA, uint valueB)
+    public static unsafe int IndexOf(this ReadOnlySpan<byte> data, uint valueA, uint valueB)
     {
         if (data.Length == 0)
         {
@@ -200,7 +202,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -299,21 +301,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -330,7 +332,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOf(this in ReadOnlySpan<byte> data, uint valueA, uint valueB, uint valueC)
+    public static unsafe int IndexOf(this ReadOnlySpan<byte> data, uint valueA, uint valueB, uint valueC)
     {
         if (data.Length == 0)
         {
@@ -348,7 +350,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -447,21 +449,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -475,7 +477,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfLessThan(this in ReadOnlySpan<byte> data, uint lessThan)
+    public static unsafe int IndexOfLessThan(this ReadOnlySpan<byte> data, uint lessThan)
     {
         if (data.Length == 0)
         {
@@ -493,7 +495,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -610,21 +612,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -638,7 +640,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfGreaterThan(this in ReadOnlySpan<byte> data, uint greaterThan)
+    public static unsafe int IndexOfGreaterThan(this ReadOnlySpan<byte> data, uint greaterThan)
     {
         if (data.Length == 0)
         {
@@ -656,7 +658,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -773,21 +775,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -803,7 +805,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfOrLessThan(this in ReadOnlySpan<byte> data, uint value, uint lessThan)
+    public static unsafe int IndexOfOrLessThan(this ReadOnlySpan<byte> data, uint value, uint lessThan)
     {
         if (data.Length == 0)
         {
@@ -821,7 +823,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -938,21 +940,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -969,7 +971,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfOrLessThan(this in ReadOnlySpan<byte> data, uint valueA, uint valueB, uint lessThan)
+    public static unsafe int IndexOfOrLessThan(this ReadOnlySpan<byte> data, uint valueA, uint valueB, uint lessThan)
     {
         if (data.Length == 0)
         {
@@ -987,7 +989,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -1104,21 +1106,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -1134,7 +1136,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfOrGreaterThan(this in ReadOnlySpan<byte> data, uint value, uint greaterThan)
+    public static unsafe int IndexOfOrGreaterThan(this ReadOnlySpan<byte> data, uint value, uint greaterThan)
     {
         if (data.Length == 0)
         {
@@ -1152,7 +1154,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -1269,21 +1271,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -1300,7 +1302,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfOrGreaterThan(this in ReadOnlySpan<byte> data, uint valueA, uint valueB, uint greaterThan)
+    public static unsafe int IndexOfOrGreaterThan(this ReadOnlySpan<byte> data, uint valueA, uint valueB, uint greaterThan)
     {
         if (data.Length == 0)
         {
@@ -1318,7 +1320,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -1435,21 +1437,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -1463,7 +1465,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfNot(this in ReadOnlySpan<byte> data, uint value)
+    public static unsafe int IndexOfNot(this ReadOnlySpan<byte> data, uint value)
     {
         if (data.Length == 0)
         {
@@ -1481,7 +1483,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -1607,21 +1609,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -1637,7 +1639,7 @@ public static partial class MemoryExtensions
     /// This method uses vectorized searching using intrinsics so should be preferred over iterating each
     /// byte.
     /// </remarks>
-    public static unsafe int IndexOfNot(this in ReadOnlySpan<byte> data, uint valueA, uint valueB)
+    public static unsafe int IndexOfNot(this ReadOnlySpan<byte> data, uint valueA, uint valueB)
     {
         if (data.Length == 0)
         {
@@ -1655,7 +1657,7 @@ public static partial class MemoryExtensions
             length = (IntPtr)((Vector<byte>.Count - unaligned) & (Vector<byte>.Count - 1));
         }
 
-    SequentialScan:
+        SequentialScan:
         uint lookUp;
         while ((byte*)length >= (byte*)8)
         {
@@ -1751,21 +1753,21 @@ public static partial class MemoryExtensions
 
         return -1;
 
-    Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
+        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
         return (int)(byte*)index;
-    Found1:
+        Found1:
         return (int)(byte*)(index + 1);
-    Found2:
+        Found2:
         return (int)(byte*)(index + 2);
-    Found3:
+        Found3:
         return (int)(byte*)(index + 3);
-    Found4:
+        Found4:
         return (int)(byte*)(index + 4);
-    Found5:
+        Found5:
         return (int)(byte*)(index + 5);
-    Found6:
+        Found6:
         return (int)(byte*)(index + 6);
-    Found7:
+        Found7:
         return (int)(byte*)(index + 7);
     }
 
@@ -1779,7 +1781,7 @@ public static partial class MemoryExtensions
     /// byte.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int IndexOfControl(this in ReadOnlySpan<byte> data)
+    public static int IndexOfControl(this ReadOnlySpan<byte> data)
         => IndexOfLessThan(data, 32);
 
     /// <summary>
@@ -1792,7 +1794,7 @@ public static partial class MemoryExtensions
     /// byte.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int IndexOfWhiteSpace(this in ReadOnlySpan<byte> data)
+    public static int IndexOfWhiteSpace(this ReadOnlySpan<byte> data)
         => IndexOf(data, _whiteSpaceByte);
 
     /// <summary>
@@ -1806,7 +1808,7 @@ public static partial class MemoryExtensions
     /// byte.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int IndexOfNotWhiteSpace(this in ReadOnlySpan<byte> data, bool tabIsWhiteSpace = true)
+    public static int IndexOfNotWhiteSpace(this ReadOnlySpan<byte> data, bool tabIsWhiteSpace = true)
     {
         return tabIsWhiteSpace
             ? IndexOfNot(data, _whiteSpaceByte, '\t')
@@ -1843,5 +1845,110 @@ public static partial class MemoryExtensions
 
         // Shift all powers of two into the high byte and extract
         return (int)((powerOfTwoFlag * _xorPowerOfTwoToHighByte) >> 57);
+    }
+
+    /// <summary>
+    /// Replaces all instances of <paramref name="oldValue"/> in <paramref name="span"/>
+    /// with <paramref name="newValue"/>.
+    /// </summary>
+    /// <param name="span">The span to search.</param>
+    /// <param name="oldValue">The value to replace.</param>
+    /// <param name="newValue">The new value.</param>
+    public static void Replace(this Span<byte> span, byte oldValue, byte newValue)
+    {
+        ref byte s0 = ref MemoryMarshal.GetReference(span);
+
+        for (int i = 0; i < span.Length; ++i)
+        {
+            ref byte si = ref Unsafe.Add(ref s0, i);
+            if (si == oldValue)
+            {
+                si = newValue;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Replaces all instances of <paramref name="oldValue"/> in <paramref name="span"/>
+    /// with <paramref name="newValue"/>.
+    /// </summary>
+    /// <param name="span">The span to search.</param>
+    /// <param name="oldValue">The value to replace.</param>
+    /// <param name="newValue">The new value.</param>
+    public static void Replace<T>(in Span<T?> span, T? oldValue, T? newValue)
+        where T : IEquatable<T>
+    {
+        ref var s0 = ref MemoryMarshal.GetReference(span);
+
+        for (int i = 0; i < span.Length; ++i)
+        {
+            ref var si = ref Unsafe.Add(ref s0, i);
+            if (Unsafe.IsNullRef(ref si))
+            {
+                if (oldValue is null)
+                {
+                    si = newValue;
+                }
+            }
+            else if (si!.Equals(oldValue))
+            {
+                si = newValue;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the similarity percentage of two <see cref="ReadOnlySpan{T}"/>.
+    /// </summary>
+    /// <param name="span">The first text instance.</param>
+    /// <param name="other">The second text instance.</param>
+    /// <param name="comparison">How to compare two chars.</param>
+    /// <returns>A number between 0 and 1 that represents a percentage similarity between the two strings.</returns>
+    /// <remarks>
+    /// If <paramref name="other"/> is <see langword="null"/>, 0 will be returned. If both arguments are empty,
+    /// 1 will be returned.
+    /// </remarks>
+    public static double SimilarityTo(this ReadOnlySpan<char> span, string? other, StringComparison comparison = StringComparison.Ordinal)
+    {
+        return other is not null
+            ? SimilarityTo(span, other.AsSpan(), comparison)
+            : 0;
+    }
+
+    /// <summary>
+    /// Returns the similarity percentage of two <see cref="ReadOnlySpan{T}"/>.
+    /// </summary>
+    /// <param name="span">The first text instance.</param>
+    /// <param name="other">The second text instance.</param>
+    /// <param name="comparison">How to compare two chars.</param>
+    /// <returns>A number between 0 and 1 that represents a percentage similarity between the two strings.</returns>
+    /// <remarks>
+    /// If both arguments are empty, 1 will be returned.
+    /// </remarks>
+    public static double SimilarityTo(this ReadOnlySpan<char> span, ReadOnlySpan<char> other, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (span.Length == 0 && other.Length == 0)
+        {
+            return 1;
+        }
+
+        // Runes are still a bit clunky to work with. Since there is no clean way to get the count
+        // head of time we need to rent out a buffer using StackList instead of stackalloc-ing
+        // directly.
+
+        var textRunes = new List<Rune>(1);
+        var otherRunes = new List<Rune>(1);
+
+        foreach (var rune in span.EnumerateRunes())
+        {
+            textRunes.Add(rune);
+        }
+
+        foreach (var rune in other.EnumerateRunes())
+        {
+            otherRunes.Add(rune);
+        }
+
+        return RuneHelper.SimilarityTo(textRunes, otherRunes, comparison);
     }
 }

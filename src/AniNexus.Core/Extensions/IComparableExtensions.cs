@@ -1,6 +1,7 @@
-﻿using Microsoft.Toolkit.Diagnostics;
+﻿using AniNexus;
+using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// <see cref="IComparable{T}"/> extensions.
@@ -21,7 +22,7 @@ public static class IComparableExtensions
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
     /// <exception cref="InvalidOperationException"></exception>
     public static T Clamp<T>(this T element, T lowerBound, T upperBound)
-        where T : IComparable<T>
+        where T : notnull, IComparable<T>
     {
         GuardEx.IsNotNull(element, nameof(element));
         GuardEx.IsNotNull(lowerBound, nameof(lowerBound));
@@ -55,7 +56,7 @@ public static class IComparableExtensions
     /// <exception cref="Exception">A delegate callback throws an exception.</exception>
     public static bool IsBetween<T>(this T element, T lowerBound, T upperBound,
                                     EInclusivity lowerInclusivity = EInclusivity.Inclusive, EInclusivity upperInclusivity = EInclusivity.Inclusive)
-        where T : IComparable<T>
+        where T : notnull, IComparable<T>
     {
         GuardEx.IsNotNull(element, nameof(element));
         GuardEx.IsNotNull(lowerBound, nameof(lowerBound));

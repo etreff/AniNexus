@@ -47,11 +47,10 @@ public abstract class Entity<TEntity, TKey> : IEntity<TKey>, IEntityTypeConfigur
         string tableName = GetTableName();
         builder.ToTable(tableName);
 
-        // 1. Primary key specification (if not Entity<>)
-        // 2. Index specification
+        // 1. Index specification
         builder.HasKey(m => m.Id);
-        // 3. Navigation properties
-        // 4. Propery specification
+        // 2. Navigation properties
+        // 3. Propery specification
         var pk = builder.Property(m => m.Id);
         if (typeof(TKey) == typeof(Guid))
         {
@@ -71,6 +70,8 @@ public abstract class Entity<TEntity, TKey> : IEntity<TKey>, IEntityTypeConfigur
         }
 
         ConfigureEntity(builder);
+
+        // 4. Other
     }
 
     /// <summary>
@@ -152,11 +153,8 @@ public static class Entity
         const string entitySuffix = "Entity";
 
         string tableName = type.Name;
-        if (tableName.EndsWith(entitySuffix, StringComparison.Ordinal))
-        {
-            return tableName.Substring(0, tableName.Length - entitySuffix.Length);
-        }
-
-        return tableName;
+        return tableName.EndsWith(entitySuffix, StringComparison.Ordinal)
+            ? tableName.Substring(0, tableName.Length - entitySuffix.Length)
+            : tableName;
     }
 }

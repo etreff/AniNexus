@@ -1,6 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-
-namespace AniNexus;
+﻿namespace AniNexus.Helpers;
 
 /// <summary>
 /// A utility for working with Actions and Funcs.

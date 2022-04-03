@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System.Diagnostics;
 
 /// <summary>
 /// <see cref="Process"/> extensions.
@@ -49,8 +47,8 @@ public static class ProcessExtensions
             }
             else
             {
-                    // Wrap in a task to avoid deadlocks on OSX and Unix.
-                    Task.Run(() =>
+                // Wrap in a task to avoid deadlocks on OSX and Unix.
+                Task.Run(() =>
                 {
                     tcs.TrySetCanceled(cancellationToken);
                     if (killOnCancellation)
@@ -133,15 +131,15 @@ public static class ProcessExtensions
             }
             else
             {
-                    // Wrap in a task to avoid deadlocks on OSX and Unix.
-                    Task.Run(() =>
+                // Wrap in a task to avoid deadlocks on OSX and Unix.
+                Task.Run(() =>
+            {
+                tcs.TrySetCanceled(cancellationToken);
+                if (killOnCancellation)
                 {
-                    tcs.TrySetCanceled(cancellationToken);
-                    if (killOnCancellation)
-                    {
-                        process.Kill();
-                    }
-                }, CancellationToken.None);
+                    process.Kill();
+                }
+            }, CancellationToken.None);
             }
         });
         if (process.HasExited)

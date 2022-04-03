@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Buffers;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using AniNexus.Collections;
@@ -20,10 +21,10 @@ public static class RuneHelper
     /// <remarks>
     /// If both arguments are empty, 1 will be returned.
     /// </remarks>
-    public static double SimilarityTo(ref StackList<Rune> sourceRunes, ref StackList<Rune> otherRunes, StringComparison comparison)
+    public static double SimilarityTo(List<Rune> sourceRunes, List<Rune> otherRunes, StringComparison comparison)
     {
-        int steps = DamerauLevenshteinDistance(ref sourceRunes, ref otherRunes, comparison);
-        return 1 - steps / (double)Math.Max(sourceRunes.Length, otherRunes.Length);
+        int steps = DamerauLevenshteinDistance(sourceRunes, otherRunes, comparison);
+        return 1 - steps / (double)Math.Max(sourceRunes.Count, otherRunes.Count);
     }
 
     /// <summary>
@@ -34,10 +35,10 @@ public static class RuneHelper
     /// <param name="comparison">How to compare two chars.</param>
     /// <returns>The number of steps needed to change <paramref name="sourceRunes"/> into <paramref name="otherRunes"/>.</returns>
     /// <exception cref="NotImplementedException">The specified comparison is not implemented between two Runes with different ordinal values.</exception>
-    private static int DamerauLevenshteinDistance(ref StackList<Rune> sourceRunes, ref StackList<Rune> otherRunes, StringComparison comparison = StringComparison.Ordinal)
+    private static int DamerauLevenshteinDistance(List<Rune> sourceRunes, List<Rune> otherRunes, StringComparison comparison = StringComparison.Ordinal)
     {
-        int spanLength = sourceRunes.Length;
-        int otherLength = otherRunes.Length;
+        int spanLength = sourceRunes.Count;
+        int otherLength = otherRunes.Count;
 
         if (spanLength == 0)
         {
@@ -49,37 +50,46 @@ public static class RuneHelper
             return spanLength;
         }
 
-        // Finding distances here utilizes a sort of grid. We use that as a lookup for our real word count.   
-        var costs = new Array2D<int>(stackalloc int[(spanLength + 1) * (otherLength + 1)], spanLength + 1, otherLength + 1);
-        for (int x = 0; x <= spanLength; costs[x, 0] = x++) ;
-        for (int y = 0; y <= otherLength; costs[0, y] = y++) ;
-
-        for (int x = 1; x <= spanLength; ++x)
+        // Finding distances here utilizes a sort of grid. We use that as a lookup for our real word count.
+        int[] buffer = ArrayPool<int>.Shared.Rent((spanLength + 1) * (otherLength + 1));
+        try
         {
-            for (int y = 1; y <= otherLength; ++y)
+            var costs = new Array2D<int>(buffer, spanLength + 1, otherLength + 1);
+
+            for (int x = 0; x <= spanLength; costs[x, 0] = x++) { }
+            for (int y = 0; y <= otherLength; costs[0, y] = y++) { }
+
+            for (int x = 1; x <= spanLength; ++x)
             {
-                var sourceRune = sourceRunes[x - 1];
-                var otherRune = otherRunes[y - 1];
-
-                int cost = RunesEqual(sourceRune, otherRune, comparison) ? 0 : 1;
-                int insertion = costs[x, y - 1] + 1;
-                int deletion = costs[x - 1, y] + 1;
-                int substitution = costs[x - 1, y - 1] + cost;
-
-                int distance = insertion.Min(deletion, substitution);
-
-                if (x > 1 && y > 1 &&
-                    RunesEqual(sourceRunes[x - 1], otherRunes[y - 2], comparison) &&
-                    RunesEqual(sourceRunes[x - 2], otherRunes[y - 1], comparison))
+                for (int y = 1; y <= otherLength; ++y)
                 {
-                    distance = Math.Min(distance, costs[x - 2, y - 2] + cost);
+                    var sourceRune = sourceRunes[x - 1];
+                    var otherRune = otherRunes[y - 1];
+
+                    int cost = RunesEqual(sourceRune, otherRune, comparison) ? 0 : 1;
+                    int insertion = costs[x, y - 1] + 1;
+                    int deletion = costs[x - 1, y] + 1;
+                    int substitution = costs[x - 1, y - 1] + cost;
+
+                    int distance = insertion.Min(deletion, substitution);
+
+                    if (x > 1 && y > 1 &&
+                        RunesEqual(sourceRunes[x - 1], otherRunes[y - 2], comparison) &&
+                        RunesEqual(sourceRunes[x - 2], otherRunes[y - 1], comparison))
+                    {
+                        distance = Math.Min(distance, costs[x - 2, y - 2] + cost);
+                    }
+
+                    costs[x, y] = distance;
                 }
-
-                costs[x, y] = distance;
             }
-        }
 
-        return costs[spanLength, otherLength];
+            return costs[spanLength, otherLength];
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(buffer);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

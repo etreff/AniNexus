@@ -40,13 +40,13 @@ public abstract class EnumEntity<TEnum, TEnumEntity, TUnderlyingType> : Entity<T
     /// <inheritdoc/>
     protected override void ConfigureEntity(EntityTypeBuilder<TEnumEntity> builder)
     {
-        // 1. Primary key specification (if not Entity<>)
-        // 2. Index specification
+        // 1. Index specification
         builder.HasIndex(m => m.Name).IsUnique();
-        // 3. Navigation properties
-        // 4. Propery specification
+        // 2. Navigation properties
+        // 3. Propery specification
         builder.Property(m => m.Id).ValueGeneratedNever();
         builder.Property(m => m.Name).HasComment($"The name of the {typeof(TEnum).Name} enum value.");
+        // 4. Other
     }
 
     /// <inheritdoc/>

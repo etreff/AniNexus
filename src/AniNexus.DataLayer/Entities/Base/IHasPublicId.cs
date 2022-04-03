@@ -1,7 +1,7 @@
 ﻿namespace AniNexus.Data.Entities;
 
 /// <summary>
-/// When added to the class, the entity will have a public Id generated for it.
+/// When added to the class, the entity will have a public Id of type <typeparamref name="TKey"/> generated for it.
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 public interface IHasPublicId<TKey>

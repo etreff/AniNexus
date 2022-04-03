@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// <see cref="IntPtr"/> extensions.

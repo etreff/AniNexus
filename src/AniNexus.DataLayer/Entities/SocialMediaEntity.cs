@@ -6,7 +6,7 @@ namespace AniNexus.Data.Entities;
 /// <summary>
 /// Models social media information.
 /// </summary>
-public sealed class SocialMediaEntity : Entity<SocialMediaEntity>, IHasImage
+public sealed class SocialMediaEntity : Entity<SocialMediaEntity>
 {
     /// <summary>
     /// The name of the social media entity.
@@ -28,6 +28,7 @@ public sealed class SocialMediaEntity : Entity<SocialMediaEntity>, IHasImage
         // 2. Navigation properties
         builder.OwnsOne(m => m.Name, static name => name.ConfigureOwnedEntity());
         // 3. Propery specification
+        builder.Property(m => m.ImageId).HasComment("The Id of the image for this entity.");
         // 4. Other
     }
 
@@ -37,6 +38,7 @@ public sealed class SocialMediaEntity : Entity<SocialMediaEntity>, IHasImage
         base.Validate(validationContext, validator);
 
         validator.Property(m => m.WebsiteUrl).IsValidUrl();
+        validator.Property(m => m.ImageId).IsNotEmpty();
     }
 
     /// <inheritdoc/>

@@ -1,9 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// Options that indicate how to split a line of text.

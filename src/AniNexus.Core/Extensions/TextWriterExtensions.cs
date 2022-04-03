@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AniNexus;
+﻿namespace System.IO;
 
 /// <summary>
 /// <see cref="TextWriter"/> extensions.

@@ -76,8 +76,9 @@ public abstract class InstallmentEntity<TInstallmentEntity, TReleaseEntity> : Au
     {
         base.Validate(validationContext, validator);
 
-        validator.Property(m => m.Number).IsGreaterThanOrEqualTo((short)1);
+        validator.Property(m => m.ReleaseId).IsNotEmpty();
         validator.Property(m => m.PurchaseUrl).IsValidUrl();
+        validator.Property(m => m.Number).IsGreaterThanOrEqualTo((short)1);
         validator.Property(m => m.Synopsis).HasLengthLessThanOrEqualTo(1250);
 
         validator.ValidateOwnedEntity(m => m.Name);

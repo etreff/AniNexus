@@ -1,6 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-
-namespace AniNexus.Linq;
+﻿namespace AniNexus.Linq;
 
 public static partial class Linq
 {

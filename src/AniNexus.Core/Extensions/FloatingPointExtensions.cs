@@ -1,5 +1,8 @@
-﻿namespace AniNexus;
+﻿namespace System;
 
+/// <summary>
+/// Numeric extensions.
+/// </summary>
 public static partial class NumericExtensions
 {
     /// <summary>

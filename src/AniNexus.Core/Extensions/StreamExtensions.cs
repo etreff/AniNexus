@@ -2,9 +2,8 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// <see cref="Stream"/> extensions.
@@ -182,40 +181,6 @@ public static class StreamExtensions
     /// Reads all bytes from a stream.
     /// </summary>
     /// <param name="stream">The stream to read.</param>
-    public static byte[] ReadAllBytes(this Stream stream)
-    {
-        Guard.IsNotNull(stream, nameof(stream));
-        Guard.CanRead(stream, nameof(stream));
-
-        if (!stream.CanSeek)
-        {
-            // Unfortunately we cannot seek, so we need to copy the bytes over to another array.
-            // Not memory efficient, but there is nothing we can do.
-            using var msc = new MemoryStream();
-
-            stream.CopyTo(msc);
-
-            return msc.ToArray();
-        }
-
-        int index = 0;
-        int count = (int)stream.Length;
-        byte[] bytes = new byte[count];
-
-        do
-        {
-            int n = stream.Read(bytes, index, count - index);
-            index += n;
-        }
-        while (index < count);
-
-        return bytes;
-    }
-
-    /// <summary>
-    /// Reads all bytes from a stream.
-    /// </summary>
-    /// <param name="stream">The stream to read.</param>
     /// <param name="dest">The location to write the bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadAllBytes(this Stream stream, Span<byte> dest)
@@ -224,41 +189,6 @@ public static class StreamExtensions
         Guard.CanRead(stream, nameof(stream));
 
         stream.Write(dest);
-    }
-
-    /// <summary>
-    /// Reads all bytes from a stream.
-    /// </summary>
-    /// <param name="stream">The stream to read.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    public static async ValueTask<byte[]> ReadAllBytesAsync(this Stream stream, CancellationToken cancellationToken = default)
-    {
-        Guard.IsNotNull(stream, nameof(stream));
-        Guard.CanRead(stream, nameof(stream));
-
-        if (!stream.CanSeek)
-        {
-            // Unfortunately we cannot seek, so we need to copy the bytes over to another array.
-            // Not memory efficient, but there is nothing we can do.
-            using var msc = new MemoryStream();
-
-            await stream.CopyToAsync(msc, 81920, cancellationToken).ConfigureAwait(false);
-
-            return msc.ToArray();
-        }
-
-        int index = 0;
-        int count = (int)stream.Length;
-        byte[] bytes = new byte[count];
-
-        do
-        {
-            int n = await stream.ReadAsync(bytes.AsMemory(index, count - index), cancellationToken).ConfigureAwait(false);
-            index += n;
-        }
-        while (index < count);
-
-        return bytes;
     }
 
     /// <summary>

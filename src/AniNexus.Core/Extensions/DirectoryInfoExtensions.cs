@@ -1,7 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-using System.IO;
-
-namespace AniNexus;
+﻿namespace System.IO;
 
 /// <summary>
 /// File and directory extensions.
@@ -35,12 +32,9 @@ public static partial class FileSystemInfoExtensions
     {
         Guard.IsNotNull(directory, nameof(directory));
 
-        if (fragments is null || fragments.Length == 0)
-        {
-            return new DirectoryInfo(directory.FullName);
-        }
-
-        return new DirectoryInfo(directory.FullName.EnsureEndsWith(Path.DirectorySeparatorChar) + Path.Combine(fragments));
+        return fragments?.Length > 0
+            ? new DirectoryInfo(directory.FullName.EnsureEndsWith(Path.DirectorySeparatorChar) + Path.Combine(fragments))
+            : new DirectoryInfo(directory.FullName);
     }
 
     /// <summary>
@@ -70,11 +64,8 @@ public static partial class FileSystemInfoExtensions
     {
         Guard.IsNotNull(directory, nameof(directory));
 
-        if (fragments is null || fragments.Length == 0)
-        {
-            return new FileInfo(directory.FullName);
-        }
-
-        return new FileInfo(directory.FullName.EnsureEndsWith(Path.DirectorySeparatorChar) + Path.Combine(fragments));
+        return fragments?.Length > 0
+            ? new FileInfo(directory.FullName.EnsureEndsWith(Path.DirectorySeparatorChar) + Path.Combine(fragments))
+            : new FileInfo(directory.FullName);
     }
 }

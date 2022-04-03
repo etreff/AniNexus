@@ -1,6 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-
-namespace AniNexus.Threading;
+﻿namespace AniNexus.Threading;
 
 /// <summary>
 /// A convenience API for interacting with System.Threading.Timer in a way

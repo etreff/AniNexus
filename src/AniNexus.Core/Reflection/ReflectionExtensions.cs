@@ -312,22 +312,6 @@ public static class ReflectionExtensions
 
     /// <summary>
     /// Returns the <see cref="DescriptionAttribute.Description"/> of the <see cref="DescriptionAttribute"/>
-    /// decorating this enum member, if one exists.
-    /// </summary>
-    /// <typeparam name="T">The type of the enum.</typeparam>
-    /// <param name="enumValue">The enum value.</param>
-    /// <exception cref="AmbiguousMatchException">More than one of the requested attributes was found.</exception>
-    /// <exception cref="TypeLoadException">A custom attribute type cannot be loaded.</exception>
-    public static string? GetDescription<T>(this T enumValue)
-        where T : struct, Enum
-    {
-        GuardEx.IsValid(enumValue, nameof(enumValue));
-
-        return enumValue.GetMember().GetAttribute<DescriptionAttribute>()?.Description;
-    }
-
-    /// <summary>
-    /// Returns the <see cref="DescriptionAttribute.Description"/> of the <see cref="DescriptionAttribute"/>
     /// decorating this <see cref="MemberInfo"/>, if one exists.
     /// </summary>
     /// <param name="member">The <see cref="MemberInfo"/>.</param>

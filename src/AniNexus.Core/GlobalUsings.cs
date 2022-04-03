@@ -4,3 +4,4 @@ global using System.Diagnostics.CodeAnalysis;
 global using System.Linq;
 global using System.Threading;
 global using System.Threading.Tasks;
+global using CommunityToolkit.Diagnostics;

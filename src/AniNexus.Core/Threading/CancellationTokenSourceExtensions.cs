@@ -1,6 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-
-namespace AniNexus.Threading;
+﻿namespace AniNexus.Threading;
 
 /// <summary>
 /// <see cref="CancellationTokenSource"/> extensions.

@@ -1,9 +1,7 @@
-﻿using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System.Linq.Expressions;
 
 /// <summary>
 /// <see cref="Expression"/> extensions.

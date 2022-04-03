@@ -1,4 +1,4 @@
-﻿namespace AniNexus;
+﻿namespace System;
 
 /// <summary>
 /// <see cref="StringComparison"/> extensions.

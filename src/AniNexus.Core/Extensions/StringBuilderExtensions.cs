@@ -1,8 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System.Text;
 
 /// <summary>
 /// <see cref="StringBuilder"/> extensions.

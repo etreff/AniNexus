@@ -1,12 +1,10 @@
 ﻿using System.Buffers;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using AniNexus.Threading.Tasks;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System.IO;
 
 public static partial class FileSystemInfoExtensions
 {
@@ -21,7 +19,26 @@ public static partial class FileSystemInfoExtensions
     {
         Guard.IsNotNull(fileInfo, nameof(fileInfo));
 
+        fileInfo.Refresh();
+        if (!fileInfo.Exists)
+        {
+            return;
+        }
+
         Overwrite(fileInfo, (byte[]?)null);
+    }
+
+    /// <summary>
+    /// Clears the contents of a file.
+    /// </summary>
+    /// <param name="fileInfo">The file to clear.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="fileInfo"/> is <see langword="null"/></exception>
+    /// <exception cref="IOException">An I/O error occurs.</exception>
+    /// <exception cref="UnauthorizedAccessException">Access is denied.</exception>
+    public static async Task ClearAsync(this FileInfo fileInfo, CancellationToken cancellationToken = default)
+    {
+        Guard.IsNotNull(fileInfo, nameof(fileInfo));
 
         fileInfo.Refresh();
         if (!fileInfo.Exists)
@@ -29,16 +46,7 @@ public static partial class FileSystemInfoExtensions
             return;
         }
 
-        try
-        {
-            using var sw = new StreamWriter(fileInfo.FullName, false, Encoding.UTF8);
-            sw.Write(string.Empty);
-            sw.Flush();
-        }
-        catch (DirectoryNotFoundException)
-        {
-            // Not possible.
-        }
+        await OverwriteAsync(fileInfo, (byte[]?)null, cancellationToken);
     }
 
     /// <summary>
@@ -200,13 +208,11 @@ public static partial class FileSystemInfoExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Overwrite(this FileInfo fileInfo, string? content, Encoding? encoding = null)
     {
-        if (content is null)
-        {
-            Overwrite(fileInfo, Array.Empty<byte>());
-            return;
-        }
+        var c = content is not null
+            ? content.AsSpan()
+            : ReadOnlySpan<char>.Empty;
 
-        Overwrite(fileInfo, (encoding ?? Encoding.UTF8).GetBytes(content));
+        Overwrite(fileInfo, c, encoding ?? Encoding.UTF8);
     }
 
     /// <summary>
@@ -221,10 +227,11 @@ public static partial class FileSystemInfoExtensions
     {
         Guard.IsNotNull(fileInfo, nameof(fileInfo));
 
-        using var fs = fileInfo.CreateSafeStream(FileMode.Create);
-        byte[] buffer = content ?? Array.Empty<byte>();
-        fs.Write(buffer, 0, buffer.Length);
-        fs.Flush();
+        var c = content is not null
+            ? content.AsSpan()
+            : ReadOnlySpan<byte>.Empty;
+
+        Overwrite(fileInfo, c);
     }
 
     /// <summary>
@@ -322,14 +329,15 @@ public static partial class FileSystemInfoExtensions
     /// <exception cref="ArgumentNullException"><paramref name="fileInfo"/> is <see langword="null"/></exception>
     /// <exception cref="IOException">An I/O error occurs.</exception>
     /// <exception cref="UnauthorizedAccessException">Access is denied.</exception>
-    public static async Task OverwriteAsync(this FileInfo fileInfo, byte[]? content, CancellationToken cancellationToken = default)
+    public static Task OverwriteAsync(this FileInfo fileInfo, byte[]? content, CancellationToken cancellationToken = default)
     {
         Guard.IsNotNull(fileInfo, nameof(fileInfo));
 
-        await using var fs = fileInfo.CreateSafeStream(FileMode.Create);
-        byte[] buffer = content ?? Array.Empty<byte>();
-        await fs.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
-        await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
+        var c = content is not null
+            ? content.AsMemory()
+            : ReadOnlyMemory<byte>.Empty;
+
+        return OverwriteAsync(fileInfo, c, cancellationToken);
     }
 
     /// <summary>
@@ -421,7 +429,7 @@ public static partial class FileSystemInfoExtensions
     {
         Guard.IsNotNull(fileInfo, nameof(fileInfo));
 
-        return _(); IEnumerable<string> _()
+        return _(fileInfo, encoding); static IEnumerable<string> _(FileInfo fileInfo, Encoding? encoding)
         {
             encoding ??= Encoding.UTF8;
 
@@ -439,28 +447,30 @@ public static partial class FileSystemInfoExtensions
     /// Reads all lines from a file.
     /// </summary>
     /// <param name="fileInfo">The file to read from.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The lines of the file.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IAsyncEnumerable<string> ReadAllLinesAsync(this FileInfo fileInfo)
-        => ReadAllLinesAsync(fileInfo, null);
+    public static IAsyncEnumerable<string> ReadAllLinesAsync(this FileInfo fileInfo, CancellationToken cancellationToken = default)
+        => ReadAllLinesAsync(fileInfo, null, cancellationToken);
 
     /// <summary>
     /// Reads all text from a file.
     /// </summary>
     /// <param name="fileInfo">The file to read from.</param>
     /// <param name="encoding">The encoding to use.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The lines of the file.</returns>
-    public static IAsyncEnumerable<string> ReadAllLinesAsync(this FileInfo fileInfo, Encoding? encoding)
+    public static IAsyncEnumerable<string> ReadAllLinesAsync(this FileInfo fileInfo, Encoding? encoding, CancellationToken cancellationToken = default)
     {
         Guard.IsNotNull(fileInfo, nameof(fileInfo));
 
-        return _(); async IAsyncEnumerable<string> _()
+        return _(fileInfo, encoding, cancellationToken); static async IAsyncEnumerable<string> _(FileInfo fileInfo, Encoding? encoding, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             encoding ??= Encoding.UTF8;
 
             await using var fs = fileInfo.OpenRead();
             using var sr = fs.GetStreamReader(encoding);
-            await foreach (string line in sr.ReadAllLinesAsync())
+            await foreach (string line in sr.ReadAllLinesAsync(cancellationToken))
             {
                 yield return line;
             }

@@ -90,6 +90,7 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
         builder.HasOne(m => m.Franchise).WithMany(GetFranchisePropertyExpression()).HasForeignKey(m => m.FranchiseId).IsRequired().OnDelete(DeleteBehavior.Restrict);
         // 4. Propery specification
         builder.Property(m => m.ActiveRating).HasComment("The user rating of the anime (Watching Only), from 0 to 100. Calculated by the system periodically.");
+        builder.Property(m => m.FranchiseId).HasComment("The franchise this entity belongs to.");
         builder.Property(m => m.Rating).HasComment("The user rating of the anime (Completed Only), from 0 to 100. Calculated by the system periodically.");
         builder.Property(m => m.Synopsis).HasMaxLength(2000).HasComment("A synopsis or description of the anime.");
         builder.Property(m => m.Votes).HasComment("The number of votes that contributed to the rating. Calculated by the system periodically.").HasDefaultValue(0);
@@ -102,6 +103,7 @@ public abstract class FranchiseMediaEntity<TEntity> : AuditableEntity<TEntity>, 
         base.Validate(validationContext, validator);
 
         validator.Property(m => m.ActiveRating).IsBetween(0, 100);
+        validator.Property(m => m.FranchiseId).IsNotEmpty();
         validator.Property(m => m.Rating).IsBetween(0, 100);
         validator.Property(m => m.Votes).IsGreaterThan(0);
         validator.Property(m => m.WebsiteUrl).IsValidUrl();

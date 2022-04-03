@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus.Collections.Concurrent;
 
@@ -55,7 +54,7 @@ public class ThreadSafeCache<TKey, TValue>
     /// using the value factory specified in the constructor of this class.
     /// </summary>
     /// <param name="key">The key to get the value of.</param>
-    public TValue Get([DisallowNull] TKey key)
+    public TValue Get(TKey key)
     {
         return _cache.GetOrAdd(key, _valueFactory);
     }
@@ -68,7 +67,7 @@ public class ThreadSafeCache<TKey, TValue>
     /// When this method returns, contains the object from the <see cref="ThreadSafeCache{TKey, TValue}"/>
     /// that has the specified key, or the default value of the type if the operation
     /// failed.</param>
-    public bool TryGetValue([DisallowNull] TKey key, [MaybeNull] out TValue value)
+    public bool TryGetValue(TKey key, out TValue? value)
     {
         return _cache.TryGetValue(key, out value);
     }

@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// <see cref="Uri"/> extensions.

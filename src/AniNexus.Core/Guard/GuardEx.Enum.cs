@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using AniNexus;
 
 namespace Microsoft.Toolkit.Diagnostics;
 
@@ -15,12 +14,7 @@ public static partial class GuardEx
     public static void IsValid<T>(T value, string name)
         where T : struct, Enum
     {
-        if (Enums<T>.Info.IsFlagEnum && Enums<T>.Info.IsValidFlagCombination(value))
-        {
-            return;
-        }
-
-        if (Enums<T>.Info.IsDefined(value))
+        if (value.IsValid())
         {
             return;
         }
@@ -38,17 +32,7 @@ public static partial class GuardEx
     public static void IsValid<T>(T? value, string name)
         where T : struct, Enum
     {
-        if (!value.HasValue)
-        {
-            return;
-        }
-
-        if (Enums<T>.Info.IsFlagEnum && Enums<T>.Info.IsValidFlagCombination(value.Value))
-        {
-            return;
-        }
-
-        if (Enums<T>.Info.IsDefined(value.Value))
+        if (!value.HasValue || value.Value.IsValid())
         {
             return;
         }

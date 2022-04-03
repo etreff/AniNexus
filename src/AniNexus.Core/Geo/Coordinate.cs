@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus.Geo;
 
@@ -8,7 +7,7 @@ namespace AniNexus.Geo;
 /// A global coordinate.
 /// </summary>
 [DebuggerDisplay("{" + nameof(Latitude) + "}, {" + nameof(Longitude) + "}")]
-public class Coordinate : IEquatable<Coordinate>
+public readonly struct Coordinate : IEquatable<Coordinate>
 {
     /// <summary>
     /// The radius of the Earth in kilometers. This is the average of the
@@ -20,27 +19,12 @@ public class Coordinate : IEquatable<Coordinate>
     /// <summary>
     /// The latitude.
     /// </summary>
-    public double Latitude
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _latitudeField;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => _latitudeField = WrapLatitude(value);
-    }
+    public readonly double Latitude { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
     /// <summary>
     /// The longitude.
     /// </summary>
-    public double Longitude
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _longitudeField;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => _longitudeField = WrapLongitude(value);
-    }
-
-    private double _latitudeField;
-    private double _longitudeField;
+    public readonly double Longitude { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
     /// <summary>
     /// Creates a new <see cref="Coordinate"/> object.
@@ -81,14 +65,48 @@ public class Coordinate : IEquatable<Coordinate>
             VerifyLongitude(longitude);
         }
 
-        Latitude = latitude;
-        Longitude = longitude;
+        Latitude = WrapLatitude(latitude);
+        Longitude = WrapLongitude(longitude);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Coordinate"/> object using an existing instance
+    /// as a template.
+    /// </summary>
+    /// <param name="other">The existing instance to copy.</param>
+    public Coordinate(Coordinate other)
+    {
+        Latitude = other.Latitude;
+        Longitude = other.Longitude;
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="Coordinate"/> with this instance's longitude
+    /// and the specified latitude.
+    /// </summary>
+    /// <param name="latitude">The latitude.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly Coordinate WithLatitude(double latitude)
+    {
+        return new Coordinate(latitude, Longitude);
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="Coordinate"/> with this instance's latitude
+    /// and the specified longitude.
+    /// </summary>
+    /// <param name="longitude">The longitude.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly Coordinate WithLongitude(double longitude)
+    {
+        return new Coordinate(Latitude, longitude);
     }
 
     /// <summary>
     /// Returns whether the provided latitude is valid.
     /// </summary>
     /// <param name="latitude">The latitude value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsValidLatitude(double latitude)
     {
         return latitude >= -90 && latitude <= 90;
@@ -98,6 +116,7 @@ public class Coordinate : IEquatable<Coordinate>
     /// Returns whether the provided longitude is valid.
     /// </summary>
     /// <param name="longitude">The longitude value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsValidLongitude(double longitude)
     {
         return longitude >= -180 && longitude <= 180;
@@ -107,6 +126,7 @@ public class Coordinate : IEquatable<Coordinate>
     /// Wraps <paramref name="latitude"/> so that the value is a valid latitude.
     /// </summary>
     /// <param name="latitude">The value to wrap.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double WrapLatitude(double latitude)
     {
         return Modulo(latitude, 90);
@@ -116,6 +136,7 @@ public class Coordinate : IEquatable<Coordinate>
     /// Wraps <paramref name="longitude"/> so that the value is a valid longitude.
     /// </summary>
     /// <param name="longitude">The value to wrap.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double WrapLongitude(double longitude)
     {
         return Modulo(longitude, 180);
@@ -125,11 +146,10 @@ public class Coordinate : IEquatable<Coordinate>
     /// Gets the distance, in kilometers, between this coordinate and another coordinate.
     /// This method is fast but less accurate.
     /// </summary>
-    /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/></exception>
-    public double GetHaversineDistance([NotNull] Coordinate other)
+    /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly double GetHaversineDistance(Coordinate other)
     {
-        Guard.IsNotNull(other, nameof(other));
-
         return GetHaversineDistance(other.Latitude, other.Longitude);
     }
 
@@ -137,7 +157,8 @@ public class Coordinate : IEquatable<Coordinate>
     /// Gets the distance, in kilometers, between this coordinate and another coordinate.
     /// This method is fast but less accurate.
     /// </summary>
-    public double GetHaversineDistance(double otherLatitude, double otherLongitude)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly double GetHaversineDistance(double otherLatitude, double otherLongitude)
         => GetHaversineDistance(Latitude, Longitude, otherLatitude, otherLongitude);
 
     /// <summary>
@@ -164,7 +185,7 @@ public class Coordinate : IEquatable<Coordinate>
     /// </summary>
     /// <param name="latitude"></param>
     /// <param name="longitude"></param>
-    public void Deconstruct(out double latitude, out double longitude)
+    public readonly void Deconstruct(out double latitude, out double longitude)
     {
         latitude = Latitude;
         longitude = Longitude;
@@ -199,15 +220,15 @@ public class Coordinate : IEquatable<Coordinate>
     }
 
     /// <inheritdoc />
-    public bool Equals(Coordinate? other)
+    public readonly bool Equals(Coordinate other)
     {
-        return other is not null && (ReferenceEquals(this, other) || (Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude)));
+        return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj)
+    public readonly override bool Equals(object? obj)
     {
-        return obj is not null && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((Coordinate)obj)));
+        return obj is Coordinate c && Equals(c);
     }
 
     /// <summary>
@@ -227,8 +248,25 @@ public class Coordinate : IEquatable<Coordinate>
     }
 
     /// <inheritdoc />
-    public override int GetHashCode()
+    public readonly override int GetHashCode()
     {
         return HashCode.Combine(Latitude, Longitude);
+    }
+
+    /// <summary>
+    /// Returns the formatted latitude and longitude of this <see cref="Coordinate"/>.
+    /// </summary>
+    public readonly override string ToString()
+    {
+        return $"({Latitude}, {Longitude})";
+    }
+
+    /// <summary>
+    /// Returns the formatted latitude and longitude of this <see cref="Coordinate"/>
+    /// routed to the specified number of decimal places.
+    /// </summary>
+    public readonly string ToString(int decimalPlaces)
+    {
+        return $"({Math.Round(Latitude, decimalPlaces)}, {Math.Round(Longitude, decimalPlaces)})";
     }
 }

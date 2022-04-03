@@ -7,7 +7,7 @@ namespace AniNexus.Data.Entities;
 /// Models a franchise or intellectual property that all anime, manga, and games
 /// belong to.
 /// </summary>
-public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowVersion, IHasSoftDelete, IHasImage
+public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowVersion, IHasSoftDelete
 {
     /// <summary>
     /// The name of this franchise.
@@ -54,6 +54,7 @@ public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowV
         builder.OwnsOne(m => m.Name, static name => name.ConfigureOwnedEntity(false));
         builder.OwnsMany(m => m.Aliases, static name => name.ConfigureOwnedEntity());
         // 3. Propery specification
+        builder.Property(m => m.ImageId).HasComment("The Id of the image for this entity.");
         builder.Property(m => m.Synopsis).HasComment("A synopsis of the media series.").HasMaxLength(2500);
         // 4. Other
     }
@@ -65,6 +66,7 @@ public sealed class FranchiseEntity : AuditableEntity<FranchiseEntity>, IHasRowV
 
         validator.ValidateOwnedEntity(m => m.Name);
         validator.ValidateOwnedEntities(m => m.Aliases!);
+        validator.Property(m => m.ImageId).IsNotEmpty();
         validator.Property(m => m.Synopsis).HasLengthLessThanOrEqualTo(1250);
     }
 }

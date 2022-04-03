@@ -93,4 +93,14 @@ public static class ThrowHelper
     {
         throw new FormatException($"The value {value} is not a member of type {enumType} or is outside the underlying type's range.");
     }
+
+    /// <summary>
+    /// Throws a <see cref="ArrayTypeMismatchException"/>.
+    /// </summary>
+    /// <exception cref="ArrayTypeMismatchException">Always.</exception>
+    [DoesNotReturn]
+    internal static void ThrowArrayTypeMismatchException()
+    {
+        throw new ArrayTypeMismatchException();
+    }
 }

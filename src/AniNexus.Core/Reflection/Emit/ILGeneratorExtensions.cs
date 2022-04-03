@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
-using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus.Core.Reflection.Emit;
 

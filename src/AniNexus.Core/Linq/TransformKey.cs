@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Microsoft.Toolkit.Diagnostics;
 
 namespace AniNexus.Linq;
 

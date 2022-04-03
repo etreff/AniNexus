@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using AniNexus.Reflection;
 using Microsoft.Toolkit.Diagnostics;
 
-namespace AniNexus;
+namespace System;
 
 /// <summary>
 /// <see cref="Exception"/> extensions.
@@ -34,7 +34,7 @@ public static class ExceptionExtensions
     {
         Guard.IsNotNull(e, nameof(e));
 
-        return _(); IEnumerable<Exception> _()
+        return _(e, extractAggregateExceptions); static IEnumerable<Exception> _(Exception e, bool extractAggregateExceptions)
         {
             yield return e;
 
