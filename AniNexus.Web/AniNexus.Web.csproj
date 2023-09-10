@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>36e1ec9e-cd07-4480-ae17-73eae3d18bb6</UserSecretsId>
+    <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileTag>AniNexus</DockerfileTag>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>7</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>7</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.6.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
+    <PackageReference Include="Serilog" Version="3.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\AniNexus.ServiceModel\AniNexus.ServiceModel.csproj" />
+    <ProjectReference Include="..\AniNexus.Utilities\AniNexus.Utilities.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Runtime\" />
+  </ItemGroup>
+
+</Project>

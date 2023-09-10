@@ -1,0 +1,10 @@
+query GetMetadataByIds($ids: [Int!]!, $type: MediaType!, $page: Int, $perPage: Int) {
+    Page(page: $page, perPage: $perPage) {
+	    pageInfo {
+		    ...pageInfo
+	    }
+        media(id_in: $ids, type: $type) {
+            ...metadata
+        }
+    }
+}

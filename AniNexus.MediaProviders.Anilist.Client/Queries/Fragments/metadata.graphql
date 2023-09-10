@@ -1,0 +1,26 @@
+fragment metadata on Media {
+    ...metadataLite
+    startDate {
+        year
+        month
+        day
+    }
+    description
+    averageScore
+    meanScore
+    duration
+    countryOfOrigin
+    tags { 
+        name
+        description
+        rank
+        isAdult
+    }
+    studios {
+        nodes {
+            name
+            isAnimationStudio
+            siteUrl
+        }
+    }
+}

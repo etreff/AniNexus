@@ -1,0 +1,34 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:60321",
+      "sslPort": 44388
+    }
+  },
+  "profiles": {
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7051;http://localhost:5066",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AzureKeyVaultUri": "https://aninexuskeyvault.vault.azure.net/",
+        "AZURE_USERNAME": "ethan.treff@outlook.com",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.Azure.SignalR"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AzureKeyVaultUri": "https://aninexuskeyvault.vault.azure.net/",
+        "AZURE_USERNAME": "ethan.treff@outlook.com",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.Azure.SignalR"
+      }
+    }
+  }
+}

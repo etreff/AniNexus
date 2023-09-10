@@ -1,0 +1,5 @@
+query GetMediaListEntry($mediaId: Int!, $username: String!, $type: MediaType!) {
+  MediaList(userName: $username, type: $type, mediaId: $mediaId) {
+    ...mediaListEntry
+  }
+}

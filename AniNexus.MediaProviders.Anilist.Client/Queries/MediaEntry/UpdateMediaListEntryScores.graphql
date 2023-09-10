@@ -1,0 +1,7 @@
+mutation UpdateMediaListEntryScores($id: Int!, $scores: [Float!]!, $overallScore: Float!) { 
+	SaveMediaListEntry(id: $id, score: $overallScore, advancedScores: $scores) {
+		id
+		score
+		advancedScores
+	}
+}

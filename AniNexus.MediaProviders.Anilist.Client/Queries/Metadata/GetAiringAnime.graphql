@@ -1,0 +1,19 @@
+query GetAiringAnime($sort: [AiringSort!]!, $airingBefore: Int!, $page: Int, $perPage: Int) {
+	Page(page: $page, perPage: $perPage) {
+		pageInfo {
+			...pageInfo
+		}
+		airingSchedules(sort: $sort, airingAt_lesser: $airingBefore, notYetAired: true) {
+			mediaId
+			episode
+			airingAt
+			timeUntilAiring
+			media {
+				...metadataLite
+				mediaListEntry {
+					...mediaListEntry
+				}
+			}
+		}
+	}
+}

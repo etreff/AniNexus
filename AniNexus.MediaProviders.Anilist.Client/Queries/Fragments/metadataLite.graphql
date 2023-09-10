@@ -1,0 +1,23 @@
+fragment metadataLite on Media {
+	id
+    endDate {
+        year
+        month
+        day
+    }
+    seasonYear
+    title { 
+        romaji
+        english
+        native
+    }
+    season
+    episodes
+    format
+    status
+    siteUrl
+    coverImage { 
+        large
+        medium
+    }
+}

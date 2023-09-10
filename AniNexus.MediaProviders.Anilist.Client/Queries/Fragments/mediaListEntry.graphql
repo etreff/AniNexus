@@ -1,0 +1,32 @@
+fragment mediaListEntry on MediaList {
+	id
+	mediaId
+	score(format: POINT_100)
+	repeat
+	progress
+	notes
+	completedAt {
+		year
+		month
+		day
+	}
+	startedAt {
+		year
+		month
+		day
+	}
+	status
+	media {
+		id		
+		idMal
+		season
+		format
+		episodes
+		siteUrl
+		status
+		title {
+			english
+			romaji
+		}
+	}
+}

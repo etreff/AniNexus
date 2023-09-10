@@ -1,0 +1,5 @@
+query GetMetadataByName($search: String!, $type: MediaType!) {
+    Media(search: $search, type: $type) {
+        ...metadata
+    }
+}

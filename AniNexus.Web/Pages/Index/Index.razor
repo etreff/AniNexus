@@ -1,0 +1,41 @@
+﻿@page "/"
+
+<PageTitle>AniNexus</PageTitle>
+
+<div class="hero is-bold" style="margin-top:4rem">
+	<div class="hero-body">
+		<div class="container">
+			<div class="hero-search has-text-centered">
+				<h1 class="title is-1 is-bold">
+					Find your favorite
+					<span id="hero-word"></span>
+				</h1>
+				<div class="field column is-6 is-centered">
+					<div class="control">
+						<input id="search" class="input is-rounded" type="text" placeholder="Search" />
+						<div class="form-icon">
+							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24">
+								<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+									<circle cx="11" cy="11" r="8"></circle>
+									<path d="m21 21l-4.35-4.35"></path>
+								</g>
+							</svg>
+						</div>
+						<button class="form-button">
+							<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24">
+								<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7l-7 7"></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mt-4">
+	<h3 class="title has-text-centered">Or browse by category</h3>
+	<ANSection FullHDWidth=ELayoutBreakpointColumnSize.Is8 WidescreenWidth=ELayoutBreakpointColumnSize.Is7 DesktopWidth=ELayoutBreakpointColumnSize.Is6 TabletWidth=ELayoutBreakpointColumnSize.Is4>
+		<ANSectionBox Link="/anime" Icon="" Title="Anime" Subtext="This is some subtext." />
+		<ANSectionBox Link="/manga" Icon="" Title="Manga" Subtext="This is some more subtext that is a little bit longer." />
+	</ANSection>
+</div>

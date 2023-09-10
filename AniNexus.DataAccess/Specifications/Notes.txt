@@ -1,0 +1,10 @@
+- Remember to use projections [Select(x => new TModel{ x.Property })].
+- Use TPH to store anime and manga in the same table. Performance gains on searching on
+  name for media outweigh "too many columns" issue, especially since we have EF handling
+  that for us.
+- Remember to add support for soft deletes.
+- Remember to apply split queries when getting person information (see cartesian explosion)
+- Constants in queries are bad for performance since similar queries need to be compiled.
+  If two similar queries are run, try and shape them the say way and pass in a local variable.
+  It seems the cost of grabbing the local and creating the expression is cheaper than EF
+  recompiling a different expression.

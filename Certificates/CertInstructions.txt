@@ -1,0 +1,9 @@
+- Run Regenerate.ps1 to generate a certificate
+- Install the pfx locally
+- Open Azure and go to App registrations
+- Select the name of the application
+- Select "Certificates and Secrets" in the left nav
+- Delete the old cert
+- Import the new cert
+- Copy the thumbprint
+- Update the cert thumbprint in the container parameters

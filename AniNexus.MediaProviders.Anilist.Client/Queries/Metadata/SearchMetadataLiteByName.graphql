@@ -1,0 +1,10 @@
+query SearchMetadataLiteByName($search: String!, $type: MediaType!, $page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      ...pageInfo
+    }
+    media(search: $search, type: $type) {
+        ...metadataLite
+    }
+  }
+}

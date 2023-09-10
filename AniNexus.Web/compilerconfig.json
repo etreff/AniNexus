@@ -1,0 +1,26 @@
+﻿[
+  {
+    "outputFile": "Components/NavMenu.razor.css",
+    "inputFile": "Components/NavMenu.razor.scss"
+  },
+  {
+    "outputFile": "Components/MainLayout.razor.css",
+    "inputFile": "Components/MainLayout.razor.scss"
+  },
+  {
+    "outputFile": "Components/ANSectionBox.razor.css",
+    "inputFile": "Components/ANSectionBox.razor.scss"
+  },
+  {
+    "outputFile": "Pages/Index/Index.razor.css",
+    "inputFile": "Pages/Index/Index.razor.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss"
+  },
+  {
+    "outputFile": "Pages/Index/Index.razor.es5.js",
+    "inputFile": "Pages/Index/Index.razor.js"
+  }
+]

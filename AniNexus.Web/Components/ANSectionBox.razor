@@ -1,0 +1,82 @@
+﻿@if (!string.IsNullOrWhiteSpace(Link))
+{
+	<a class="box" href=@Link style=@StyleBuilder.ToString()>
+		@if (!string.IsNullOrWhiteSpace(Icon))
+		{
+			<!--TODO: Replace with real icon logic-->
+			<i class="icon">@Icon</i>
+		}
+		<h3 class="title is-5 mb-3">@Title</h3>
+		@if (!string.IsNullOrWhiteSpace(Subtext))
+		{
+			<p>@Subtext</p>
+		}
+	</a>
+}
+else
+{
+	<div class="box" style=@StyleBuilder.ToString()>
+		@if (!string.IsNullOrWhiteSpace(Icon))
+		{
+			<!--TODO: Replace with real icon logic-->
+			<i class="icon">@Icon</i>
+		}
+		<h3 class="title is-5 mb-3">@Title</h3>
+		@if (!string.IsNullOrWhiteSpace(Subtext))
+		{
+			<p>@Subtext</p>
+		}
+	</div>
+}
+
+@code {
+	/// <summary>
+	/// The link of the webpage to navigate to when the box is clicked.
+	/// </summary>
+	[Parameter]
+	public string? Link { get; set; }
+
+	/// <summary>
+	/// The icon to display.
+	/// </summary>
+	[Parameter]
+	public string? Icon { get; set; }
+
+	/// <summary>
+	/// The title to display.
+	/// </summary>
+	[Parameter, EditorRequired]
+	public string Title { get; set; } = string.Empty;
+
+	/// <summary>
+	/// The subtext to display.
+	/// </summary>
+	[Parameter]
+	public string? Subtext { get; set; }
+
+	/// <summary>
+	/// The parent <see cref="ANSection" /> that owns this box.
+	/// </summary>
+	[CascadingParameter]
+	private ANSection ParentSection { get; set; } = default!;
+
+	private readonly StyleBuilder StyleBuilder;
+
+	public ANSectionBox()
+	{
+		StyleBuilder = new(BuildStyles);
+	}
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+
+		StyleBuilder.Rebuild();
+	}
+
+	private void BuildStyles(StyleBuilder.IStyleBuilder builder)
+	{
+		builder
+			.AddStyle("flex-basis", $"{Math.Floor(100.0 / ParentSection.BoxesPerRow) - 2}%");
+	}
+}

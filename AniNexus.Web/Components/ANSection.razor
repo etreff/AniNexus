@@ -1,0 +1,85 @@
+﻿<div class="columns">
+	<div class=@ClassBuilder.ToString() style=@StyleBuilder.ToString()>
+		<CascadingValue Value="@this">
+			@ChildContent
+		</CascadingValue>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+	/// <summary>
+	/// The maximum number of boxes per row.
+	/// </summary>
+	[Parameter]
+	public int BoxesPerRow { get; set; } = 4;
+
+	/// <summary>
+	/// The width of the section on mobile.
+	/// </summary>
+	[Parameter]
+	public ELayoutBreakpointColumnSize MobileWidth { get; set; }
+
+	/// <summary>
+	/// The width of the section on tablet.
+	/// </summary>
+	[Parameter]
+	public ELayoutBreakpointColumnSize TabletWidth { get; set; }
+
+	/// <summary>
+	/// The width of the section on desktop.
+	/// </summary>
+	[Parameter]
+	public ELayoutBreakpointColumnSize DesktopWidth { get; set; }
+
+	/// <summary>
+	/// The width of the section on widescreen.
+	/// </summary>
+	[Parameter]
+	public ELayoutBreakpointColumnSize WidescreenWidth { get; set; }
+
+	/// <summary>
+	/// The width of the section on full HD.
+	/// </summary>
+	[Parameter]
+	public ELayoutBreakpointColumnSize FullHDWidth { get; set; }
+
+	private readonly ClassBuilder ClassBuilder;
+	private readonly StyleBuilder StyleBuilder;
+
+	public ANSection()
+	{
+		ClassBuilder = new(BuildClasses);
+		StyleBuilder = new(BuildStyles);
+	}
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+
+		ClassBuilder.Rebuild();
+		StyleBuilder.Rebuild();
+	}
+
+	private void BuildClasses(ClassBuilder.IClassBuilder builder)
+	{
+		builder
+			.AddClass("is-flex")
+			.AddClass("is-flex-wrap-wrap")
+			.AddClass("column");
+
+		builder.AddClass($"is-{(int)(MobileWidth)}-mobile", MobileWidth != ELayoutBreakpointColumnSize.Unset);
+		builder.AddClass($"is-{(int)(TabletWidth)}-tablet", TabletWidth != ELayoutBreakpointColumnSize.Unset);
+		builder.AddClass($"is-{(int)(DesktopWidth)}-desktop", DesktopWidth != ELayoutBreakpointColumnSize.Unset);
+		builder.AddClass($"is-{(int)(WidescreenWidth)}-widescreen", WidescreenWidth != ELayoutBreakpointColumnSize.Unset);
+		builder.AddClass($"is-{(int)(FullHDWidth)}-fullhd", FullHDWidth != ELayoutBreakpointColumnSize.Unset);
+	}
+
+	private void BuildStyles(StyleBuilder.IStyleBuilder builder)
+	{
+		builder
+			.AddStyle("margin", "0 auto");
+	}
+}

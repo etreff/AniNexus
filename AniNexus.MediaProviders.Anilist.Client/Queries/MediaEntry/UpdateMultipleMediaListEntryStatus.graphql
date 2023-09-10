@@ -1,0 +1,6 @@
+mutation UpdateMultipleMediaListEntryStatus($ids: [Int!]!, $status: MediaListStatus!) { 
+	UpdateMediaListEntries(ids: $ids, status: $status) {
+		id
+		status
+	}
+}
